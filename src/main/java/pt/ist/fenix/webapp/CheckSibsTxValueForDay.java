@@ -1,11 +1,9 @@
 package pt.ist.fenix.webapp;
 
-import org.fenixedu.academic.domain.accounting.AccountingTransaction;
 import org.fenixedu.academic.domain.accounting.ResidenceEvent;
 import org.fenixedu.academic.domain.accounting.accountingTransactions.detail.SibsTransactionDetail;
 import org.fenixedu.academic.util.Money;
 import org.fenixedu.bennu.core.domain.Bennu;
-import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
 import org.joda.time.LocalDate;
 import pt.ist.fenixframework.Atomic;

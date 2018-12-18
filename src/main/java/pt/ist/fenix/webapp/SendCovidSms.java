@@ -2,7 +2,6 @@ package pt.ist.fenix.webapp;
 
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
 import org.fenixedu.messaging.smsdispatch.SMSMessage;
-
 import java.io.File;
 import java.nio.file.Files;
 import java.util.List;

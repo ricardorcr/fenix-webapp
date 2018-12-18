@@ -1,6 +1,10 @@
 package pt.ist.fenix.webapp;
 
 import com.google.gson.JsonObject;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.fenixedu.academic.domain.ExecutionYear;
 import org.fenixedu.academic.domain.Person;
 import org.fenixedu.academic.domain.accounting.AccountingTransaction;
@@ -19,10 +23,6 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import pt.ist.fenixframework.Atomic.TxMode;
 import pt.ist.fenixframework.FenixFramework;
-
-import java.util.Comparator;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Created by Sérgio Silva (hello@fenixedu.org).

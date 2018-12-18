@@ -1,5 +1,6 @@
 package pt.ist.fenix.webapp;
 
+import java.io.ByteArrayOutputStream;
 import org.fenixedu.academic.domain.Country;
 import org.fenixedu.academic.domain.Degree;
 import org.fenixedu.academic.domain.ExecutionYear;
@@ -13,7 +14,6 @@ import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
 import org.fenixedu.commons.spreadsheet.Spreadsheet;
 import org.fenixedu.commons.spreadsheet.Spreadsheet.Row;
 
-import java.io.ByteArrayOutputStream;
 
 public class ReportStudents extends ReadCustomTask {
     @Override

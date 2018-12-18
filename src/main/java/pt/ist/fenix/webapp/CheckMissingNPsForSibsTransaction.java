@@ -4,7 +4,6 @@ import org.fenixedu.academic.domain.accounting.AccountingTransaction;
 import org.fenixedu.academic.domain.accounting.AccountingTransaction_Base;
 import org.fenixedu.academic.domain.accounting.ResidenceEvent;
 import org.fenixedu.academic.domain.accounting.accountingTransactions.detail.SibsTransactionDetail;
-import org.fenixedu.academic.util.Money;
 import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
@@ -61,5 +60,6 @@ public class CheckMissingNPsForSibsTransaction extends CustomTask {
 //                                responsibleUser != null ? responsibleUser.getDisplayName() : "");
 //                    }
 //                });
+
     }
 }

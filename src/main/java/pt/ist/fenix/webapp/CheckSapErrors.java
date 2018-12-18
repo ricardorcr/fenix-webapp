@@ -2,13 +2,12 @@ package pt.ist.fenix.webapp;
 
 import org.fenixedu.academic.domain.accounting.Event;
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
-import pt.ist.fenixedu.domain.SapRequest;
-import pt.ist.fenixedu.domain.SapRequestType;
-import pt.ist.fenixframework.FenixFramework;
-
 import java.io.File;
 import java.nio.file.Files;
 import java.util.List;
+import pt.ist.fenixedu.domain.SapRequest;
+import pt.ist.fenixedu.domain.SapRequestType;
+import pt.ist.fenixframework.FenixFramework;
 
 public class CheckSapErrors extends CustomTask {
 

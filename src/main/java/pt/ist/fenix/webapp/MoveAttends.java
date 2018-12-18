@@ -19,6 +19,7 @@ public class MoveAttends extends CustomTask {
                     .filter(r -> r.getDegree().getCycleTypes().size() == 1)
                     .filter(r -> r.getCurrentCycleType() == CycleType.FIRST_CYCLE)
                     .filter(r -> r.isConcluded()).findAny().get();
+
             Registration secondCycleRegistration = student.getRegistrationsSet().stream()
                     .filter(r -> r.getDegree().getCycleTypes().contains(CycleType.SECOND_CYCLE))
                     .filter(r -> r.getLastState().getStateType().canHaveCurriculumLinesOnCreation())

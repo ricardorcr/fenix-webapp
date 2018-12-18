@@ -73,11 +73,13 @@ public class SendEmailToFlunkedStudents extends CustomTask {
         //Mail quando são postos como prescritos
         body.append("Caro Aluno do TÉCNICO,\n");
         body.append("\n");
+
         body.append("Após análise do seu currículo académico, verificou-se estar numa das situações previstas para prescrição no Regulamento de Prescrições do IST (disponível em https://tecnico.ulisboa.pt/pt/ensino/estudar-no-tecnico/informacoes-academicas/avaliacao/).\n");
         body.append("A lista provisória de alunos a prescrever encontra-se afixada, junto dos Serviços Académicos, desde o dia 17 de agosto de 2022.\n");
         body.append("Na lista definitiva, a publicar no dia 15 de setembro, será atualizada a situação académica do aluno tendo em conta as notas entretanto lançadas. Além disso, de acordo com o Regulamento de prescrições do IST, no ponto 5 prevê-se: \"Atento ainda o princípio da proporcionalidade, consagrado constitucional e legalmente, poderá ainda a aplicação de regras de prescrição ser ajustada a casos em que, invocados e inequivocamente provados pelo aluno, este, por motivos de força maior, se viu impossibilitados de frequentar as atividades letivas e assim alcançar um nível mínimo de aproveitamento escolar. Tal ajuste será efetuado mediante requerimento dirigido ao presidente do IST e entregue na Área de Graduação — Alameda, ou Área de Gestão de Recursos Humanos e Académicos do Taguspark.\", sendo o prazo estabelecido para o efeito, de 17 a 26 de agosto de 2022.\n");
         body.append("No caso de alteração da situação de prescrição, quer por via de atualização de notas quer no caso de deferimento ao requerimento apresentado, a inscrição em unidades curriculares no 1º semestre do ano letivo 2022/2023 poderá ser efetuada de 15 a 23 de setembro de 2022.\n");
         body.append("Os alunos sujeitos a prescrição não poderão efetuar a sua inscrição em unidades curriculares no ano letivo 2022/2023.\n");
+
         body.append("\n");        
         body.append("\n");
         body.append("Com os melhores cumprimentos,\n");

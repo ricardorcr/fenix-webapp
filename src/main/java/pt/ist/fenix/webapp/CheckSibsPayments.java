@@ -4,7 +4,6 @@ import org.fenixedu.academic.util.Money;
 import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
 import org.joda.time.LocalDate;
-import pt.ist.payments.domain.SibsPayment;
 
 public class CheckSibsPayments extends CustomTask {
 

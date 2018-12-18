@@ -1,4 +1,4 @@
-package pt.ist.fenix.task;
+package pt.ist.fenix.webapp;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -7,6 +7,27 @@ import org.fenixedu.bennu.scheduler.custom.CustomTask;
 import org.joda.time.DateTime;
 import pt.ist.fenixedu.domain.SapRequest;
 import pt.ist.fenixedu.domain.SapRequestType;
+import java.io.ByteArrayOutputStream;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.fenixedu.academic.domain.accounting.Event;
+import org.fenixedu.bennu.scheduler.custom.CustomTask;
+import org.fenixedu.commons.spreadsheet.Spreadsheet;
+import org.fenixedu.commons.spreadsheet.Spreadsheet.Row;
+import org.joda.time.DateTime;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import pt.ist.esw.advice.pt.ist.fenixframework.AtomicInstance;
+import pt.ist.fenixedu.domain.SapRequest;
+import pt.ist.fenixedu.domain.SapRequestType;
+import pt.ist.fenixedu.domain.SapRoot;
+import pt.ist.fenixedu.giaf.invoices.SapEvent;
+import pt.ist.fenixframework.Atomic.TxMode;
+
 import pt.ist.fenixframework.FenixFramework;
 
 public class ReportOldDebts extends CustomTask {

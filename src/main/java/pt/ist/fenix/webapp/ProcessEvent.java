@@ -1,19 +1,20 @@
 package pt.ist.fenix.webapp;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import org.fenixedu.academic.domain.accounting.Event;
 import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
 import org.fenixedu.commons.spreadsheet.Spreadsheet;
 import org.fenixedu.commons.spreadsheet.Spreadsheet.Row;
+
 import pt.ist.fenixedu.giaf.invoices.ErrorLogConsumer;
 import pt.ist.fenixedu.giaf.invoices.EventLogger;
 import pt.ist.fenixedu.giaf.invoices.EventProcessor;
 import pt.ist.fenixedu.giaf.invoices.Utils;
 import pt.ist.fenixframework.Atomic.TxMode;
 import pt.ist.fenixframework.FenixFramework;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 public class ProcessEvent extends CustomTask {
 

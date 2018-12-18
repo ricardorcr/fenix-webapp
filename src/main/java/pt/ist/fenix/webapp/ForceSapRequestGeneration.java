@@ -18,11 +18,7 @@ import pt.ist.fenixedu.giaf.invoices.task.SapCustomTask;
 import pt.ist.fenixframework.Atomic;
 import pt.ist.fenixframework.FenixFramework;
 import pt.ist.payments.domain.SibsPayment;
-
-import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;

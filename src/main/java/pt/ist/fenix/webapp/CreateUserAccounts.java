@@ -11,25 +11,17 @@ import org.fenixedu.academic.domain.contacts.EmailAddress;
 import org.fenixedu.academic.domain.person.IDDocumentType;
 import org.fenixedu.academic.domain.photograph.Picture;
 import org.fenixedu.academic.domain.student.Student;
-<<<<<<< HEAD
 import org.fenixedu.admissions.ist.domain.UserAccountInfo;
-=======
->>>>>>> 1a40f5c... New stuff and updates
 import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.core.domain.UserProfile;
 import org.fenixedu.bennu.scheduler.CronTask;
 import org.fenixedu.bennu.scheduler.annotation.Task;
 import org.fenixedu.connect.domain.Account;
-<<<<<<< HEAD
 import org.fenixedu.connect.domain.AccountNameIndex;
 import org.fenixedu.connect.domain.ConnectSystem;
 import org.fenixedu.connect.domain.Identity;
 import org.fenixedu.connect.domain.identification.DocumentFactory;
-=======
-import org.fenixedu.connect.domain.ConnectSystem;
-import org.fenixedu.connect.domain.Identity;
->>>>>>> 1a40f5c... New stuff and updates
 import org.fenixedu.connect.domain.identification.Gender;
 import org.fenixedu.connect.domain.identification.IdentificationDocument;
 import org.fenixedu.connect.domain.identification.IdentityCard;
@@ -42,26 +34,17 @@ import org.fenixedu.connect.domain.identification.PortugueseIdentityCard;
 import org.fenixedu.connect.domain.identification.PortugueseMilitaryIdentityCard;
 import org.fenixedu.connect.domain.identification.PortugueseNavyIdentityCard;
 import org.fenixedu.connect.domain.identification.PortugueseResidenceAuthorization;
-<<<<<<< HEAD
 import org.fenixedu.connect.domain.identification.TaxInformation;
 import org.fenixedu.connect.domain.image.Image;
-=======
->>>>>>> 1a40f5c... New stuff and updates
 import org.fenixedu.connect.util.ConnectError;
 import org.joda.time.LocalDate;
 import org.joda.time.YearMonthDay;
 import org.joda.time.format.ISODateTimeFormat;
-<<<<<<< HEAD
 import org.springframework.http.HttpStatus;
 import pt.ist.fenixedu.contracts.domain.accessControl.ActiveEmployees;
 import pt.ist.fenixedu.contracts.domain.accessControl.ActiveGrantOwner;
 import pt.ist.fenixedu.contracts.domain.accessControl.ActiveResearchers;
 import pt.ist.fenixedu.contracts.domain.organizationalStructure.Invitation;
-=======
-import pt.ist.fenixedu.contracts.domain.accessControl.ActiveEmployees;
-import pt.ist.fenixedu.contracts.domain.accessControl.ActiveGrantOwner;
-import pt.ist.fenixedu.contracts.domain.accessControl.ActiveResearchers;
->>>>>>> 1a40f5c... New stuff and updates
 import pt.ist.fenixframework.FenixFramework;
 import pt.ist.standards.geographic.Planet;
 
@@ -85,7 +68,6 @@ public class CreateUserAccounts extends CronTask {
         accountMap = ConnectSystem.getInstance().getAccountSet().stream()
                 .collect(Collectors.toMap(a -> a.getEmail(), a -> a));
         createdAccounts = 0;
-<<<<<<< HEAD
         try {
             UserAccountInfo.skipUpdate.set(Boolean.TRUE);
             Bennu.getInstance().getUserSet().stream()
@@ -99,31 +81,15 @@ public class CreateUserAccounts extends CronTask {
 
         ConnectSystem.getInstance().getAccountSet().stream()
 //                .parallel()
-=======
-
-        Bennu.getInstance().getUserSet().stream()
-                .parallel()
-                .forEach(this::createAccount);
-        taskLog("Create %s accounts.%n", createdAccounts);
-        taskLog("Connected %s users to existing accounts.%n", connectedToExistingAccounts);
-
-        ConnectSystem.getInstance().getAccountSet().stream()
-                .parallel()
->>>>>>> 1a40f5c... New stuff and updates
                 .forEach(this::autoValidate);
         taskLog("Connected %s accounts.%n", connectedAccounts);
         taskLog("Validated %s accounts.%n", validatedAccounts);
 
-<<<<<<< HEAD
         ConnectSystem.getInstance().getAccountSet().stream()
                 .filter(account -> (!account.isEmailInvalidated()) && (!account.isUsernameEmail()))
                 .sorted(Account.COMPARATOR_BY_RELEVANCE)
                 .map(account -> account.getIdentity())
                 .distinct()
-=======
-        ConnectSystem.getInstance().getIdentitySet().stream()
-                .parallel()
->>>>>>> 1a40f5c... New stuff and updates
                 .forEach(this::autoMerge);
 
         ConnectSystem.getInstance().getIdentitySet().stream()
@@ -151,11 +117,7 @@ public class CreateUserAccounts extends CronTask {
     private void autoMerge(final Identity identity) {
         try {
             FenixFramework.atomic(() -> {
-<<<<<<< HEAD
                 if ((!FenixFramework.isDomainObjectValid(identity)) || (!isRecent(identity))) {
-=======
-                if (!isRecent(identity)) {
->>>>>>> 1a40f5c... New stuff and updates
                     return;
                 }
                 identity.autoMerge();
@@ -203,11 +165,7 @@ public class CreateUserAccounts extends CronTask {
                             });
                 }
             });
-<<<<<<< HEAD
         } catch (final Throwable ex) {
-=======
-        } catch (final ClassCastException ex) {
->>>>>>> 1a40f5c... New stuff and updates
             taskLog("Failled to automerge %s%n", identity.getExternalId());
         }
     }
@@ -322,7 +280,6 @@ public class CreateUserAccounts extends CronTask {
                 return true;
             }
         }
-<<<<<<< HEAD
         return new ActiveEmployees().isMember(user)
                 || new ActiveResearchers().isMember(user)
                 || new ActiveGrantOwner().isMember(user)
@@ -334,10 +291,6 @@ public class CreateUserAccounts extends CronTask {
                 .filter(Invitation.class::isInstance)
                 .map(Invitation.class::cast)
                 .anyMatch(invitation -> invitation.isActive());
-
-=======
-        return new ActiveEmployees().isMember(user) || new ActiveResearchers().isMember(user) || new ActiveGrantOwner().isMember(user);
->>>>>>> 1a40f5c... New stuff and updates
     }
 
     private void createAccount(final User user) {
@@ -346,14 +299,11 @@ public class CreateUserAccounts extends CronTask {
                 if (user.getAccount() != null) {
                     return;
                 }
-<<<<<<< HEAD
                 if (!hasEssntialData(user)) {
                     taskLog("Skipping user: %s because user does not have essential data%n",
                             user.getUsername());
                     return;
                 }
-=======
->>>>>>> 1a40f5c... New stuff and updates
                 final String email = emailsFor(user);
                 if (accountMap.containsKey(email)) {
                     taskLog("Skipping user: %s because account with smae email already exists: %s%n",
@@ -376,25 +326,18 @@ public class CreateUserAccounts extends CronTask {
                     setPersonalInformationFromUser(user);
                 }
             });
-<<<<<<< HEAD
         } catch (Throwable ex) {
-=======
-        } catch (Exception ex) {
->>>>>>> 1a40f5c... New stuff and updates
             //don't abort script because of individual fail
             taskLog(ex.getMessage());
         }
     }
 
-<<<<<<< HEAD
     private boolean hasEssntialData(final User user) {
         final Person person = user.getPerson();
         final LocalDate dateOfBirth = person == null || person.getDateOfBirthYearMonthDay() == null ? null : person.getDateOfBirthYearMonthDay().toLocalDate();
         return dateOfBirth != null;
     }
 
-=======
->>>>>>> 1a40f5c... New stuff and updates
     private void setPersonalInformationFromUser(final User user) {
         final Account account = user.getAccount();
         final UserProfile profile = user.getProfile();
@@ -411,11 +354,7 @@ public class CreateUserAccounts extends CronTask {
         final String photoContentType = picture == null ? null : picture.getPictureFileFormat().getMimeType();
         final JsonObject identificationDocument = person == null ? null : readIdentificationDocumentInformation(person, nationalityCountryCode);
         try {
-<<<<<<< HEAD
             setPersonalInformation(account, profile.getGivenNames(), profile.getFamilyNames(), profile.getDisplayName(),
-=======
-            account.setPersonalInformation(profile.getGivenNames(), profile.getFamilyNames(), profile.getDisplayName(),
->>>>>>> 1a40f5c... New stuff and updates
                     gender, dateOfBirth, nationalityCountryCode, tin, null, identificationDocument, photoBytes, photoContentType);
         } catch (final ConnectError ex) {
             taskLog("%nex: %s - %s%n %s%n %s%n",
@@ -428,7 +367,6 @@ public class CreateUserAccounts extends CronTask {
         }
     }
 
-<<<<<<< HEAD
     public PersonalInformation setPersonalInformation(final Account account,
                                                       final String givenName, final String familyName, final String displayName,
                                                       final Gender gender, final LocalDate dateOfBirth,
@@ -518,8 +456,6 @@ public class CreateUserAccounts extends CronTask {
         return personalInformation;
     }
 
-=======
->>>>>>> 1a40f5c... New stuff and updates
     private boolean isValid(final String tin) {
         final String tinCountryCode = tin.length() > 2 && Character.isAlphabetic(tin.charAt(0)) && Character.isAlphabetic(tin.charAt(1)) ? tin.substring(0, 2) : null;
         return tinCountryCode != null && TINValidator.isValid(tinCountryCode, tin.substring(2));
@@ -539,22 +475,14 @@ public class CreateUserAccounts extends CronTask {
         final IDDocumentType idDocumentType = person.getIdDocumentType();
         final String documentIdNumber = person.getDocumentIdNumber();
         final YearMonthDay expirationDate = person.getExpirationDateOfDocumentIdYearMonthDay();
-<<<<<<< HEAD
         if (idDocumentType == null || documentIdNumber == null) {
-=======
-        if (idDocumentType == null || documentIdNumber == null || expirationDate == null) {
->>>>>>> 1a40f5c... New stuff and updates
             return null;
         }
         final JsonObject result = new JsonObject();
         result.addProperty("documentNumber", documentIdNumber);
-<<<<<<< HEAD
         if (expirationDate != null) {
             result.addProperty("expirationDate", expirationDate.toLocalDate().toString(ISODateTimeFormat.date()));
         }
-=======
-        result.addProperty("expirationDate", expirationDate.toLocalDate().toString(ISODateTimeFormat.date()));
->>>>>>> 1a40f5c... New stuff and updates
         if (false) {
             return null;
         } else if (idDocumentType == IDDocumentType.CITIZEN_CARD) {
@@ -663,9 +591,4 @@ public class CreateUserAccounts extends CronTask {
         }
         return user.getUsername() + "@tecnico.ulisboa.pt";
     }
-
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 1a40f5c... New stuff and updates

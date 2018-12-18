@@ -16,7 +16,15 @@ public class SendRequestsToSap extends SapCustomTask {
     @Override
     protected void runTask(ErrorLogConsumer errorLogConsumer, EventLogger elogger) {
         List<String> documentNumbers = null;
-            documentNumbers = Arrays.asList("NP903716", "NR903718");
+
+//        try {
+//			documentNumbers = Files.readAllLines(
+//					new File("/afs/ist.utl.pt/ciist/fenix/fenix015/ist/reenvio_documentos_lote2_15_11_2020_NAs.txt").toPath());
+            documentNumbers = Arrays.asList("NP635239");
+//		} catch (IOException e) {
+//			throw new Error("Erro a ler o ficheiro.");
+//		}
+
         for (String documentNumber : documentNumbers) {
             send(documentNumber, errorLogConsumer, elogger);
         }

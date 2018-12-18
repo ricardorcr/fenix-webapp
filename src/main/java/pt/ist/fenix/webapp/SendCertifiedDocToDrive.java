@@ -1,27 +1,20 @@
 package pt.ist.fenix.webapp;
 
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
+import org.fenixedu.academic.domain.ExecutionSemester;
+import org.fenixedu.bennu.scheduler.custom.CustomTask;
+import org.fenixedu.bennu.spring.BennuSpringContextHelper;
+import org.springframework.web.multipart.MultipartFile;
+import pt.ist.fenixframework.Atomic;
+import pt.ist.registration.process.domain.RegistrationDeclarationFile;
+import pt.ist.registration.process.domain.RegistrationDeclarationFileState;
+import pt.ist.registration.process.ui.service.SignCertAndStoreService;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-
-import kong.unirest.HttpResponse;
-import kong.unirest.Unirest;
-import org.fenixedu.academic.domain.ExecutionSemester;
-import org.fenixedu.academic.domain.ExecutionYear;
-import org.fenixedu.academic.dto.phd.YearMonth;
-import org.fenixedu.bennu.core.domain.Bennu;
-import org.fenixedu.bennu.scheduler.custom.CustomTask;
-import org.fenixedu.bennu.spring.BennuSpringContextHelper;
-import org.joda.time.DateTime;
-import org.joda.time.YearMonthDay;
-import org.springframework.web.multipart.MultipartFile;
-
-import pt.ist.fenixframework.Atomic;
-import pt.ist.fenixframework.FenixFramework;
-import pt.ist.registration.process.domain.RegistrationDeclarationFile;
-import pt.ist.registration.process.domain.RegistrationDeclarationFileState;
-import pt.ist.registration.process.ui.service.SignCertAndStoreService;
 
 public class SendCertifiedDocToDrive extends CustomTask {
 
@@ -52,7 +45,6 @@ public class SendCertifiedDocToDrive extends CustomTask {
         if (declarationFile.getState() != RegistrationDeclarationFileState.STORED) {
             taskLog("Sending Registration Declaration %s of student %s to Drive%n",
                     declarationFile.getUniqueIdentifier(), declarationFile.getRegistration().getNumber());
-
             final String uuid = declarationFile.getUniqueIdentifier();
             final MultipartFile file = getMultipartFile(downloadCertified(uuid));
             signCertAndStoreService.sendDocumentToBeStoredWithJob(declarationFile.getRegistration(), declarationFile, file);
@@ -69,6 +61,7 @@ public class SendCertifiedDocToDrive extends CustomTask {
     }
 
     private MultipartFile getMultipartFile(final byte[] content) {
+
         return new MultipartFile() {
             @Override
             public String getName() {
