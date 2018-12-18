@@ -323,6 +323,12 @@
             <artifactId>postCodeTools</artifactId>
             <version>${version.org.fenixedu.postCodeTools}</version>
         </dependency>
+        <dependency>
+            <groupId>org.fenixedu</groupId>
+            <artifactId>fenixedu-admissions-core</artifactId>
+            <version>DEV-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
     <profiles>
         <profile>
