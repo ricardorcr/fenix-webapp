@@ -7,9 +7,12 @@ import org.fenixedu.TINValidator;
 import org.fenixedu.academic.domain.Person;
 import org.fenixedu.academic.domain.Photograph;
 <<<<<<< HEAD
+<<<<<<< HEAD
 import org.fenixedu.academic.domain.Teacher;
 =======
 >>>>>>> dc52828... Several scripts
+=======
+>>>>>>> 65a03bc... Several scripts
 import org.fenixedu.academic.domain.contacts.EmailAddress;
 import org.fenixedu.academic.domain.person.IDDocumentType;
 import org.fenixedu.academic.domain.photograph.Picture;
@@ -18,11 +21,15 @@ import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.core.domain.UserProfile;
 <<<<<<< HEAD
+<<<<<<< HEAD
 import org.fenixedu.bennu.scheduler.CronTask;
 import org.fenixedu.bennu.scheduler.annotation.Task;
 =======
 import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
 >>>>>>> dc52828... Several scripts
+=======
+import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
+>>>>>>> 65a03bc... Several scripts
 import org.fenixedu.connect.domain.Account;
 import org.fenixedu.connect.domain.ConnectSystem;
 import org.fenixedu.connect.domain.Identity;
@@ -43,11 +50,14 @@ import org.joda.time.LocalDate;
 import org.joda.time.YearMonthDay;
 import org.joda.time.format.ISODateTimeFormat;
 <<<<<<< HEAD
+<<<<<<< HEAD
 import pt.ist.fenixedu.contracts.domain.accessControl.ActiveEmployees;
 import pt.ist.fenixedu.contracts.domain.accessControl.ActiveGrantOwner;
 import pt.ist.fenixedu.contracts.domain.accessControl.ActiveResearchers;
 =======
 >>>>>>> dc52828... Several scripts
+=======
+>>>>>>> 65a03bc... Several scripts
 import pt.ist.fenixframework.FenixFramework;
 import pt.ist.standards.geographic.Planet;
 
@@ -55,6 +65,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+<<<<<<< HEAD
 <<<<<<< HEAD
 import java.util.stream.Stream;
 
@@ -64,6 +75,10 @@ public class CreateUserAccounts extends CronTask {
 
 public class CreateUserAccounts extends ReadCustomTask {
 >>>>>>> dc52828... Several scripts
+=======
+
+public class CreateUserAccounts extends ReadCustomTask {
+>>>>>>> 65a03bc... Several scripts
 
     private Map<String, Account> accountMap = null;
     private int createdAccounts = 0;
@@ -93,6 +108,7 @@ public class CreateUserAccounts extends ReadCustomTask {
                 .parallel()
                 .forEach(this::autoMerge);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
         ConnectSystem.getInstance().getIdentitySet().stream()
                 .filter(identity -> identity.getUser() == null)
@@ -116,17 +132,22 @@ public class CreateUserAccounts extends ReadCustomTask {
                 .distinct();
 =======
 >>>>>>> dc52828... Several scripts
+=======
+>>>>>>> 65a03bc... Several scripts
     }
 
     private void autoMerge(final Identity identity) {
         try {
             FenixFramework.atomic(() -> {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 if (!isRecent(identity)) {
                     return;
                 }
 =======
 >>>>>>> dc52828... Several scripts
+=======
+>>>>>>> 65a03bc... Several scripts
                 identity.autoMerge();
 
                 final LocalDate dateOfBirth = dateOfBirthFor(identity);
@@ -178,6 +199,7 @@ public class CreateUserAccounts extends ReadCustomTask {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     private boolean isRecent(final Identity identity) {
         final User user = identity.getUser();
         if (user != null) {
@@ -197,6 +219,8 @@ public class CreateUserAccounts extends ReadCustomTask {
 
 =======
 >>>>>>> dc52828... Several scripts
+=======
+>>>>>>> 65a03bc... Several scripts
     private static boolean match(final Set<String> s1s, final String[] s2s) {
         int matchCount = 0;
         for (final String s1 : s1s) {
@@ -267,16 +291,21 @@ public class CreateUserAccounts extends ReadCustomTask {
                 user.getIdentity().getAccountSet().add(account);
                 connectedAccounts++;
 <<<<<<< HEAD
+<<<<<<< HEAD
             } else if (isStudentOrTeacherOrEmployee(user)) {
 =======
             } else if (isStudentOrTeacher(user)) {
 >>>>>>> dc52828... Several scripts
+=======
+            } else if (isStudentOrTeacher(user)) {
+>>>>>>> 65a03bc... Several scripts
                 Identity.getOrCreateIdentity(account);
                 validatedAccounts++;
             }
         });
     }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     private boolean isStudentOrTeacherOrEmployee(final User user) {
         final Person person = user.getPerson();
@@ -288,13 +317,18 @@ public class CreateUserAccounts extends ReadCustomTask {
                 }
             }
 =======
+=======
+>>>>>>> 65a03bc... Several scripts
     private boolean isStudentOrTeacher(final User user) {
         if (!user.getTeacherAuthorizationAuthorizedSet().isEmpty()) {
             return true;
         }
         final Person person = user.getPerson();
         if (person != null) {
+<<<<<<< HEAD
 >>>>>>> dc52828... Several scripts
+=======
+>>>>>>> 65a03bc... Several scripts
             final Student student = person.getStudent();
             if (student != null && !student.getRegistrationsSet().isEmpty()) {
                 return true;
@@ -303,6 +337,7 @@ public class CreateUserAccounts extends ReadCustomTask {
                 return true;
             }
         }
+<<<<<<< HEAD
 <<<<<<< HEAD
         return new ActiveEmployees().isMember(user) || new ActiveResearchers().isMember(user) || new ActiveGrantOwner().isMember(user);
     }
@@ -340,6 +375,8 @@ public class CreateUserAccounts extends ReadCustomTask {
             taskLog(ex.getMessage());
         }
 =======
+=======
+>>>>>>> 65a03bc... Several scripts
         return false;
     }
 
@@ -370,7 +407,10 @@ public class CreateUserAccounts extends ReadCustomTask {
                 setPersonalInformationFromUser(user);
             }
         });
+<<<<<<< HEAD
 >>>>>>> dc52828... Several scripts
+=======
+>>>>>>> 65a03bc... Several scripts
     }
 
     private void setPersonalInformationFromUser(final User user) {
@@ -398,10 +438,14 @@ public class CreateUserAccounts extends ReadCustomTask {
                     identificationDocument == null ? "null" : identificationDocument.toString(),
                     user.getUsername()
 <<<<<<< HEAD
+<<<<<<< HEAD
             );
 =======
                     );
 >>>>>>> dc52828... Several scripts
+=======
+                    );
+>>>>>>> 65a03bc... Several scripts
             throw ex;
         }
     }
