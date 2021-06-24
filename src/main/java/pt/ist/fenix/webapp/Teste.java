@@ -1,23 +1,47 @@
 package pt.ist.fenix.webapp;
 
-import org.fenixedu.academic.domain.CurricularCourse;
-import org.fenixedu.bennu.core.domain.User;
-import org.fenixedu.bennu.core.domain.groups.PersistentUserGroup;
+import com.google.gson.JsonObject;
+import org.fenixedu.academic.domain.ExecutionYear;
+import org.fenixedu.academic.domain.StudentCurricularPlan;
+import org.fenixedu.academic.domain.accounting.EventType;
+import org.fenixedu.academic.domain.accounting.events.gratuity.EnrolmentGratuityEvent;
+import org.fenixedu.academic.domain.student.Registration;
+import org.fenixedu.academic.domain.studentCurriculum.NoCourseGroupCurriculumGroupType;
+import org.fenixedu.admissions.domain.AdmissionsSystem;
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
-import org.fenixedu.cms.domain.CmsSettings;
 import pt.ist.fenixframework.FenixFramework;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Collections;
 
 public class Teste extends CustomTask {
 
     @Override
     public void runTask() throws Exception {
-        final List<String> istIDs = Arrays.asList("ist12543","ist425049","ist23025","ist12288","ist12177","ist11861","ist34777","ist180963","ist154802","ist181943","ist24518","ist23000","ist12736","ist12662","ist11992","ist24299","ist12886","ist187617","ist168193","ist23886","ist23717");
-        for (String istID : istIDs) {
-            final User user = User.findByUsername(istID);
-            taskLog("%s\t%s", istID, user.getDisplayName());
-        }
+        AdmissionsSystem.getInstance().getAdmissionProcessSet().stream()
+                .filter(ap -> {
+                    final JsonObject outcomeJson = ap.getOutcomeJson();
+                    final String type = outcomeJson.get("type").getAsJsonObject().get("name").getAsString();
+                    return type.equals("mobilityInboundDoubleDegree") || ap.getTitle().toString().contains("Internacionais");
+                })
+                .flatMap(ap -> ap.getAdmissionProcessTargetSet().stream().flatMap(apt -> apt.getApplicationSet().stream()))
+                .filter(app -> app.getDataObject().has("registration"))
+                .map(app -> (Registration) FenixFramework.getDomainObject(app.getDataObject().get("registration").getAsString()))
+                .filter(registration -> !registration.getStudentCurricularPlansSet().iterator().next().getEnrolmentsSet().isEmpty())
+                .forEach(this::cancelEnrolments);
+        throw new Error("Dry run");
+    }
+
+    private void cancelEnrolments(Registration registration) {
+        taskLog("%s %s%n", registration.getPerson().getUsername(), registration.getPerson().getName());
+        final StudentCurricularPlan scp = registration.getStudentCurricularPlansSet().iterator().next();
+        scp.getEnrolmentsSet().forEach(enrolment -> {
+            enrolment.getStudentCurricularPlan().removeCurriculumModulesFromNoCourseGroupCurriculumGroup(
+                        Collections.singletonList(enrolment), enrolment.getExecutionPeriod(), NoCourseGroupCurriculumGroupType.STANDALONE);
+        });
+        scp.getGratuityEventsSet().stream()
+                .filter(event -> event.getEventType().equals(EventType.STANDALONE_PER_ENROLMENT_GRATUITY))
+                .map(event -> (EnrolmentGratuityEvent) event)
+                .filter(event -> event.getExecutionYear() == ExecutionYear.readCurrentExecutionYear().getNextExecutionYear())
+                .forEach(event -> taskLog("Afinalllll"));
     }
 }

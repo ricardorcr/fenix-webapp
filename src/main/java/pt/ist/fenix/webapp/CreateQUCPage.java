@@ -41,7 +41,7 @@ public class CreateQUCPage extends CustomTask {
 
     @Override
     public void runTask() throws Exception {
-        ExecutionSemester oldQucExecutionSemester = ExecutionSemester.readBySemesterAndExecutionYear(1, "2018/2019");
+        ExecutionSemester oldQucExecutionSemester = ExecutionSemester.readBySemesterAndExecutionYear(2, "2019/2020");
 
         Bennu.getInstance().getCMSThemesSet().forEach(t -> taskLog(t.getType()));
         CMSTemplate quc_template =

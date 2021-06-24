@@ -6,13 +6,7 @@ import org.apache.commons.validator.routines.EmailValidator;
 import org.fenixedu.TINValidator;
 import org.fenixedu.academic.domain.Person;
 import org.fenixedu.academic.domain.Photograph;
-<<<<<<< HEAD
-<<<<<<< HEAD
 import org.fenixedu.academic.domain.Teacher;
-=======
->>>>>>> dc52828... Several scripts
-=======
->>>>>>> 65a03bc... Several scripts
 import org.fenixedu.academic.domain.contacts.EmailAddress;
 import org.fenixedu.academic.domain.person.IDDocumentType;
 import org.fenixedu.academic.domain.photograph.Picture;
@@ -20,16 +14,8 @@ import org.fenixedu.academic.domain.student.Student;
 import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.core.domain.UserProfile;
-<<<<<<< HEAD
-<<<<<<< HEAD
 import org.fenixedu.bennu.scheduler.CronTask;
 import org.fenixedu.bennu.scheduler.annotation.Task;
-=======
-import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
->>>>>>> dc52828... Several scripts
-=======
-import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
->>>>>>> 65a03bc... Several scripts
 import org.fenixedu.connect.domain.Account;
 import org.fenixedu.connect.domain.ConnectSystem;
 import org.fenixedu.connect.domain.Identity;
@@ -49,15 +35,9 @@ import org.fenixedu.connect.util.ConnectError;
 import org.joda.time.LocalDate;
 import org.joda.time.YearMonthDay;
 import org.joda.time.format.ISODateTimeFormat;
-<<<<<<< HEAD
-<<<<<<< HEAD
 import pt.ist.fenixedu.contracts.domain.accessControl.ActiveEmployees;
 import pt.ist.fenixedu.contracts.domain.accessControl.ActiveGrantOwner;
 import pt.ist.fenixedu.contracts.domain.accessControl.ActiveResearchers;
-=======
->>>>>>> dc52828... Several scripts
-=======
->>>>>>> 65a03bc... Several scripts
 import pt.ist.fenixframework.FenixFramework;
 import pt.ist.standards.geographic.Planet;
 
@@ -65,20 +45,10 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-<<<<<<< HEAD
-<<<<<<< HEAD
 import java.util.stream.Stream;
 
 @Task(englishTitle = "Create user accounts, automerge and other magic", readOnly = true)
 public class CreateUserAccounts extends CronTask {
-=======
-
-public class CreateUserAccounts extends ReadCustomTask {
->>>>>>> dc52828... Several scripts
-=======
-
-public class CreateUserAccounts extends ReadCustomTask {
->>>>>>> 65a03bc... Several scripts
 
     private Map<String, Account> accountMap = null;
     private int createdAccounts = 0;
@@ -107,8 +77,6 @@ public class CreateUserAccounts extends ReadCustomTask {
         ConnectSystem.getInstance().getIdentitySet().stream()
                 .parallel()
                 .forEach(this::autoMerge);
-<<<<<<< HEAD
-<<<<<<< HEAD
 
         ConnectSystem.getInstance().getIdentitySet().stream()
                 .filter(identity -> identity.getUser() == null)
@@ -130,24 +98,14 @@ public class CreateUserAccounts extends ReadCustomTask {
                 .map(account -> account.getUser())
                 .filter(user -> user != null)
                 .distinct();
-=======
->>>>>>> dc52828... Several scripts
-=======
->>>>>>> 65a03bc... Several scripts
     }
 
     private void autoMerge(final Identity identity) {
         try {
             FenixFramework.atomic(() -> {
-<<<<<<< HEAD
-<<<<<<< HEAD
                 if (!isRecent(identity)) {
                     return;
                 }
-=======
->>>>>>> dc52828... Several scripts
-=======
->>>>>>> 65a03bc... Several scripts
                 identity.autoMerge();
 
                 final LocalDate dateOfBirth = dateOfBirthFor(identity);
@@ -198,8 +156,6 @@ public class CreateUserAccounts extends ReadCustomTask {
         }
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
     private boolean isRecent(final Identity identity) {
         final User user = identity.getUser();
         if (user != null) {
@@ -217,10 +173,6 @@ public class CreateUserAccounts extends ReadCustomTask {
         return false;
     }
 
-=======
->>>>>>> dc52828... Several scripts
-=======
->>>>>>> 65a03bc... Several scripts
     private static boolean match(final Set<String> s1s, final String[] s2s) {
         int matchCount = 0;
         for (final String s1 : s1s) {
@@ -290,23 +242,13 @@ public class CreateUserAccounts extends ReadCustomTask {
             if (user.getIdentity() != null) {
                 user.getIdentity().getAccountSet().add(account);
                 connectedAccounts++;
-<<<<<<< HEAD
-<<<<<<< HEAD
             } else if (isStudentOrTeacherOrEmployee(user)) {
-=======
-            } else if (isStudentOrTeacher(user)) {
->>>>>>> dc52828... Several scripts
-=======
-            } else if (isStudentOrTeacher(user)) {
->>>>>>> 65a03bc... Several scripts
                 Identity.getOrCreateIdentity(account);
                 validatedAccounts++;
             }
         });
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
     private boolean isStudentOrTeacherOrEmployee(final User user) {
         final Person person = user.getPerson();
         if (person != null) {
@@ -316,19 +258,6 @@ public class CreateUserAccounts extends ReadCustomTask {
                     return true;
                 }
             }
-=======
-=======
->>>>>>> 65a03bc... Several scripts
-    private boolean isStudentOrTeacher(final User user) {
-        if (!user.getTeacherAuthorizationAuthorizedSet().isEmpty()) {
-            return true;
-        }
-        final Person person = user.getPerson();
-        if (person != null) {
-<<<<<<< HEAD
->>>>>>> dc52828... Several scripts
-=======
->>>>>>> 65a03bc... Several scripts
             final Student student = person.getStudent();
             if (student != null && !student.getRegistrationsSet().isEmpty()) {
                 return true;
@@ -337,8 +266,6 @@ public class CreateUserAccounts extends ReadCustomTask {
                 return true;
             }
         }
-<<<<<<< HEAD
-<<<<<<< HEAD
         return new ActiveEmployees().isMember(user) || new ActiveResearchers().isMember(user) || new ActiveGrantOwner().isMember(user);
     }
 
@@ -374,43 +301,6 @@ public class CreateUserAccounts extends ReadCustomTask {
             //don't abort script because of individual fail
             taskLog(ex.getMessage());
         }
-=======
-=======
->>>>>>> 65a03bc... Several scripts
-        return false;
-    }
-
-    private void createAccount(final User user) {
-        FenixFramework.atomic(() -> {
-            if (user.getAccount() != null) {
-                return;
-            }
-            final String email = emailsFor(user);
-            if (accountMap.containsKey(email)) {
-                taskLog("Skipping user: %s because account with smae email already exists: %s%n",
-                        user.getUsername(), email);
-                final Account account = accountMap.get(email);
-                if (account.getUser() == null) {
-                    account.setUser(user);
-                    connectedToExistingAccounts++;
-                }
-                return;
-            }
-            final Account account = Account.create(email, false);
-            account.setUser(user);
-            createdAccounts++;
-            final Identity identity = user.getIdentity();
-            if (identity != null) {
-                account.setIdentity(identity);
-            }
-            if (identity == null || identity.getPersonalInformation() == null) {
-                setPersonalInformationFromUser(user);
-            }
-        });
-<<<<<<< HEAD
->>>>>>> dc52828... Several scripts
-=======
->>>>>>> 65a03bc... Several scripts
     }
 
     private void setPersonalInformationFromUser(final User user) {
@@ -437,15 +327,7 @@ public class CreateUserAccounts extends ReadCustomTask {
                     toString(ex.args),
                     identificationDocument == null ? "null" : identificationDocument.toString(),
                     user.getUsername()
-<<<<<<< HEAD
-<<<<<<< HEAD
             );
-=======
-                    );
->>>>>>> dc52828... Several scripts
-=======
-                    );
->>>>>>> 65a03bc... Several scripts
             throw ex;
         }
     }

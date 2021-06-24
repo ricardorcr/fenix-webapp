@@ -326,11 +326,6 @@
         <dependency>
             <groupId>org.fenixedu</groupId>
             <artifactId>fenixedu-admissions-core</artifactId>
-<<<<<<< HEAD
-            <version>DEV-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-=======
             <version>${version.org.fenixedu.fenixedu-admissions}</version>
             <scope>compile</scope>
         </dependency>
@@ -339,7 +334,6 @@
             <artifactId>fenixedu-admissions-ist</artifactId>
             <version>${version.org.fenixedu.fenixedu-admissions}</version>
         </dependency>
->>>>>>> 65a03bc... Several scripts
     </dependencies>
     <profiles>
         <profile>

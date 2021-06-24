@@ -94,12 +94,12 @@ public class DumpPaymentsWithSapInfo extends ReadCustomTask {
         final JsonObject json = request.getRequestAsJson();
 
         final JsonObject paymentDocument = json.get("paymentDocument").getAsJsonObject();
-        final String paymentDate = paymentDocument.get("paymentDate").getAsString().substring(0, 4);
+        final String paymentDate = paymentDocument.get("paymentDate").getAsString().substring(0,10);
         row.setCell("paymentDate", paymentDate);
         //       row.setCell("paymentType", paymentDocument.get("paymentType").getAsString());
-        final String whenSent = request.getWhenSent() != null ? request.getWhenSent().toString("yyyy") : "";
+        final String whenSent = request.getWhenSent() != null ? request.getWhenSent().toString("yyyy-MM-dd") : "";
         row.setCell("sentDate", whenSent);
-        final String registeredDate = request.getPayment().getWhenProcessed().toString("yyyy");
+        final String registeredDate = request.getPayment().getWhenProcessed().toString("yyyy-MM-dd");
         row.setCell("registeredDate", registeredDate);
         final String status = paymentDocument.get("paymentStatus").getAsString();
         row.setCell("paymentStatus", status);
@@ -108,7 +108,7 @@ public class DumpPaymentsWithSapInfo extends ReadCustomTask {
         final JsonElement paymentMethodReference = paymentDocument.get("paymentMethodReference");
         row.setCell("paymentMethodReference", paymentMethodReference.isJsonNull() ? "" : paymentMethodReference.getAsString());
         YearMonthDay sibsFileDate = getSIBSFileDate(request, paymentDocument);
-        final String sibsDate  = sibsFileDate != null ? sibsFileDate.toString("yyyy") : "";
+        final String sibsDate  = sibsFileDate != null ? sibsFileDate.toString("yyyy-MM-dd") : "";
         row.setCell("sibsFileDate", sibsDate);
 //        row.setCell("settlementType", paymentDocument.get("settlementType").getAsString());
 

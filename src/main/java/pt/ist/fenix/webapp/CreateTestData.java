@@ -94,7 +94,6 @@ public class CreateTestData extends CustomTask {
                     property.add("tooltip", ls("Texto de ajuda para a habilitação", "Tooltip for qualification").json());
                 }
                 {
-                    Random
                     final JsonObject property = new JsonObject();
                     arrayProperties.add(property);
                     property.addProperty("field", "field12");
