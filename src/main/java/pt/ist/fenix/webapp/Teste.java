@@ -10,6 +10,5 @@ public class Teste extends CustomTask {
     public void runTask() throws Exception {
         final RegistrationDataByExecutionYear dataByExecutionYear = FenixFramework.getDomainObject("847293968396902");
         dataByExecutionYear.delete();
-
     }
 }

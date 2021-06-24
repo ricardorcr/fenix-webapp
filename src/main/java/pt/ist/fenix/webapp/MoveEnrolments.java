@@ -29,7 +29,7 @@ public class MoveEnrolments extends CustomTask {
 					CurriculumGroup curriculumGroup = 
 						secondCycleRegistrationSCP.getRoot().getAllCurriculumGroups().stream()
 							.filter(cg -> cg.getDegreeModule() != null)
-							.filter(cg -> cg.getDegreeModule().getName().equals("Opções")) // == e.getCurriculumGroup().getDegreeModule())
+							.filter(cg -> cg.getDegreeModule() == e.getCurriculumGroup().getDegreeModule())
 							.findAny().get();
 					e.setCurriculumGroup(curriculumGroup);
 					e.setStudentCurricularPlan(secondCycleRegistrationSCP);

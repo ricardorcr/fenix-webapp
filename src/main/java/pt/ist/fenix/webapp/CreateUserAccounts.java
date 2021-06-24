@@ -68,6 +68,7 @@ public class CreateUserAccounts extends CronTask {
         accountMap = ConnectSystem.getInstance().getAccountSet().stream()
                 .collect(Collectors.toMap(a -> a.getEmail(), a -> a));
         createdAccounts = 0;
+
         try {
             UserAccountInfo.skipUpdate.set(Boolean.TRUE);
             Bennu.getInstance().getUserSet().stream()

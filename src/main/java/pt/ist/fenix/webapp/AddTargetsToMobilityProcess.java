@@ -6,8 +6,6 @@ import org.fenixedu.academic.domain.Country;
 import org.fenixedu.academic.domain.Degree;
 import org.fenixedu.academic.domain.ExecutionYear;
 import org.fenixedu.academic.domain.candidacy.IngressionType;
-import org.fenixedu.academic.domain.candidacyProcess.mobility.MobilityApplicationProcess;
-import org.fenixedu.academic.domain.candidacyProcess.mobility.MobilityQuota;
 import org.fenixedu.academic.domain.organizationalStructure.CountryUnit;
 import org.fenixedu.academic.domain.organizationalStructure.PartyTypeEnum;
 import org.fenixedu.academic.domain.organizationalStructure.UniversityUnit;

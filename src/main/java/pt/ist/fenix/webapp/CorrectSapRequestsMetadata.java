@@ -1,9 +1,9 @@
 package pt.ist.fenix.webapp;
 
+import org.fenixedu.bennu.scheduler.custom.CustomTask;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.fenixedu.academic.domain.accounting.Event;
-import org.fenixedu.bennu.scheduler.custom.CustomTask;
 import pt.ist.fenixedu.domain.SapRequest;
 import pt.ist.fenixedu.domain.SapRequestType;
 import pt.ist.fenixframework.FenixFramework;
