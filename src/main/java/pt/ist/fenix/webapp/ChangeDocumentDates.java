@@ -25,11 +25,7 @@ public class ChangeDocumentDates extends CustomTask {
 //        try {
 //            eventIDs = Files.readAllLines(
 //                    new File("/afs/ist.utl.pt/ciist/fenix/fenix015/ist/events_to_sync.txt").toPath());
-<<<<<<< HEAD
-            eventIDs = Arrays.asList("1855427088123");
-=======
             eventIDs = Arrays.asList("1125925676656740");
->>>>>>> 65a03bc... Several scripts
 //        } catch (IOException e) {
 //            throw new Error("Erro a ler o ficheiro.");
 //        }

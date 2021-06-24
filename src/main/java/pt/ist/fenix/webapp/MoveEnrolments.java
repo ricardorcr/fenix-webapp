@@ -16,10 +16,10 @@ public class MoveEnrolments extends CustomTask {
 		// Student student = Student.readStudentByNumber(83394);
 		ExecutionSemester currentPeriod = ExecutionSemester.readActualExecutionSemester();
 
-		Registration firstCycleRegistration = FenixFramework.getDomainObject("283734129512260");
+		Registration firstCycleRegistration = FenixFramework.getDomainObject("846684082932098");
 		// student.getRegistrationsSet().stream().filter(r -> r.getCurrentCycleType() ==
 		// CycleType.FIRST_CYCLE).findAny().get();
-		Registration secondCycleRegistration = FenixFramework.getDomainObject("283734129516210");
+		Registration secondCycleRegistration = FenixFramework.getDomainObject("1691109013090641");
 		// student.getRegistrationsSet().stream().filter(r ->
 		// r.getDegree().getCycleTypes().contains(CycleType.SECOND_CYCLE)).findAny().get();
 
@@ -31,7 +31,7 @@ public class MoveEnrolments extends CustomTask {
 					CurriculumGroup curriculumGroup = 
 						secondCycleRegistrationSCP.getRoot().getAllCurriculumGroups().stream()
 							.filter(cg -> cg.getDegreeModule() != null)
-							.filter(cg -> cg.getDegreeModule().getName().equals("Opções")) // == e.getCurriculumGroup().getDegreeModule())
+							.filter(cg -> cg.getDegreeModule() == e.getCurriculumGroup().getDegreeModule())
 							.findAny().get();
 					e.setCurriculumGroup(curriculumGroup);
 					e.setStudentCurricularPlan(secondCycleRegistrationSCP);
@@ -40,7 +40,7 @@ public class MoveEnrolments extends CustomTask {
 		firstCycleRegistration.getAttendsForExecutionPeriod(currentPeriod).forEach(at -> at.setRegistration(secondCycleRegistration));
 		
 		//remove StudentInquiryRegistration for first cycle, it no longer makes sense
-		StudentInquiryRegistry registry = FenixFramework.getDomainObject("850343395141094");
-		registry.delete();
+//		StudentInquiryRegistry registry = FenixFramework.getDomainObject("850343395141094");
+//		registry.delete();
 	}
 }
