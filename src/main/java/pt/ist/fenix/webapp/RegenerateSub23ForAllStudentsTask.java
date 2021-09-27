@@ -1,11 +1,13 @@
 package pt.ist.fenix.webapp;
 
+import com.google.gson.JsonObject;
 import org.fenixedu.academic.domain.ExecutionSemester;
 import org.fenixedu.academic.domain.ExecutionYear;
 import org.fenixedu.academic.domain.student.Registration;
 import org.fenixedu.academic.domain.studentCurriculum.CurriculumModule;
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
 import org.fenixedu.bennu.spring.BennuSpringContextHelper;
+import org.fenixedu.connect.domain.Identity;
 import org.joda.time.LocalDate;
 import org.joda.time.YearMonthDay;
 import pt.ist.esw.advice.pt.ist.fenixframework.AtomicInstance;
@@ -67,7 +69,8 @@ public class RegenerateSub23ForAllStudentsTask extends CustomTask {
                 .filter(r -> r.getDegreeType().isBolonhaDegree() || r.getDegreeType().isBolonhaMasterDegree() || r
                         .getDegreeType().isIntegratedMasterDegree())
                 .filter(r -> r.getPerson().getExpirationDateOfDocumentIdYearMonthDay() != null)
-                .filter(r -> r.getPerson().getDateOfBirthYearMonthDay() != null).filter(r -> r.getPerson().getCountry() != null)
+                .filter(r -> r.getPerson().getDateOfBirthYearMonthDay() != null)
+                .filter(r -> r.getPerson().getCountry() != null)
                 .filter(r -> r.getPerson().getIdDocumentType() != null)
                 .filter(r -> r.getPerson().getDocumentIdNumber() != null)
                 .filter(r -> isSubWayClient(r.getPerson().getDateOfBirthYearMonthDay(), today))
@@ -94,7 +97,21 @@ public class RegenerateSub23ForAllStudentsTask extends CustomTask {
     }
 
     private boolean isToRegenerate(final Registration registration) {
-        return users.contains(registration.getPerson().getUsername());
+        final Identity identity = registration.getPerson().getUser().getIdentity();
+        if (identity != null) {
+            return identity.getAccountSet().stream()
+                    .flatMap(account -> account.getApplicationSet().stream())
+                    .filter(account -> {
+                        final JsonObject dataObject = account.getDataObject();
+                        return dataObject.has("registration") &&
+                                registration.getExternalId().equals(dataObject.get("registration").getAsString());
+                    })
+                    .map(account -> account.getAdmissionProcessTarget().getAdmissionProcess())
+                    .anyMatch(ap -> "degree".equals(ap.getOutcomeTypeJson().get("name").getAsString()));
+        } else {
+            return false;
+        }
+//        return users.contains(registration.getPerson().getUsername());
     }
 
     private boolean doesNotHaveAnySub23Declaration(Registration r) {

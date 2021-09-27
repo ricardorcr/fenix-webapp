@@ -18,7 +18,7 @@ public class CheckSIBSTransactionsSapRequests extends CustomTask {
 
     @Override
     public void runTask() throws Exception {
-        final YearMonthDay day = new YearMonthDay(2019,01,02);
+        final YearMonthDay day = new YearMonthDay(2021,10,26);
         final Money[] txsTotal = new Money[] { Money.ZERO };
         Bennu.getInstance().getAccountingTransactionsSet().stream()
                 .filter(tx -> tx.getPaymentMethod() == PaymentMethod.getSibsPaymentMethod())
@@ -32,7 +32,8 @@ public class CheckSIBSTransactionsSapRequests extends CustomTask {
                             .map(sr -> sr.getValue().add(sr.getAdvancement()))
                             .reduce(Money.ZERO, Money::add);
                     if (!atx.getTransaction().getOriginalAmount().equals(total)) {
-                        taskLog("Ver evento: %s tx: %s %s - requests: %s%n", atx.getEvent().getExternalId(), atx.getTransaction().getExternalId(), atx.getTransaction().getOriginalAmount(), total);
+                        taskLog("Ver evento: %s\t tx: %s %s\t - requests: %s\t%s%n", atx.getEvent().getExternalId(), atx.getTransaction().getExternalId(),
+                                atx.getTransaction().getOriginalAmount(), total, atx.getWhenProcessed().toString("dd-MM-yyyy"));
                     }
                     if (atx.getWhenRegistered().getYear() < 2019) {
                         taskLog("És tuuuuu: %s%n", atx.getExternalId());

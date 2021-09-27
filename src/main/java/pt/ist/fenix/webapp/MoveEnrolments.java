@@ -5,8 +5,6 @@ import org.fenixedu.academic.domain.StudentCurricularPlan;
 import org.fenixedu.academic.domain.student.Registration;
 import org.fenixedu.academic.domain.studentCurriculum.CurriculumGroup;
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
-
-import pt.ist.fenixedu.quc.domain.StudentInquiryRegistry;
 import pt.ist.fenixframework.FenixFramework;
 
 public class MoveEnrolments extends CustomTask {

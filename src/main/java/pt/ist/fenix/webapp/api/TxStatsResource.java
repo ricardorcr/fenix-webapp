@@ -1,14 +1,12 @@
 package pt.ist.fenix.webapp.api;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import org.fenixedu.bennu.core.rest.BennuRestResource;
+import org.fenixedu.bennu.oauth.annotation.OAuthEndpoint;
+import org.joda.time.DateTime;
 import pt.ist.fenixframework.backend.jvstmojb.pstm.TransactionSupport;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
-import java.time.format.DateTimeFormatter;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -16,14 +14,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-
-import org.fenixedu.bennu.core.rest.BennuRestResource;
-import org.fenixedu.bennu.oauth.annotation.OAuthEndpoint;
-import org.joda.time.DateTime;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.format.DateTimeFormatter;
 
 @Path("/_internal/fenix-framework/stats")
 public class TxStatsResource extends BennuRestResource {

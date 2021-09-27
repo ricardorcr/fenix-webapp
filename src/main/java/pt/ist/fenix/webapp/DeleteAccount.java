@@ -2,7 +2,6 @@ package pt.ist.fenix.webapp;
 
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
 import org.fenixedu.connect.domain.Account;
-import org.fenixedu.connect.domain.identification.PersonalInformation;
 import pt.ist.fenixframework.FenixFramework;
 
 public class DeleteAccount extends CustomTask {

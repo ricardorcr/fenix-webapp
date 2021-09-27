@@ -1,14 +1,13 @@
 package pt.ist.fenix.webapp;
 
+import org.fenixedu.bennu.scheduler.custom.CustomTask;
+import pt.ist.fenixedu.domain.SapRequestType;
+import pt.ist.fenixedu.domain.SapRoot;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
-
-import org.fenixedu.bennu.scheduler.custom.CustomTask;
-
-import pt.ist.fenixedu.domain.SapRequestType;
-import pt.ist.fenixedu.domain.SapRoot;
 
 public class GetNAsForNPs extends CustomTask {
 

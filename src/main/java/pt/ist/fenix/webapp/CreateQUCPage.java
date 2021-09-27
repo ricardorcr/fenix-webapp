@@ -1,10 +1,5 @@
 package pt.ist.fenixedu;
 
-import static org.fenixedu.bennu.core.i18n.BundleUtil.getLocalizedString;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.fenixedu.academic.domain.ExecutionCourse;
 import org.fenixedu.academic.domain.ExecutionSemester;
 import org.fenixedu.bennu.core.domain.Bennu;
@@ -20,10 +15,14 @@ import org.fenixedu.cms.domain.component.Component;
 import org.fenixedu.cms.domain.component.ComponentDescriptor;
 import org.fenixedu.commons.i18n.LocalizedString;
 import org.joda.time.DateTime;
-
 import pt.ist.fenixedu.quc.domain.TeacherInquiryTemplate;
 import pt.ist.fenixframework.Atomic.TxMode;
 import pt.ist.fenixframework.FenixFramework;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.fenixedu.bennu.core.i18n.BundleUtil.getLocalizedString;
 
 /**
  * Created by diutsu on 16/09/16.

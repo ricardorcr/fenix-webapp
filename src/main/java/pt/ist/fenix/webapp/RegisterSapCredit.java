@@ -17,10 +17,10 @@ public class RegisterSapCredit extends SapCustomTask {
 
     @Override
     protected void runTask(final ErrorLogConsumer errorLogConsumer, final EventLogger elogger) {
-        final Event event = FenixFramework.getDomainObject("1407400653358406");
+        final Event event = FenixFramework.getDomainObject("1972635529379888");
         final SapEvent sapEvent = new SapEvent(event);
 
-//        sapEvent.registerCredit(event, getCreditEntry(new Money(5000)), false);
+        sapEvent.registerCredit(event, getCreditEntry(new Money(240)), false, false);
     }
 
     private CreditEntry getCreditEntry(final Money creditAmount) {

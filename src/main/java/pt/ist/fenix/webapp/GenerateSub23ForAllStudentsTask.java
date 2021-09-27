@@ -74,14 +74,15 @@ public class GenerateSub23ForAllStudentsTask extends CustomTask {
                 .filter(r -> r.getDegreeType().isBolonhaDegree() || r.getDegreeType().isBolonhaMasterDegree() || r
                         .getDegreeType().isIntegratedMasterDegree())
                 .filter(r -> r.getPerson().getExpirationDateOfDocumentIdYearMonthDay() != null)
-                .filter(r -> r.getPerson().getDateOfBirthYearMonthDay() != null).filter(r -> r.getPerson().getCountry() != null)
+                .filter(r -> r.getPerson().getDateOfBirthYearMonthDay() != null)
+                .filter(r -> r.getPerson().getCountry() != null)
                 .filter(r -> r.getPerson().getIdDocumentType() != null)
                 .filter(r -> r.getPerson().getDocumentIdNumber() != null)
                 .filter(r -> isSubWayClient(r.getPerson().getDateOfBirthYearMonthDay(), today))
                 .filter(r -> doesNotHaveAnySub23Declaration(r))
-                .peek(r -> taskLog(r.getPerson().getUsername()))
+                .peek(r -> taskLog(r.getPerson().getUsername()));
                 //.count();
-                .forEach(this::send);
+//                .forEach(this::send);
         //taskLog("%d%n", c);
     }
 

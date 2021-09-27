@@ -1,15 +1,15 @@
 package pt.ist.fenix.webapp;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.nio.file.Files;
-import java.util.List;
-
 import org.fenixedu.academic.domain.contacts.MobilePhone;
 import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
 import org.fenixedu.commons.spreadsheet.Spreadsheet;
 import org.fenixedu.commons.spreadsheet.Spreadsheet.Row;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.nio.file.Files;
+import java.util.List;
 
 public class UsersMobile extends CustomTask {
 

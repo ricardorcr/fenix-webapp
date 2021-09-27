@@ -8,7 +8,7 @@ public class DeleteRegistration extends CustomTask {
 
     @Override
     public void runTask() throws Exception {
-        Registration registration = FenixFramework.getDomainObject("1128159059642232");
+        Registration registration = FenixFramework.getDomainObject("846684083018286");
         registration.getPrecedentDegreesInformationsSet().forEach(pdi -> {
             pdi.getPersonalIngressionData().delete();
             pdi.delete();

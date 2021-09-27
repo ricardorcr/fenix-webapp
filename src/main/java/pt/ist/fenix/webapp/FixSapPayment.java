@@ -3,7 +3,6 @@ package pt.ist.fenix.webapp;
 import org.fenixedu.academic.domain.accounting.Event;
 import org.fenixedu.academic.domain.accounting.Exemption;
 import org.fenixedu.bennu.core.domain.User;
-import org.fenixedu.bennu.scheduler.custom.CustomTask;
 import pt.ist.fenixedu.domain.SapRequest;
 import pt.ist.fenixedu.giaf.invoices.ErrorLogConsumer;
 import pt.ist.fenixedu.giaf.invoices.EventLogger;

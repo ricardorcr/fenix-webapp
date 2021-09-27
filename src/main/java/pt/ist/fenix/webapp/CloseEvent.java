@@ -4,7 +4,6 @@ import org.fenixedu.academic.domain.accounting.Event;
 import org.fenixedu.academic.domain.accounting.EventState;
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
 import org.joda.time.DateTime;
-
 import pt.ist.fenixframework.FenixFramework;
 
 public class CloseEvent extends CustomTask {

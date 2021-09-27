@@ -13,8 +13,8 @@ public class DeleteUnusedShiftDistributionEntries extends CustomTask {
         for (ShiftDistributionEntry shiftDistributionEntry : currentExecutionYear.getShiftDistribution()
                 .getShiftDistributionEntriesSet()) {
             if (!shiftDistributionEntry.alreadyDistributed()) {
-                //taskLog("Delete entry with name " + shiftDistributionEntry.getShift().getNome());
-                shiftDistributionEntry.delete();
+                taskLog("Delete entry with name " + shiftDistributionEntry.getShift().getNome());
+                //shiftDistributionEntry.delete();
             } else {
                 taskLog("Já está distribuido %s%n", shiftDistributionEntry.getShift().getNome());
             }

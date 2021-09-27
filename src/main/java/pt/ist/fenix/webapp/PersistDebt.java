@@ -1,14 +1,13 @@
 package pt.ist.fenix.webapp;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 import org.fenixedu.academic.domain.accounting.Event;
 import org.fenixedu.academic.domain.accounting.events.AdministrativeOfficeFeeEvent;
 import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
-
 import pt.ist.fenixframework.FenixFramework;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class PersistDebt extends CustomTask {
 

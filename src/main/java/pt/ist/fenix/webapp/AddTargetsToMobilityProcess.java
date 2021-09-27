@@ -2,11 +2,14 @@ package pt.ist.fenix.webapp;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import org.fenixedu.academic.domain.Country;
 import org.fenixedu.academic.domain.Degree;
 import org.fenixedu.academic.domain.ExecutionYear;
 import org.fenixedu.academic.domain.candidacy.IngressionType;
 import org.fenixedu.academic.domain.candidacyProcess.mobility.MobilityApplicationProcess;
 import org.fenixedu.academic.domain.candidacyProcess.mobility.MobilityQuota;
+import org.fenixedu.academic.domain.organizationalStructure.CountryUnit;
+import org.fenixedu.academic.domain.organizationalStructure.PartyTypeEnum;
 import org.fenixedu.academic.domain.organizationalStructure.UniversityUnit;
 import org.fenixedu.academic.domain.student.RegistrationProtocol;
 import org.fenixedu.admissions.domain.AdmissionProcess;
@@ -31,12 +34,18 @@ public class AddTargetsToMobilityProcess extends CustomTask {
 
     private static final Locale PT = new Locale("pt", "PT");
     private static final Locale EN = new Locale("en", "GB");
-    private static final String TARGET_FILENAME = "/afs/ist.utl.pt/ciist/fenix/fenix015/ist/erasmus_more_targets_2020_2021_v2.csv";
+    private static final String TARGET_FILENAME = "/afs/ist.utl.pt/ciist/fenix/fenix015/ist/erasmus_more_targets_2020_2021_v4.csv";
+//    private static final String TARGET_FILENAME = "/home/rcro/DocumentsHDD/fenix/candidaturas/erasmus_more_targets_2020_2021_v4.csv";
+
+    //1415857443963211 UNITE!
+    //1415857443963240 duplo grau frança
+    //289957537120271 duplo grau china
+    //1415857443963216 erasmus
 
     @Override
     public void runTask() throws Exception {
-        final AdmissionProcess erasmus = FenixFramework.getDomainObject("1415857443963216");
-        processTargetFile(erasmus, TARGET_FILENAME);
+        final AdmissionProcess process = FenixFramework.getDomainObject("1415857443963216");
+        processTargetFile(process, TARGET_FILENAME);
     }
 
     private void processTargetFile(final AdmissionProcess admissionProcess, final String targetPath) throws IOException {
@@ -44,7 +53,7 @@ public class AddTargetsToMobilityProcess extends CustomTask {
         final List<String> lineData = Files.readAllLines(new File(targetPath).toPath());
         for (String line : lineData) {
             String[] split = line.split("\t");
-            Integer slots = Integer.valueOf(split[4]);
+            Integer slots = Integer.valueOf(split[5]);
             String protocolCode = split[0];
             final RegistrationProtocol protocol = Bennu.getInstance().getRegistrationProtocolsSet().stream()
                     .filter(p -> p.getCode().equals(protocolCode))
@@ -55,9 +64,10 @@ public class AddTargetsToMobilityProcess extends CustomTask {
             final Set<UniversityInfo> universityInfos = processTargets.computeIfAbsent(protocol, (t) -> new HashSet<UniversityInfo>());
             String ingressionTypeCode = split[1];
             final IngressionType ingressionType = IngressionType.findIngressionTypeByCode(ingressionTypeCode).get();
-            String universityName = split[2];
-            String degreeCode = split[3];
-            final UniversityInfo universityInfo = new UniversityInfo(universityName, slots, ingressionType, degreeCode);
+            final String countryCode = split[2];
+            final String universityName = split[3];
+            final String degreeCode = split[4];
+            final UniversityInfo universityInfo = new UniversityInfo(countryCode, universityName, slots, ingressionType, degreeCode);
             universityInfos.add(universityInfo);
         }
 
@@ -71,7 +81,7 @@ public class AddTargetsToMobilityProcess extends CustomTask {
                 .forEach(universityInfo -> {
                     final IngressionType ingressionType = universityInfo.getIngressionType();
                     final Degree degree = Degree.readBySigla(universityInfo.getDegreeCode());
-                    UniversityUnit universityUnit = getUniversityUnit(universityInfo.getUniversityName());
+                    UniversityUnit universityUnit = getUniversityUnit(universityInfo.getCountryCode(), universityInfo.getUniversityName());
                     if (universityUnit == null) {
                         taskLog("#%s%n", universityInfo.getUniversityName());
                     }
@@ -99,23 +109,18 @@ public class AddTargetsToMobilityProcess extends CustomTask {
                 });
     }
 
-    private UniversityUnit getUniversityUnit(String universityName) {
-        ExecutionYear nextYear = ExecutionYear.readCurrentExecutionYear().getNextExecutionYear();
-        final MobilityApplicationProcess applicationProcess = MobilityApplicationProcess.getCandidacyProcessByExecutionInterval(MobilityApplicationProcess.class, nextYear);
-        final MobilityQuota mobilityQuota = applicationProcess.getApplicationPeriod().getMobilityQuotasSet().stream()
-                .filter(mq -> {
-                    String content = mq.getMobilityAgreement().getUniversityUnit().getNameI18n().getContent(EN);
+    private UniversityUnit getUniversityUnit(final String countryCode, final String universityName) {
+        final CountryUnit countryUnit = CountryUnit.getCountryUnitByCountry(Country.readByTwoLetterCode(countryCode));
+        return countryUnit.getSubUnits(PartyTypeEnum.UNIVERSITY).stream()
+                .map(UniversityUnit.class::cast)
+                .filter(univ -> {
+                    String content = univ.getNameI18n().getContent(EN);
                     if (content == null) {
-                        content = mq.getMobilityAgreement().getUniversityUnit().getNameI18n().getContent();
+                        content = univ.getNameI18n().getContent();
                     }
                     return content.replace("\u00a0"," ").replaceAll("  ", " ").trim().equals(universityName);
                 })
                 .findAny().orElse(null);
-        if (mobilityQuota != null) {
-            return mobilityQuota.getMobilityAgreement().getUniversityUnit();
-        } else {
-            return null;
-        }
     }
 
     private void setOutcome(AdmissionProcessTarget admissionProcessTarget, Degree degree, RegistrationProtocol protocol, IngressionType ingressionType) {
@@ -123,7 +128,7 @@ public class AddTargetsToMobilityProcess extends CustomTask {
         outcome.addProperty("degree", degree.getExternalId());
         outcome.addProperty("protocol", protocol.getExternalId());
         outcome.addProperty("ingressionType", ingressionType.getExternalId());
-        outcome.addProperty("year", ExecutionYear.readCurrentExecutionYear().getNextExecutionYear().getExternalId());
+        outcome.addProperty("year", ExecutionYear.readCurrentExecutionYear().getExternalId());
         outcome.add("actionName", ls("Matrícular", "Enroll").json());
 
         admissionProcessTarget.setOutcomeConfig(outcome.toString());
@@ -137,14 +142,21 @@ public class AddTargetsToMobilityProcess extends CustomTask {
 
         IngressionType ingressionType;
         String universityName;
+        String countryCode;
         Integer slots;
         String degreeCode;
 
-        public UniversityInfo(final String universityName, final Integer slots, final IngressionType ingressionType, final String degreeCode) {
+        public UniversityInfo(final String countryCode, final String universityName, final Integer slots,
+                              final IngressionType ingressionType, final String degreeCode) {
+            this.countryCode = countryCode;
             this.universityName = universityName;
             this.slots = slots;
             this.ingressionType = ingressionType;
             this.degreeCode = degreeCode;
+        }
+
+        public String getCountryCode() {
+            return countryCode;
         }
 
         public String getUniversityName() {

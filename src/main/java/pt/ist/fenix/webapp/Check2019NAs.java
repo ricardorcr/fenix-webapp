@@ -1,7 +1,6 @@
 package pt.ist.fenix.webapp;
 
 import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
-
 import pt.ist.fenixedu.domain.SapRequestType;
 import pt.ist.fenixedu.domain.SapRoot;
 

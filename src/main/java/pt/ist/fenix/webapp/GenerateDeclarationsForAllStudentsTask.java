@@ -38,7 +38,7 @@ public class GenerateDeclarationsForAllStudentsTask extends CustomTask {
 
     @Override
     public void runTask() throws Exception {
-        firstGeneration = new LocalDate(2020, 9, 13);
+        firstGeneration = new LocalDate(2021, 9, 17);
         ptDeclaration = getTemplateFor("declaracao-matricula", PT);
         enDeclaration = getTemplateFor("declaracao-matricula", EN);
         executionYearName = ExecutionYear.readCurrentExecutionYear().getName().replaceAll("/", "-");
@@ -74,7 +74,7 @@ public class GenerateDeclarationsForAllStudentsTask extends CustomTask {
         String filename = String.format(declarationTemplate.getFilenameFormat(), executionYearName, language, sigla,
                 registration.getPerson().getUsername());
         return registration.getRegistrationDeclarationFileSet().stream()
-                .anyMatch(f -> f.getCreationDate().toLocalDate().isAfter(firstGeneration) && f.getExecutionYear().isCurrent()
+                .anyMatch(f -> !f.getCreationDate().toLocalDate().isBefore(firstGeneration) && f.getExecutionYear().isCurrent()
                         && f.getFilename().equals(filename));
     }
 

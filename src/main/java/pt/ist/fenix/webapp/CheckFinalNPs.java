@@ -1,10 +1,8 @@
 package pt.ist.fenix.webapp;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.fenixedu.academic.util.Money;
-import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.io.domain.GroupBasedFile;
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
 import pt.ist.fenixedu.domain.SapRequest;
@@ -13,12 +11,9 @@ import pt.ist.fenixframework.FenixFramework;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public class CheckFinalNPs extends CustomTask {
 

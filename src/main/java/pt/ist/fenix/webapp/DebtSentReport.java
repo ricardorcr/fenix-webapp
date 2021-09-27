@@ -7,7 +7,6 @@ import org.fenixedu.academic.util.Money;
 import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
 import org.joda.time.DateTime;
-
 import pt.ist.fenixedu.domain.SapRequest;
 
 public class DebtSentReport extends CustomTask {

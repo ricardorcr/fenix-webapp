@@ -1,13 +1,17 @@
 package pt.ist.fenix.webapp;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Properties;
+import com.google.common.base.Strings;
+import com.google.common.collect.Sets;
+import org.fenixedu.bennu.io.domain.GenericFile;
+import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
+import org.fenixedu.commons.i18n.LocalizedString;
+import org.fenixedu.messaging.core.domain.Message;
+import org.fenixedu.messaging.core.domain.MessagingSystem;
+import org.fenixedu.messaging.core.domain.Sender;
+import org.fenixedu.messaging.emaildispatch.EmailDispatchConfiguration;
+import org.fenixedu.messaging.emaildispatch.domain.EmailBlacklist;
+import org.fenixedu.messaging.emaildispatch.domain.LocalEmailMessageDispatchReport;
+import org.joda.time.DateTime;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -21,20 +25,14 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-
-import org.fenixedu.bennu.io.domain.GenericFile;
-import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
-import org.fenixedu.commons.i18n.LocalizedString;
-import org.fenixedu.messaging.core.domain.Message;
-import org.fenixedu.messaging.core.domain.MessagingSystem;
-import org.fenixedu.messaging.core.domain.Sender;
-import org.fenixedu.messaging.emaildispatch.EmailDispatchConfiguration;
-import org.fenixedu.messaging.emaildispatch.domain.EmailBlacklist;
-import org.fenixedu.messaging.emaildispatch.domain.LocalEmailMessageDispatchReport;
-import org.joda.time.DateTime;
-
-import com.google.common.base.Strings;
-import com.google.common.collect.Sets;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Properties;
 
 public class HackEmails extends ReadCustomTask {
     @Override

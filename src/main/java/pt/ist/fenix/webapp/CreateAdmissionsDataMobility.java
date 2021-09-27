@@ -35,34 +35,37 @@ public class CreateAdmissionsDataMobility extends CustomTask {
     //local /home/rcro/DocumentsHDD/fenix/candidaturas/
     private static final Locale PT = new Locale("pt", "PT");
     private static final Locale EN = new Locale("en", "GB");
-    private static final String EUROPE_ERASMUS_DATA_FILENAME = "/home/rcro/DocumentsHDD/fenix/candidaturas/cursos_mobilidade_europe_erasmus_1s_2020_2021.csv";
-    private static final String OUTSIDE_EUROPE_DATA_FILENAME = "/home/rcro/DocumentsHDD/fenix/candidaturas/cursos_mobilidade_outside_europe_1s_2020_2021.csv";
-    private static final String DOUBLE_DEGREES_DATA_FILENAME = "/home/rcro/DocumentsHDD/fenix/candidaturas/cursos_mobilidade_double_degrees_1s_2020_2021.csv";
-    private static final String FORM_DATA_FILENAME = "/home/rcro/DocumentsHDD/fenix/candidaturas/mobilityFormData.json";
-    private static final String OUTCOME_FORM_DATA_FILENAME = "/home/rcro/DocumentsHDD/fenix/candidaturas/mobilityOutcomeFormData.json";
+
+//    private static final String DIR = "/home/rcro/workspace/data/admissions/";
+    private static final String DIR = "/afs/ist.utl.pt/ciist/fenix/fenix015/ist/";
+    private static final String EUROPE_ERASMUS_DATA_FILENAME = DIR + "cursos_mobilidade_europe_erasmus_1s_2020_2021.csv";
+    private static final String OUTSIDE_EUROPE_DATA_FILENAME = DIR + "cursos_mobilidade_outside_europe_1s_2020_2021.csv";
+    private static final String DOUBLE_DEGREES_DATA_FILENAME = DIR + "doubleDegree_china_2020_2021.csv";
+    private static final String FORM_DATA_FILENAME = DIR + "mobilityFormData.json";
+    private static final String OUTCOME_FORM_DATA_FILENAME = DIR + "mobilityOutcomeFormData.json";
 
     @Override
     public void runTask() throws Exception {
-        AdmissionsSystem.getInstance().getAdmissionProcessSet().stream()
-                .filter(admissionProcess -> {
-                    final DateTime startDate = admissionProcess.getStartApplicationSubmissionPeriod();
-                    return startDate.getDayOfMonth() == 21 && startDate.getMonthOfYear() == 5;
-                })
-                .forEach(admissionProcess -> {
-                    admissionProcess.getMemberSet().clear();
-                    admissionProcess.getAdmissionProcessTargetSet().stream()
-                            .forEach(apt -> apt.getJurySet().clear());
-                    admissionProcess.getLogSet().forEach(log -> log.delete());
+//        AdmissionsSystem.getInstance().getAdmissionProcessSet().stream()
+//                .filter(admissionProcess -> {
+//                    final String content = admissionProcess.getTitle().getContent(PT);
+//                    return content.contains("1º semestre 2021/2022");
+//                })
+//                .forEach(admissionProcess -> {
+//                    admissionProcess.getMemberSet().clear();
 //                    admissionProcess.getAdmissionProcessTargetSet().stream()
-//                            .flatMap(apt -> apt.getLogSet().stream())
-//                            .forEach(log -> log.delete());
-                    admissionProcess.delete();
-                });
+//                            .forEach(apt -> apt.getJurySet().clear());
+//                    admissionProcess.getLogSet().forEach(log -> log.delete());
+////                    admissionProcess.getAdmissionProcessTargetSet().stream()
+////                            .flatMap(apt -> apt.getLogSet().stream())
+////                            .forEach(log -> log.delete());
+//                    admissionProcess.delete();
+//                });
 
 
-        processTargetFile(EUROPE_ERASMUS_DATA_FILENAME, FORM_DATA_FILENAME, "erasmus@tecnico.ulisboa.pt", false);
-        processTargetFile(OUTSIDE_EUROPE_DATA_FILENAME, FORM_DATA_FILENAME, "outsideeurope@tecnico.ulisboa.pt", false);
-        processTargetFile(DOUBLE_DEGREES_DATA_FILENAME, FORM_DATA_FILENAME, "nmci@tecnico.ulisboa.pt", true);
+//        processTargetFile(EUROPE_ERASMUS_DATA_FILENAME, FORM_DATA_FILENAME, "erasmus@tecnico.ulisboa.pt", false);
+//        processTargetFile(OUTSIDE_EUROPE_DATA_FILENAME, FORM_DATA_FILENAME, "outsideeurope@tecnico.ulisboa.pt", false);
+        processTargetFile(DOUBLE_DEGREES_DATA_FILENAME, FORM_DATA_FILENAME, "outsideeurope@tecnico.ulisboa.pt", true);
     }
 
     private void processTargetFile(final String targetPath, final String formPath, final String email, final boolean isDoubleDegree) throws IOException {
@@ -96,7 +99,7 @@ public class CreateAdmissionsDataMobility extends CustomTask {
                                 final String formPath, boolean isDoubleDegree) {
         final LocalizedString title = ls(protocol.getDescription().getContent(PT), protocol.getDescription().getContent(EN));
         final DateTime startDate = new DateTime(2021, 05, 21, 0, 0);
-        final DateTime endDate = new DateTime(2021, 06, 20, 23, 59, 59);
+        final DateTime endDate = new DateTime(2021, 07, 15, 23, 59, 59);
 
         final LocalizedString tags = ls("Mobilidade 2021/2022", "Mobility 2021/2022");
         final String informationUrl = "";
