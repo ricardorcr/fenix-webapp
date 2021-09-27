@@ -11,7 +11,6 @@ import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
 import java.util.Locale;
-import java.util.Random;
 
 public class CreateTestData extends CustomTask {
 

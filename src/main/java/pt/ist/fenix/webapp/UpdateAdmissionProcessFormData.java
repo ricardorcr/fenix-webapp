@@ -3,7 +3,6 @@ package pt.ist.fenix.webapp;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.fenixedu.admissions.domain.AdmissionProcess;
-import org.fenixedu.admissions.domain.AdmissionsSystem;
 import org.fenixedu.bennu.core.util.CoreConfiguration;
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
 import pt.ist.fenixframework.FenixFramework;

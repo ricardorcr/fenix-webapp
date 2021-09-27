@@ -33,7 +33,7 @@ import pt.ist.fenixframework.FenixFramework;
 
 public class ReportOpenEvents extends CustomTask {
 
-    private final DateTime instant = new DateTime(2021, 1, 1, 0, 0, 0, 0);
+    private final DateTime instant = new DateTime(2021, 10, 28, 0, 0, 0, 0);
     private final LocalDate instantDate = instant.toLocalDate();
     private final DateTime now = new DateTime();
 

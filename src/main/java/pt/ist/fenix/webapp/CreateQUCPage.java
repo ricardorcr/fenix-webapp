@@ -1,4 +1,4 @@
-package pt.ist.fenixedu;
+package pt.ist.fenix.webapp;
 
 import static org.fenixedu.bennu.core.i18n.BundleUtil.getLocalizedString;
 
@@ -22,6 +22,11 @@ import org.joda.time.DateTime;
 import pt.ist.fenixedu.quc.domain.TeacherInquiryTemplate;
 import pt.ist.fenixframework.Atomic.TxMode;
 import pt.ist.fenixframework.FenixFramework;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.fenixedu.bennu.core.i18n.BundleUtil.getLocalizedString;
 
 /**
  * Created by diutsu on 16/09/16.
