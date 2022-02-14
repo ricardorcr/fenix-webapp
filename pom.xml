@@ -18,9 +18,9 @@
     <name>Fenix Webapp</name>
 
     <scm>
-        <connection>scm:git:git@github.com:ist-dsi/fenix-webapp.git</connection>
-        <developerConnection>scm:git:git@github.com:ist-dsi/fenix-webapp.git</developerConnection>
-        <url>https://github.com/ist-dsi/fenix-webapp</url>
+        <connection>scm:git:git@repo.dsi.tecnico.ulisboa.pt:fenixedu/application/fenix-webapp.git</connection>
+        <developerConnection>scm:git:git@repo.dsi.tecnico.ulisboa.pt:fenixedu/application/fenix-webapp.git</developerConnection>
+        <url>https://repo.dsi.tecnico.ulisboa.pt/fenixedu/application/fenix-webapp</url>
         <tag>HEAD</tag>
     </scm>
 
