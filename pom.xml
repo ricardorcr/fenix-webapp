@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.fenixedu</groupId>
         <artifactId>web-app-project</artifactId>
         <version>2.5.2</version>
-        <relativePath />
+        <relativePath/>
     </parent>
 
     <groupId>pt.ist</groupId>
@@ -63,7 +64,6 @@
     </properties>
 
 
-
     <build>
         <plugins>
             <plugin>
@@ -77,7 +77,8 @@
                     <uriEncoding>UTF-8</uriEncoding>
 
                     <systemProperties>
-                       <org.apache.jasper.compiler.Parser.STRICT_QUOTE_ESCAPING>false</org.apache.jasper.compiler.Parser.STRICT_QUOTE_ESCAPING>
+                        <org.apache.jasper.compiler.Parser.STRICT_QUOTE_ESCAPING>false
+                        </org.apache.jasper.compiler.Parser.STRICT_QUOTE_ESCAPING>
                         <JAVA_OPTS>-Xms2048m -Xmx8192m -Xss1m</JAVA_OPTS>
                     </systemProperties>
                 </configuration>
@@ -100,11 +101,11 @@
     </build>
 
     <dependencies>
-	<dependency>
-	    <groupId>org.bouncycastle</groupId>
-	    <artifactId>bcprov-jdk15on</artifactId>
-	    <version>1.68</version>
-	</dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.68</version>
+        </dependency>
         <dependency>
             <groupId>pt.ist</groupId>
             <artifactId>standards</artifactId>
@@ -271,11 +272,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
-		<dependency>
-			<groupId>pt.ist</groupId>
-			<artifactId>drive-sdk</artifactId>
-			<version>2.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>pt.ist</groupId>
+            <artifactId>drive-sdk</artifactId>
+            <version>2.0.0</version>
+        </dependency>
         <dependency>
             <groupId>org.fenixedu</groupId>
             <artifactId>bennu-renderers</artifactId>
@@ -311,16 +312,16 @@
             <artifactId>sms-dispatch</artifactId>
             <version>${version.org.fenixedu.messaging}</version>
         </dependency>
-		  <dependency>
-		      <groupId>org.apache.poi</groupId>
-		      <artifactId>poi</artifactId>
-		      <version>${version.org.apache.poi}</version>
-		  </dependency>
-		  <dependency>
-		      <groupId>org.apache.poi</groupId>
-		      <artifactId>poi-ooxml</artifactId>
-		      <version>${version.org.apache.poi}</version>
-		  </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>${version.org.apache.poi}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>${version.org.apache.poi}</version>
+        </dependency>
         <dependency>
             <groupId>pt.ist</groupId>
             <artifactId>sap-sdk-java</artifactId>
@@ -336,103 +337,88 @@
             <artifactId>postCodeTools</artifactId>
             <version>${version.org.fenixedu.postCodeTools}</version>
         </dependency>
+        <dependency>
+            <groupId>org.fenixedu</groupId>
+            <artifactId>a3es</artifactId>
+            <version>${version.org.fenixedu.a3es}</version>
+        </dependency>
+        <dependency>
+            <groupId>pt.ist</groupId>
+            <artifactId>a3es-ist</artifactId>
+            <version>${version.pt.ist.a3es-ist}</version>
+        </dependency>
+        <dependency>
+            <groupId>pt.ist</groupId>
+            <artifactId>digitalized-signatures</artifactId>
+            <version>${version.pt.ist.digitalized-signatures}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fenixedu</groupId>
+            <artifactId>comm-hub-sdk-java</artifactId>
+            <version>${version.org.fenixedu.comm-hub}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fenixedu</groupId>
+            <artifactId>fenixedu-academic-transitions</artifactId>
+            <version>${version.org.fenixedu.fenixedu-academic-transitions}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fenixedu</groupId>
+            <artifactId>fenixedu-collaboration-core</artifactId>
+            <version>${version.fenixedu-collaboration-integrations}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fenixedu</groupId>
+            <artifactId>fenixedu-zoom-sdk</artifactId>
+            <version>${version.fenixedu-collaboration-integrations}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fenixedu</groupId>
+            <artifactId>fenixedu-collaboration-integrations</artifactId>
+            <version>${version.fenixedu-collaboration-integrations}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fenixedu</groupId>
+            <artifactId>profiles</artifactId>
+            <version>${version.org.fenixedu.profile}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fenixedu</groupId>
+            <artifactId>fenixedu-admissions-core</artifactId>
+            <version>${version.org.fenixedu.fenixedu-admissions}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fenixedu</groupId>
+            <artifactId>fenixedu-admissions-ist</artifactId>
+            <version>${version.org.fenixedu.fenixedu-admissions}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fenixedu</groupId>
+            <artifactId>fenixedu-connect</artifactId>
+            <version>${version.org.fenixedu.fenixedu-connect}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fenixedu</groupId>
+            <artifactId>fenixedu-queueing</artifactId>
+            <version>${version.org.fenixedu.fenixedu-queueing}</version>
+        </dependency>
+        <dependency>
+            <groupId>pt.ist</groupId>
+            <artifactId>fenix-sibs-payments</artifactId>
+            <version>${version.pt.ist.fenix-sibs-payments}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fenixedu</groupId>
+            <artifactId>fenixedu-safe-file-share</artifactId>
+            <version>${version.org.fenixedu.fenixedu-safe-file-share}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fenixedu</groupId>
+            <artifactId>bennu-vue-pluggable</artifactId>
+            <version>${version.bennu-vue-pluggable}</version>
+        </dependency>
     </dependencies>
     <profiles>
-        <profile>
-            <id>production</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.fenixedu</groupId>
-                    <artifactId>a3es</artifactId>
-                    <version>${version.org.fenixedu.a3es}</version>
-                </dependency>
-                <dependency>
-                    <groupId>pt.ist</groupId>
-                    <artifactId>a3es-ist</artifactId>
-                    <version>${version.pt.ist.a3es-ist}</version>
-                </dependency>
-                <dependency>
-                    <groupId>pt.ist</groupId>
-                    <artifactId>digitalized-signatures</artifactId>
-                    <version>${version.pt.ist.digitalized-signatures}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.fenixedu</groupId>
-                    <artifactId>comm-hub-sdk-java</artifactId>
-                    <version>${version.org.fenixedu.comm-hub}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.fenixedu</groupId>
-                    <artifactId>fenixedu-academic-transitions</artifactId>
-                    <version>${version.org.fenixedu.fenixedu-academic-transitions}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.fenixedu</groupId>
-                    <artifactId>fenixedu-collaboration-core</artifactId>
-                    <version>${version.fenixedu-collaboration-integrations}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.fenixedu</groupId>
-                    <artifactId>fenixedu-zoom-sdk</artifactId>
-                    <version>${version.fenixedu-collaboration-integrations}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.fenixedu</groupId>
-                    <artifactId>fenixedu-collaboration-integrations</artifactId>
-                    <version>${version.fenixedu-collaboration-integrations}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.fenixedu</groupId>
-                    <artifactId>profiles</artifactId>
-                    <version>${version.org.fenixedu.profile}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.fenixedu</groupId>
-                    <artifactId>fenixedu-admissions-core</artifactId>
-                    <version>${version.org.fenixedu.fenixedu-admissions}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.fenixedu</groupId>
-                    <artifactId>fenixedu-admissions-ist</artifactId>
-                    <version>${version.org.fenixedu.fenixedu-admissions}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.fenixedu</groupId>
-                    <artifactId>fenixedu-connect</artifactId>
-                    <version>${version.org.fenixedu.fenixedu-connect}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.fenixedu</groupId>
-                    <artifactId>fenixedu-queueing</artifactId>
-                    <version>${version.org.fenixedu.fenixedu-queueing}</version>
-                </dependency>
-                <dependency>
-                    <groupId>pt.ist</groupId>
-                    <artifactId>fenix-sibs-payments</artifactId>
-                    <version>${version.pt.ist.fenix-sibs-payments}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.fenixedu</groupId>
-                    <artifactId>fenixedu-safe-file-share</artifactId>
-                    <version>${version.org.fenixedu.fenixedu-safe-file-share}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.fenixedu</groupId>
-                    <artifactId>bennu-vue-pluggable</artifactId>
-                    <version>${version.bennu-vue-pluggable}</version>
-                </dependency>
-            </dependencies>
-            <repositories>
-	        <repository>
-        	    <id>dsi-maven-artifacts</id>
-	            <url>https://fenix-ashes.ist.utl.pt/nexus/repository/dsi-private-repo</url>
-        	</repository>
-                 <repository>
-                    <id>fenixedu-maven-repository</id>
-                    <url>https://repo.fenixedu.org/fenixedu-maven-repository</url>
-                </repository>
-            </repositories>
-        </profile>
         <profile>
             <id>SQLUpdateGenerator</id>
             <build>
@@ -459,6 +445,10 @@
     </profiles>
 
     <repositories>
+        <repository>
+            <id>dsi-maven-artifacts</id>
+            <url>https://fenix-ashes.ist.utl.pt/nexus/repository/dsi-private-repo</url>
+        </repository>
         <repository>
             <id>fenixedu-maven-repository</id>
             <url>https://repo.fenixedu.org/fenixedu-maven-repository</url>
