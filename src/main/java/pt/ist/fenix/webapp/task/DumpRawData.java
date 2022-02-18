@@ -13,6 +13,7 @@ import org.fenixedu.academic.domain.EntryPhase;
 import org.fenixedu.academic.domain.ExecutionYear;
 import org.fenixedu.academic.domain.Person;
 import org.fenixedu.academic.domain.candidacy.IngressionType;
+import org.fenixedu.academic.domain.contacts.PhysicalAddress;
 import org.fenixedu.academic.domain.student.RegistrationProtocol;
 import org.fenixedu.academic.domain.student.Student;
 import org.fenixedu.bennu.SapSdkConfiguration;
@@ -24,7 +25,6 @@ import org.fenixedu.bennu.io.domain.DriveAPIStorage;
 import org.fenixedu.bennu.io.domain.FileSupport;
 import org.fenixedu.bennu.scheduler.CronTask;
 import org.fenixedu.bennu.scheduler.annotation.Task;
-import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
 import org.fenixedu.commons.spreadsheet.Spreadsheet;
 import org.fenixedu.connect.domain.ConnectSystem;
 import org.fenixedu.connect.domain.identification.IdentificationDocument;
@@ -63,6 +63,7 @@ public class DumpRawData extends CronTask {
 
         final Spreadsheet spreadsheetIdentificationDocuments = new Spreadsheet("IdDocuments");
         final Spreadsheet spreadsheetTaxInformation = new Spreadsheet("TaxInformation");
+        final Spreadsheet spreadsheetAddressData = new Spreadsheet("AddressData");
 
         process(ConnectSystem.getInstance().getIdentitySet(), identity -> {
             final User user = identity.getUser();
@@ -175,11 +176,36 @@ public class DumpRawData extends CronTask {
                     }
                 }
             }
+
+            if (person != null) {
+                person.getPartyContactsSet().stream()
+                        .filter(PhysicalAddress.class::isInstance)
+                        .map(PhysicalAddress.class::cast)
+                        .forEach(physicalAddress -> {
+                            final Spreadsheet.Row row = spreadsheetAddressData.addRow();
+                            row.setCell("Identity", user.getIdentity().getExternalId());
+                            row.setCell("active", physicalAddress.getActive().toString());
+                            row.setCell("type", physicalAddress.getType().getName());
+                            row.setCell("defaultContact", physicalAddress.getDefaultContact().toString());
+                            row.setCell("lastModifiedDate", physicalAddress.getLastModifiedDate() == null ? ""
+                                    : physicalAddress.getLastModifiedDate().toString("yyyy-MM-dd HH:mm:ss"));
+                            row.setCell("address", physicalAddress.getAddress());
+                            row.setCell("areaCode", physicalAddress.getAreaCode());
+                            row.setCell("areaOfAreaCode", physicalAddress.getAreaOfAreaCode());
+                            row.setCell("countryOfResidence", physicalAddress.getCountryOfResidence() == null ? ""
+                                    : physicalAddress.getCountryOfResidence().getCode());
+                            row.setCell("area", physicalAddress.getArea());
+                            row.setCell("parishOfResidence", physicalAddress.getParishOfResidence());
+                            row.setCell("districtSubdivisionOfResidence", physicalAddress.getDistrictSubdivisionOfResidence());
+                            row.setCell("districtOfResidence", physicalAddress.getDistrictOfResidence());
+                        });
+            }
         });
 
         upload(spreadsheetUsernames, "identifiers.xlsx");
         upload(spreadsheetIdentificationDocuments, "identificationDocument.xlsx");
         upload(spreadsheetTaxInformation, "taxInformation.xlsx");
+        upload(spreadsheetAddressData, "addressData.xlsx");
     }
 
     private void dumpDegrees() {
