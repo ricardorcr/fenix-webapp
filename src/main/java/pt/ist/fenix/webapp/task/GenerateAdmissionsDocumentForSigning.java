@@ -16,11 +16,12 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.fenixedu.academic.domain.Degree;
 import org.fenixedu.academic.domain.ExecutionYear;
+import org.fenixedu.academic.domain.accounting.Event;
 import org.fenixedu.academic.domain.accounting.calculator.DebtInterestCalculator;
-import org.fenixedu.academic.domain.accounting.events.gratuity.GratuityEvent;
 import org.fenixedu.admissions.domain.AdmissionProcessTarget;
 import org.fenixedu.admissions.domain.AdmissionsSystem;
 import org.fenixedu.admissions.domain.Application;
+import org.fenixedu.admissions.ist.domain.Utils;
 import org.fenixedu.bennu.RegistrationProcessConfiguration;
 import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.core.domain.User;
@@ -62,6 +63,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.Base64;
@@ -180,13 +182,12 @@ public class GenerateAdmissionsDocumentForSigning extends CronTask {
         final JsonObject data = application.getDataObject();
         final JsonElement e = data.get("gratuityEvent");
         if (e != null && !e.isJsonNull()) {
-            final GratuityEvent event = FenixFramework.getDomainObject(e.getAsString()) ;
+            final Event event = FenixFramework.getDomainObject(e.getAsString()) ;
             final DebtInterestCalculator calculator = event.getDebtInterestCalculator(new DateTime());
+            final BigDecimal totalAmount = calculator.getTotalAmount();
             final BigDecimal paidDebtAmount = calculator.getPaidDebtAmount();
-            final AdmissionProcessTarget target = application.getAdmissionProcessTarget();
-            final Degree degree = FenixFramework.getDomainObject(target.getOutcomeConfigJson().get("degree").getAsString());
-            final BigDecimal min = degree.getSigla().equals("MOTU") ? new BigDecimal("1000") : new BigDecimal("2000");
-            return paidDebtAmount.doubleValue() >= min.doubleValue() && event.getRegistration().getRegistrationProtocol().isAlien();
+            final double ratio = paidDebtAmount.divide(totalAmount, 2, RoundingMode.HALF_EVEN).doubleValue();
+            return ratio > 0.28d && Utils.registrationFor(application).getRegistrationProtocol().isAlien();
         }
         return false;
     }
