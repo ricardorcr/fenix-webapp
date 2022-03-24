@@ -17,6 +17,11 @@ public class SetupAllTestForms extends CustomTask implements RemoteReader {
 
     @Override
     public void runTask() throws Exception {
+        AdmissionsSystem.getInstance().getAdmissionProcessSet().forEach(admissionProcess -> {
+            admissionProcess.setFormData(admissionProcess.getFormData().replaceAll("https://fenix.tecnico.ulisboa.pt", CoreConfiguration.getConfiguration().applicationUrl()));
+            admissionProcess.setOutcomeConfig(admissionProcess.getOutcomeConfig().replaceAll("https://fenix.tecnico.ulisboa.pt", CoreConfiguration.getConfiguration().applicationUrl()));
+        });
+
         AdmissionsSystem.getInstance().getAdmissionProcessSet().stream()
                 .filter(admissionProcess -> admissionProcess.getTags().getContent().startsWith("Demo Form"))
                 .forEach(admissionProcess -> admissionProcess.delete());
