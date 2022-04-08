@@ -9,6 +9,8 @@ import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
 import org.fenixedu.commons.spreadsheet.Spreadsheet;
 
 import java.io.ByteArrayOutputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.stream.Collectors;
 
 public class ReportBestStudents extends ReadCustomTask {
@@ -28,6 +30,7 @@ public class ReportBestStudents extends ReadCustomTask {
                     row.setCell("TecnicoID", student.getPerson().getUsername());
                     row.setCell("Name", student.getPerson().getUser().getProfile().getDisplayName());
                     row.setCell("E-mail", student.getPerson().getUser().getEmail());
+                    row.setCell("Gender", student.getPerson().getGender() == null ? "" : student.getPerson().getGender().getLocalizedName())
                     row.setCell("Mobile", mobile(student.getPerson()));
                     row.setCell("Current Degree", student.getRegistrationsSet().stream()
                             .filter(registration -> registration.hasAnyEnrolmentsIn(ExecutionYear.readCurrentExecutionYear()))
@@ -38,26 +41,30 @@ public class ReportBestStudents extends ReadCustomTask {
                             .filter(registration -> considerDegree(registration.getDegree()))
                             .mapToDouble(registration -> registration.getEctsCredits())
                             .sum());
-                    row.setCell("ECTS 1st Cycle", student.getRegistrationsSet().stream()
+                    final double ects1 = student.getRegistrationsSet().stream()
                             .filter(registration -> considerDegree(registration.getDegree()))
                             .filter(registration -> registration.getDegreeType().isFirstCycle())
                             .mapToDouble(registration -> registration.getEctsCredits())
-                            .sum());
-                    row.setCell("ECTS 2nd Cycle", student.getRegistrationsSet().stream()
+                            .sum();
+                    row.setCell("ECTS 1st Cycle", ects1);
+                    final double ects2 = student.getRegistrationsSet().stream()
                             .filter(registration -> considerDegree(registration.getDegree()))
                             .filter(registration -> registration.getDegreeType().isSecondCycle())
                             .mapToDouble(registration -> registration.getEctsCredits())
-                            .sum());
-                    row.setCell("Average 1st Cycle", student.getRegistrationsSet().stream()
+                            .sum();
+                    row.setCell("ECTS 2nd Cycle", ects2);
+                    row.setCell("Average 1st Cycle", ects1 == 0d ? BigDecimal.ZERO : student.getRegistrationsSet().stream()
                             .filter(registration -> considerDegree(registration.getDegree()))
                             .filter(registration -> registration.getDegreeType().isFirstCycle())
-                            .map(registration -> registration.calculateRawGrade().getValue())
-                            .collect(Collectors.joining(", ")));
-                    row.setCell("Average 2nd Cycle", student.getRegistrationsSet().stream()
+                            .map(registration -> registration.calculateRawGrade().getNumericValue().multiply(new BigDecimal(registration.getEctsCredits())))
+                            .reduce(BigDecimal.ZERO, BigDecimal::add)
+                            .divide(new BigDecimal(ects1), 2, RoundingMode.HALF_EVEN));
+                    row.setCell("Average 2nd Cycle", ects2 == 0d ? BigDecimal.ZERO : student.getRegistrationsSet().stream()
                             .filter(registration -> considerDegree(registration.getDegree()))
                             .filter(registration -> registration.getDegreeType().isSecondCycle())
-                            .map(registration -> registration.calculateRawGrade().getValue())
-                            .collect(Collectors.joining(", ")));
+                            .map(registration -> registration.calculateRawGrade().getNumericValue().multiply(new BigDecimal(registration.getEctsCredits())))
+                            .reduce(BigDecimal.ZERO, BigDecimal::add)
+                            .divide(new BigDecimal(ects2), 2, RoundingMode.HALF_EVEN));
                     addGradeInfo(row, student, "Fundamentos da Programação");
                     addGradeInfo(row, student, "Lógica para Programação");
                     addGradeInfo(row, student, "Programação com Objectos");
