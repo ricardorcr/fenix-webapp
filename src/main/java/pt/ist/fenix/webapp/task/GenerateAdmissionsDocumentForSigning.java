@@ -18,6 +18,8 @@ import org.fenixedu.academic.domain.Degree;
 import org.fenixedu.academic.domain.ExecutionYear;
 import org.fenixedu.academic.domain.accounting.Event;
 import org.fenixedu.academic.domain.accounting.calculator.DebtInterestCalculator;
+import org.fenixedu.academic.domain.candidacy.IngressionType;
+import org.fenixedu.academic.domain.student.RegistrationProtocol;
 import org.fenixedu.admissions.domain.AdmissionProcessTarget;
 import org.fenixedu.admissions.domain.AdmissionsSystem;
 import org.fenixedu.admissions.domain.Application;
@@ -128,6 +130,7 @@ public class GenerateAdmissionsDocumentForSigning extends CronTask {
     }
 
     private final Set<String> schengen = new HashSet<>();
+
     {
         schengen.add("AT");
         schengen.add("BE");
@@ -183,7 +186,7 @@ public class GenerateAdmissionsDocumentForSigning extends CronTask {
         final JsonObject data = application.getDataObject();
         final JsonElement e = data.get("gratuityEvent");
         if (e != null && !e.isJsonNull()) {
-            final Event event = FenixFramework.getDomainObject(e.getAsString()) ;
+            final Event event = FenixFramework.getDomainObject(e.getAsString());
             final DebtInterestCalculator calculator = event.getDebtInterestCalculator(new DateTime());
             final BigDecimal totalAmount = calculator.getTotalAmount();
             final BigDecimal paidDebtAmount = calculator.getPaidDebtAmount();
@@ -233,9 +236,12 @@ public class GenerateAdmissionsDocumentForSigning extends CronTask {
         final TaxInformation taxInformation = personalInformation.getTaxInformation();
         final Country nationality = Planet.getEarth().getByAlfa2(personalInformation.getNationalityCountryCode());
         final AdmissionProcessTarget target = application.getAdmissionProcessTarget();
-        final Degree degree = FenixFramework.getDomainObject(target.getOutcomeConfigJson().get("degree").getAsString());
-        final ExecutionYear executionYear = FenixFramework.getDomainObject(target.getOutcomeConfigJson().get("year").getAsString());
+        final JsonObject outcomeConfigJson = target.getOutcomeConfigJson();
+        final Degree degree = FenixFramework.getDomainObject(outcomeConfigJson.get("degree").getAsString());
+        final ExecutionYear executionYear = FenixFramework.getDomainObject(outcomeConfigJson.get("year").getAsString());
         final LocalizedString degreeName = degree.getPresentationNameI18N(executionYear);
+        final RegistrationProtocol protocol = FenixFramework.getDomainObject(outcomeConfigJson.get("protocol").getAsString());
+        final IngressionType ingressionType = ingressionTypeFor(outcomeConfigJson, application);
 
         final JsonObject result = new JsonObject();
         result.addProperty("degreePT", degreeName.getContent(PT));
@@ -251,6 +257,10 @@ public class GenerateAdmissionsDocumentForSigning extends CronTask {
         result.addProperty("documentNumber", identificationDocument.getDocumentNumber());
         result.addProperty("documenExpirationDate", identificationDocument.getExpirationDate().toString("yyyy-MM-dd"));
         result.addProperty("tin", taxInformation == null ? "n/a" : taxInformation.getTin());
+        result.addProperty("protocolPT", protocol == null ? "-" : protocol.getDescription().getContent(PT));
+        result.addProperty("protocolEN", protocol == null ? "-" : protocol.getDescription().getContent(EN));
+        result.addProperty("ingressionTypePT", ingressionType == null ? "-" : ingressionType.getLocalizedName(PT));
+        result.addProperty("ingressionTypeEN", ingressionType == null ? "-" : ingressionType.getLocalizedName(EN));
 
         final DynamicForm form = new DynamicForm(application.getAdmissionProcessTarget().getAdmissionProcess().getFormDataJson());
         form.withData(application.getDataObject().getAsJsonObject("formData"));
@@ -265,12 +275,51 @@ public class GenerateAdmissionsDocumentForSigning extends CronTask {
             result.addProperty("homeInstitutionCountryPT", homeInstitutionCountry.getLocalizedName(PT));
             result.addProperty("homeInstitutionCountryEN", homeInstitutionCountry.getLocalizedName(EN));
             result.addProperty("homeInstitutionUniversity", homeInstitutionUniversity);
+
+
+/*
+
+
+                if (outcomeConfigJson != null) {
+                    final ExecutionYear executionYear = FenixFramework.getDomainObject(outcomeConfigJson.get("year").getAsString());
+                    final Degree degree = getDegree(application.getAdmissionProcessTarget());
+
+
+                    final DegreeCurricularPlan dcp = findBestPlan(degree, executionYear);
+                    final JsonElement cycleElement = outcomeConfigJson.get("cycleType");
+                    CycleType cycleType = null;
+                    if (cycleElement != null && !cycleElement.isJsonNull()) {
+                        cycleType = CycleType.valueOf(cycleElement.getAsString());
+                    }
+                    final Registration registration = new Registration(person, dcp, protocol, cycleType, executionYear);
+
+                    if (outcomeConfigJson.get("ingressionType") != null) {
+                        final IngressionType ingressionType = FenixFramework.getDomainObject(outcomeConfigJson.get("ingressionType").getAsString());
+
+ */
+
         }
 
         result.addProperty("uuid", uuid);
         result.addProperty("qrcodeImage", generateURIBase64QRCode(uuid));
 
         return result;
+    }
+
+    private IngressionType ingressionTypeFor(final JsonObject outcomeConfigJson, final Application application) {
+        if (outcomeConfigJson.get("ingressionType") != null) {
+            return FenixFramework.getDomainObject(outcomeConfigJson.get("ingressionType").getAsString());
+        } else {
+            final JsonObject data = application.getDataObject();
+            final JsonObject formData = data == null ? null : data.getAsJsonObject("formData");
+            return formData == null ? null : formData.entrySet().stream()
+                    .flatMap(page -> page.getValue().getAsJsonObject().entrySet().stream())
+                    .flatMap(section -> section.getValue().getAsJsonObject().entrySet().stream())
+                    .filter(property -> property.getKey().equals("ingressionType"))
+                    .map(property -> property.getValue().getAsJsonObject().get("value").getAsString())
+                    .map(id -> (IngressionType) FenixFramework.getDomainObject(id))
+                    .findAny().orElse(null);
+        }
     }
 
     public String getIdentificationDocumentName(final IdentificationDocument identificationDocument, final Locale locale) {
