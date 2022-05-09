@@ -22,6 +22,7 @@ import org.fenixedu.admissions.domain.AdmissionProcessTarget;
 import org.fenixedu.admissions.domain.AdmissionsSystem;
 import org.fenixedu.admissions.domain.Application;
 import org.fenixedu.admissions.ist.domain.Utils;
+import org.fenixedu.admissions.util.DynamicForm;
 import org.fenixedu.bennu.RegistrationProcessConfiguration;
 import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.core.domain.User;
@@ -250,6 +251,21 @@ public class GenerateAdmissionsDocumentForSigning extends CronTask {
         result.addProperty("documentNumber", identificationDocument.getDocumentNumber());
         result.addProperty("documenExpirationDate", identificationDocument.getExpirationDate().toString("yyyy-MM-dd"));
         result.addProperty("tin", taxInformation == null ? "n/a" : taxInformation.getTin());
+
+        final DynamicForm form = new DynamicForm(application.getAdmissionProcessTarget().getAdmissionProcess().getFormDataJson());
+        form.withData(application.getDataObject().getAsJsonObject("formData"));
+        final DateTime arrivalDate = ((DynamicForm.DateTime) form.get("arrivalDate")).value();
+        if (arrivalDate != null) {
+            final DateTime departureDate = ((DynamicForm.DateTime) form.get("departureDate")).value();
+            final Country homeInstitutionCountry = Planet.getEarth().getByAlfa2(((DynamicForm.AsyncSelect) form.get("homeInstitutionCountry")).value());
+            final String homeInstitutionUniversity = ((DynamicForm.Text) form.get("homeInstitutionUniversity")).value();
+
+            result.addProperty("arrivalDate", arrivalDate.toString("yyyy-MM-dd"));
+            result.addProperty("departureDate", departureDate.toString("yyyy-MM-dd"));
+            result.addProperty("homeInstitutionCountryPT", homeInstitutionCountry.getLocalizedName(PT));
+            result.addProperty("homeInstitutionCountryEN", homeInstitutionCountry.getLocalizedName(EN));
+            result.addProperty("homeInstitutionUniversity", homeInstitutionUniversity);
+        }
 
         result.addProperty("uuid", uuid);
         result.addProperty("qrcodeImage", generateURIBase64QRCode(uuid));
