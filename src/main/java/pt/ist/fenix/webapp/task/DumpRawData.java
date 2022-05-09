@@ -205,7 +205,7 @@ public class DumpRawData extends CronTask {
         upload(spreadsheetUsernames, "identifiers.xlsx");
         upload(spreadsheetIdentificationDocuments, "identificationDocument.xlsx");
         upload(spreadsheetTaxInformation, "taxInformation.xlsx");
-        upload(spreadsheetAddressData, "addressData.xlsx");
+        //upload(spreadsheetAddressData, "addressData.xlsx");
     }
 
     private void dumpDegrees() {
