@@ -13,7 +13,6 @@ import org.fenixedu.admissions.ist.domain.UserAccountInfo;
 import org.fenixedu.admissions.ist.util.IdentificationDocumentConverter;
 import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.core.domain.User;
-import org.fenixedu.bennu.core.domain.UserProfile;
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
 import org.fenixedu.connect.domain.Account;
 import org.fenixedu.connect.domain.Identity;
@@ -38,6 +37,7 @@ public class SetupNewAccountAsInternalUser extends CustomTask {
         }
         final Person person = personFor(account);
         person.ensureOpenUserAccount();
+        person.getUser().setIdentity(account.getIdentity());
         final Teacher teacher = person.getTeacher() == null
                 ? new Teacher(person) : person.getTeacher();
         TeacherAuthorization.createOrUpdate(teacher,
