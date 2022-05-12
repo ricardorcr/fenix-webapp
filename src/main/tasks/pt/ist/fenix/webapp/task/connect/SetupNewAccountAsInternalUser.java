@@ -106,7 +106,7 @@ public class SetupNewAccountAsInternalUser extends CustomTask {
             personBean.setNationality(country);
             person = new Person(personBean, false);
         } else if (person.getUser() != null) {
-            throw new Error("error.person.already.connected.to.user");
+            //throw new Error("error.person.already.connected.to.user");
         }
         if (taxInformation != null) {
             person.setSocialSecurityNumber(taxInformation.getTin());
