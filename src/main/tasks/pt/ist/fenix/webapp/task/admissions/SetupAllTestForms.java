@@ -27,6 +27,7 @@ public class SetupAllTestForms extends CustomTask implements RemoteReader {
                 .forEach(admissionProcess -> admissionProcess.delete());
 
         final String raidesForm = string("raidesForm.json");
+        final String mobilityRaidesForm = string("mobilityRaidesForm.json");
 
         setup("Segundo Ciclo - Form Candidatura",  string("2ndCycleFormData.json"));
         setup("Segundo Ciclo - Form Matrícula", raidesForm);
@@ -60,7 +61,7 @@ public class SetupAllTestForms extends CustomTask implements RemoteReader {
         setup("Regime Especial - Form Matrícula", raidesForm);
 
         setup("Mobilidade Normal Simples - Form Candidatura", string("mobilityInboundFormData.json"));
-        setup("Mobilidade Normal Simples - Form Matrícula", raidesForm);
+        setup("Mobilidade Normal Simples - Form Matrícula", mobilityRaidesForm);
         setup("Mobilidade Normal Simples - Form Pós-Matrícula", afterOutcome("mobilityInboundOutcomeConfig.json"));
 
         setup("Mobilidade Duplo Grau - Form Candidatura", string("mobilityInboundFormData.json"));
