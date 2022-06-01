@@ -54,6 +54,7 @@ public class DumpRawData extends CronTask {
         dumpIdentifiers();
         dumpDegrees();
         dumpRegistrations();
+        dumpEmails();
     }
 
     private void dumpIdentifiers() {
@@ -318,6 +319,18 @@ public class DumpRawData extends CronTask {
         });
 
         upload(spreadsheet, "registrations.xlsx");
+    }
+    
+    private void dumpEmails() throws IOException {
+        final Spreadsheet spreadsheetEmails = new Spreadsheet("Emails");
+        process(Bennu.getInstance().getUserSet(),user -> {
+            final Spreadsheet.Row row = row(spreadsheetEmails);
+            row.setCell("IstId", user.getUsername());
+            row.setCell("Main Email", user.getEmail());
+            row.setCell("Institutional", user.getPerson()==null?"":user.getPerson().getInstitutionalEmailAddressValue());          
+        });
+        
+        upload(spreadsheetEmails, "Emails.xlsx");
     }
 
     private Spreadsheet.Row row(final Spreadsheet spreadsheet) {
