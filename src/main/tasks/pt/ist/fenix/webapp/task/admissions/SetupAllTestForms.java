@@ -73,6 +73,10 @@ public class SetupAllTestForms extends CustomTask implements RemoteReader {
         setup("Mobilidade Joint Program - Form Pós-Matrícula", afterOutcome("mobilityInboundJointProgrammesOutcomeConfig.json"));
 
         setup("Creditação Actividades Extra-Curriculares", string("CreditExtraCurricularActivitesFormData.json"));
+
+        setup("HACS com Seriação", string("hassFormData.json"));
+        setup("HACS Colocação Direta", string("hassFormDataPlaceByApplicationOrder.json"));
+
     }
 
     private void setup(String name, String form) {
