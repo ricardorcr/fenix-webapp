@@ -47,7 +47,7 @@ public class CopySpecialSeasonExams extends CustomTask {
         if (exam.getAssociatedExecutionCoursesSet().stream().anyMatch(this::hasExam)) {
             taskLog("Skipping %s : %s : Already has Exam.%n",
                     exam.getAssociatedExecutionCoursesSet().stream()
-                            .map(ec -> ec.getName())
+                            .map(ec -> ec.getNameI18N().getContent())
                             .collect(Collectors.joining("; ")),
                     exam.getDegreesAsString());
             return;
