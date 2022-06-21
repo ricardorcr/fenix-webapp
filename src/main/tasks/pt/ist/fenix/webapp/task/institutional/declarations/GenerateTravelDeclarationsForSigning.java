@@ -217,7 +217,7 @@ public class GenerateTravelDeclarationsForSigning extends ReadCustomTask {
                 .filter(this::isForDay)
                 .peek(writtenEvaluation -> taskLog("%s : %s%n",
                         writtenEvaluation.getAssociatedExecutionCoursesSet().iterator().next().getDegreePresentationString(),
-                        writtenEvaluation.getAssociatedExecutionCoursesSet().iterator().next().getName()
+                        writtenEvaluation.getAssociatedExecutionCoursesSet().iterator().next().getNameI18N().getContent()
                         ))
                 .findAny().orElse(null) != null;
     }

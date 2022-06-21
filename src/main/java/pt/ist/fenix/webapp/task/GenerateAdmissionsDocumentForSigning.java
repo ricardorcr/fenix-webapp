@@ -26,7 +26,6 @@ import org.fenixedu.admissions.domain.Application;
 import org.fenixedu.admissions.ist.domain.Utils;
 import org.fenixedu.admissions.util.DynamicForm;
 import org.fenixedu.bennu.RegistrationProcessConfiguration;
-import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.core.rest.JsonBodyReaderWriter;
 import org.fenixedu.bennu.core.util.CoreConfiguration;
@@ -46,6 +45,7 @@ import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
 import org.joda.time.DateTime;
+import pt.ist.fenix.webapp.Configuration;
 import pt.ist.fenixframework.FenixFramework;
 import pt.ist.papyrus.PapyrusClient;
 import pt.ist.registration.process.handler.CandidacySignalHandler;
@@ -77,7 +77,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Task(englishTitle = "Auto Generate Declarations for International Students", readOnly = true)
-public class GenerateAdmissionsDocumentForSigning extends CronTask {
+public class GenerateAdmissionsDocumentForSigning extends CronTask implements Configuration {
 
     private static final String TEMPLATE_ID = "admissions-international-students-admitted";
     private static final String TEMPLATE_MOBILITY_ID = "admissions-mobility-students-admitted";
@@ -410,19 +410,6 @@ public class GenerateAdmissionsDocumentForSigning extends CronTask {
     private PapyrusClient createPapyrusClien() {
         final Properties properties = loadProperties();
         return new PapyrusClient(properties.getProperty("papyrus.url"), properties.getProperty("papyrus.token"));
-    }
-
-    private Properties loadProperties() {
-        try (final InputStream input = Bennu.class.getClassLoader().getResourceAsStream("configuration.properties")) {
-            final Properties properties = new Properties();
-            if (input == null) {
-                return null;
-            }
-            properties.load(input);
-            return properties;
-        } catch (final IOException ex) {
-            throw new Error(ex);
-        }
     }
 
     public void sendDocumentToBeSigned(final String queue, final String title, final String description,
