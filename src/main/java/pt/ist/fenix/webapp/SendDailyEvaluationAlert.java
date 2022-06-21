@@ -71,7 +71,7 @@ public class SendDailyEvaluationAlert extends CronTask {
     private String describe(final YearMonthDay today, final YearMonthDay evalStartDate, final String evalStartHour,
                             final String evalEndHour, final Set<ExecutionCourse> courses) {
         final String courseNames = courses.stream()
-                .map(ec -> ec.getName() + " " + ec.getDegreePresentationString())
+                .map(ec -> ec.getNameI18N().getContent() + " " + ec.getDegreePresentationString())
                 .collect(Collectors.joining( ", " ));
         final long studentCount = courses.stream()
                 .flatMap(c -> c.getAttendsSet().stream())
