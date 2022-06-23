@@ -8,6 +8,7 @@ import org.fenixedu.academic.domain.contacts.PhysicalAddress;
 import org.fenixedu.academic.domain.organizationalStructure.Party;
 import org.fenixedu.admissions.util.RemoteReader;
 import org.fenixedu.bennu.scheduler.custom.WriteCustomTask;
+import pt.ist.fenixedu.domain.SapRequestType;
 import pt.ist.fenixedu.giaf.invoices.ClientMap;
 import pt.ist.fenixedu.giaf.invoices.Utils;
 import pt.ist.fenixframework.FenixFramework;
@@ -20,6 +21,13 @@ public class AttemptDocumentRegenerationForRequestedFixTins extends WriteCustomT
 
     @Override
     public void runTask() throws Exception {
+        Arrays.stream(string("spam_tin_pc.txt").split("\n"))
+                .filter(s -> !s.trim().isEmpty())
+                .map(s -> (Event) FenixFramework.getDomainObject(s.trim()))
+                .filter(event -> event != null)
+                .filter(event -> hasMultipleDebtDocuments(event))
+                .forEach(event -> taskLog("Multiple debts in event = %s%n", event.getExternalId()));
+
         Arrays.stream(string("spam_tin_pc.txt").split("\n"))
                 .filter(s -> !s.trim().isEmpty())
                 .map(s -> (Event) FenixFramework.getDomainObject(s.trim()))
@@ -45,7 +53,7 @@ public class AttemptDocumentRegenerationForRequestedFixTins extends WriteCustomT
                                 toAddress(party, tin.substring(0, 2));
                         taskLog("   New Address = %s : %s%n", newAddress.getCountryOfResidence().getCode(), newAddress.getPostalCode());
                     }
-/*
+
                     event.getSapRequestSet().stream()
                             .filter(sapRequest -> !sapRequest.getIntegrated())
                             .filter(sapRequest -> !sapRequest.getIgnore())
@@ -53,9 +61,14 @@ public class AttemptDocumentRegenerationForRequestedFixTins extends WriteCustomT
                                 taskLog("   %s = %s%n", sapRequest.getExternalId(), sapRequest.getDocumentNumber());
                                 sapRequest.delete();
                             });
- */
                 });
-        throw new Error("Abort TX");
+//        throw new Error("Abort TX");
+    }
+
+    private boolean hasMultipleDebtDocuments(final Event event) {
+        return event.getSapRequestSet().stream()
+                .filter(sapRequest -> sapRequest.getRequestType() == SapRequestType.DEBT)
+                .count() > 1l;
     }
 
     private boolean hasErrors(final Event event) {
