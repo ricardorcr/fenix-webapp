@@ -21,14 +21,17 @@ public class AttemptDocumentRegenerationForRequestedFixTins extends WriteCustomT
 
     @Override
     public void runTask() throws Exception {
+/*
         Arrays.stream(string("spam_tin_pc.txt").split("\n"))
                 .filter(s -> !s.trim().isEmpty())
                 .map(s -> (Event) FenixFramework.getDomainObject(s.trim()))
                 .filter(event -> event != null)
                 .filter(event -> hasMultipleDebtDocuments(event))
                 .forEach(event -> taskLog("Multiple debts in event = %s%n", event.getExternalId()));
-/*
-        Arrays.stream(string("spam_tin_pc.txt").split("\n"))
+ */
+
+        Stream.of("571200585597507", "851103604277935")
+//        Arrays.stream(string("spam_tin_pc.txt").split("\n"))
                 .filter(s -> !s.trim().isEmpty())
                 .map(s -> (Event) FenixFramework.getDomainObject(s.trim()))
                 .filter(event -> event != null)
@@ -62,7 +65,6 @@ public class AttemptDocumentRegenerationForRequestedFixTins extends WriteCustomT
                                 sapRequest.delete();
                             });
                 });
- */
 //        throw new Error("Abort TX");
     }
 
