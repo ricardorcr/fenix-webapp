@@ -18,6 +18,7 @@ public class HackFinancialDocumentsAndOperations extends WriteCustomTask {
                 .filter(tx -> tx != toDelete)
                 .peek(tx -> tx.setEvent(null))
                 .collect(Collectors.toSet());
+        toDelete.getTransactionDetail().setPaymentMethod(null);
         toDelete.delete();
         others.forEach(tx -> tx.setEvent(event));
     }
