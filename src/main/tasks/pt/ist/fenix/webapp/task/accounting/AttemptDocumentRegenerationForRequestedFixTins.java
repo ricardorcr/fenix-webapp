@@ -27,7 +27,7 @@ public class AttemptDocumentRegenerationForRequestedFixTins extends WriteCustomT
                 .filter(event -> event != null)
                 .filter(event -> hasMultipleDebtDocuments(event))
                 .forEach(event -> taskLog("Multiple debts in event = %s%n", event.getExternalId()));
-
+/*
         Arrays.stream(string("spam_tin_pc.txt").split("\n"))
                 .filter(s -> !s.trim().isEmpty())
                 .map(s -> (Event) FenixFramework.getDomainObject(s.trim()))
@@ -62,6 +62,7 @@ public class AttemptDocumentRegenerationForRequestedFixTins extends WriteCustomT
                                 sapRequest.delete();
                             });
                 });
+ */
 //        throw new Error("Abort TX");
     }
 
