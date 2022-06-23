@@ -78,28 +78,31 @@ public class FenixIstWebAppListener implements ServletContextListener, Configura
 
         if (!CoreConfiguration.getConfiguration().developmentMode()) {
             final Properties properties = loadProperties();
-            final Repository repository = new Repository(properties.getProperty("scheduler.git.repo.url"),
-                    properties.getProperty("scheduler.git.repo.dir"),
-                    properties.getProperty("scheduler.git.repo.username"),
-                    properties.getProperty("scheduler.git.repo.password"));
+            final String url = properties.getProperty("scheduler.git.repo.url");
+            if (url != null && !url.trim().isEmpty()) {
+                final Repository repository = new Repository(url,
+                        properties.getProperty("scheduler.git.repo.dir"),
+                        properties.getProperty("scheduler.git.repo.username"),
+                        properties.getProperty("scheduler.git.repo.password"));
 
-            CustomTask.registerHandler(customTask -> {
-                final Path path = toPath(repository, customTask);
-                final byte[] content = customTask.getSourceCode().getBytes();
-                final byte[] current = read(path);
-                if (!Arrays.equals(current, content)) {
-                    final String[] info = new String[2];
-                    TransactionalThread.runTx(true, () -> {
-                        final User user = User.findByUsername(customTask.getTaskRunner());
-                        info[0] = user.getDisplayName();
-                        info[1] = user.getEmail();
-                    });
+                CustomTask.registerHandler(customTask -> {
+                    final Path path = toPath(repository, customTask);
+                    final byte[] content = customTask.getSourceCode().getBytes();
+                    final byte[] current = read(path);
+                    if (!Arrays.equals(current, content)) {
+                        final String[] info = new String[2];
+                        TransactionalThread.runTx(true, () -> {
+                            final User user = User.findByUsername(customTask.getTaskRunner());
+                            info[0] = user.getDisplayName();
+                            info[1] = user.getEmail();
+                        });
 
-                    write(path, content);
-                    repository.addCommitAndPush("Run CustomTask " + customTask.getClass().getSimpleName(),
-                            info[0], info[1]);
-                }
-            });
+                        write(path, content);
+                        repository.addCommitAndPush("Run CustomTask " + customTask.getClass().getSimpleName(),
+                                info[0], info[1]);
+                    }
+                });
+            }
         }
     }
 
