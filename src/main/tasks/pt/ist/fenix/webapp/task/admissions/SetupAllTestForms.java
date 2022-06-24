@@ -29,6 +29,8 @@ public class SetupAllTestForms extends CustomTask implements RemoteReader {
         final String raidesForm = string("raidesForm.json");
         final String mobilityRaidesForm = string("mobilityRaidesForm.json");
 
+        setup("Processo Valorização Docentes",  string("teachersPromotionForm.json"));
+
         setup("Segundo Ciclo - Form Candidatura",  string("2ndCycleFormData.json"));
         setup("Segundo Ciclo - Form Matrícula", raidesForm);
 
