@@ -12,7 +12,7 @@ public class DebugSearchMembers extends ReadCustomTask {
     @Override
     public void runTask() throws Exception {
         final SearchMemberInput input = new SearchMemberInput();
-        input.setDocumentID("PT230124674");
+        input.setDocumentID("230124674");
         input.setDocumentType(501);
         final SearchMemberOutput output = new CgdIntegrationService().searchMember(input);
         taskLog("%s = %s%n", output.getReplyCode(), output.getMemberInfo().stream()
