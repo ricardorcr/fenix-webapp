@@ -13,7 +13,7 @@ public class DebugBoardApplicationWrongCycle extends ReadCustomTask {
     @Override
     public void runTask() throws Exception {
         try {
-            TransactionalThread.runTx(false, () -> {
+            FenixFramework.atomic(() -> {
                 taskLog("Test 1... as is.");
                 final Application application = FenixFramework.getDomainObject("571415333968181");
                 application.board();
@@ -27,7 +27,7 @@ public class DebugBoardApplicationWrongCycle extends ReadCustomTask {
         }
 
         try {
-            TransactionalThread.runTx(false, () -> {
+            FenixFramework.atomic(() -> {
                 taskLog("Test 2... hack cycle type.");
                 final Application application = FenixFramework.getDomainObject("571415333968181");
                 final AdmissionProcessTarget target = application.getAdmissionProcessTarget();
