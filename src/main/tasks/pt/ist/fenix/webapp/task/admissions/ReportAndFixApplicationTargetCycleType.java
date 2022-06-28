@@ -8,12 +8,13 @@ import org.fenixedu.admissions.domain.AdmissionProcessTarget;
 import org.fenixedu.admissions.domain.AdmissionsSystem;
 import org.fenixedu.admissions.ist.domain.Utils;
 import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
+import org.fenixedu.bennu.scheduler.custom.WriteCustomTask;
 import org.fenixedu.commons.spreadsheet.Spreadsheet;
 import pt.ist.fenixframework.FenixFramework;
 
 import java.io.ByteArrayOutputStream;
 
-public class ReportAndFixApplicationTargetCycleType extends ReadCustomTask {
+public class ReportAndFixApplicationTargetCycleType extends WriteCustomTask {
 
     @Override
     public void runTask() throws Exception {
