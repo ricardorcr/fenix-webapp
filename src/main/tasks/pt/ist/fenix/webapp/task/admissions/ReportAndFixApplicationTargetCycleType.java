@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.fenixedu.academic.domain.Degree;
 import org.fenixedu.academic.domain.degreeStructure.CycleType;
+import org.fenixedu.admissions.domain.AdmissionProcessTarget;
 import org.fenixedu.admissions.domain.AdmissionsSystem;
 import org.fenixedu.admissions.ist.domain.Utils;
 import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
@@ -39,6 +40,11 @@ public class ReportAndFixApplicationTargetCycleType extends ReadCustomTask {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         spreadsheet.exportToXLSSheet(stream);
         output("AdmissionsCycleCheck.xlsx", stream.toByteArray());
+
+        final AdmissionProcessTarget target = FenixFramework.getDomainObject("853027749632593");
+        final JsonObject outcome = target.getOutcomeConfigJson();
+        outcome.addProperty("cycleType", CycleType.SECOND_CYCLE.name());
+        target.setOutcomeConfig(outcome.toString());
     }
 
     private CycleType cycleType(final JsonObject outcome) {
