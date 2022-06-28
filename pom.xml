@@ -27,7 +27,7 @@
     <properties>
         <version.org.fenixedu.academic>31.0.1</version.org.fenixedu.academic>
         <version.pt.ist.fenixedu.ist>18.30.2</version.pt.ist.fenixedu.ist>
-        <version.pt.ist.renates-integration>2.0.1</version.pt.ist.renates-integration>
+        <version.pt.ist.renates-integration>2.1.0</version.pt.ist.renates-integration>
         <version.ch.qos.logback.logback.classic>1.1.8</version.ch.qos.logback.logback.classic>
         <version.org.fenixedu.a3es>2.4.1</version.org.fenixedu.a3es>
         <version.org.fenixedu.academic.thesis>6.10.1</version.org.fenixedu.academic.thesis>
@@ -58,6 +58,7 @@
         <version.org.fenixedu.fenixedu-admissions>6.20.0</version.org.fenixedu.fenixedu-admissions>
         <version.org.fenixedu.fenixedu-connect>1.59.2</version.org.fenixedu.fenixedu-connect>
         <version.org.fenixedu.fenixedu-queueing>2.1.0</version.org.fenixedu.fenixedu-queueing>
+        <version.org.fenixedu.fenixedu-external-teachers>1.0.0</version.org.fenixedu.fenixedu-external-teachers>
         <version.pt.ist.fenix-sibs-payments>1.5.0</version.pt.ist.fenix-sibs-payments>
         <version.org.fenixedu.fenixedu-safe-file-share>1.1.1</version.org.fenixedu.fenixedu-safe-file-share>
         <version.bennu-vue-pluggable>0.0.4</version.bennu-vue-pluggable>
@@ -402,6 +403,11 @@
             <groupId>org.fenixedu</groupId>
             <artifactId>fenixedu-queueing</artifactId>
             <version>${version.org.fenixedu.fenixedu-queueing}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fenixedu</groupId>
+            <artifactId>fenixedu-external-teachers</artifactId>
+            <version>${version.org.fenixedu.fenixedu-external-teachers}</version>
         </dependency>
         <dependency>
             <groupId>pt.ist</groupId>
