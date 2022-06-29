@@ -30,7 +30,7 @@ public class AttemptDocumentRegenerationForRequestedFixTins extends WriteCustomT
                 .forEach(event -> taskLog("Multiple debts in event = %s%n", event.getExternalId()));
  */
 
-        Stream.of("569628627567553"
+        Stream.of("571557067913136", "571557067913153"
                 //"564805379294555", "571200585597521", "571200585597522", "564805379294556", "846280356005434"
         )
 //        Arrays.stream(string("spam_tin_pc.txt").split("\n"))
