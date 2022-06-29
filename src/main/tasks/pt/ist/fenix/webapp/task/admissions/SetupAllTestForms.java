@@ -27,7 +27,7 @@ public class SetupAllTestForms extends CustomTask implements RemoteReader {
                 .forEach(admissionProcess -> admissionProcess.delete());
 
         final String raidesForm = string("raidesForm.json");
-        final String mobilityRaidesForm = string("mobilityRaidesForm.json");
+        final String mobilityRaidesForm = string("raidesMobilityForm.json");
 
         setup("Processo Valorização Docentes",  string("teachersPromotionForm.json"));
 
