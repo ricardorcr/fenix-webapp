@@ -51,7 +51,8 @@ public class StudentPerformanceReport extends ReadCustomTask {
                     .setCell("Ingression Type", registration.getIngressionType() == null ? ""
                             : registration.getIngressionType().getLocalizedName())
                     .setCell("Cycle", cycleType == null ? null : cycleType.getDescriptionI18N().getContent())
-                    .setCell("Enrolment Date", data.getEnrolmentDate().toString("yyyy-MM-dd"))
+                    .setCell("Enrolment Date", data.getEnrolmentDate() == null ? ""
+                            : data.getEnrolmentDate().toString("yyyy-MM-dd"))
                     .setCell("Max Credits Allowed", maxCredits == null ? "" : maxCredits.toString())
                     .setCell("Allowed Semester", allowedSemester == null ? "" : executionYear.getName())
 
