@@ -23,7 +23,9 @@ public class StudentPerformanceReport extends ReadCustomTask {
     public void runTask() throws Exception {
         final Spreadsheet spreadsheet = new Spreadsheet("StudentPerformance");
         final ExecutionYear executionYear = ExecutionYear.readCurrentExecutionYear();
-        executionYear.getRegistrationDataByExecutionYearSet().forEach(data -> {
+        executionYear.getRegistrationDataByExecutionYearSet().stream()
+                .filter(data -> data.getRegistration().getDegree().isFirstCycle() || data.getRegistration().getDegree().isSecondCycle())
+                .forEach(data -> {
             final Registration registration = data.getRegistration();
             final Student student = registration.getStudent();
             final Person person = student.getPerson();
@@ -48,7 +50,7 @@ public class StudentPerformanceReport extends ReadCustomTask {
                             : registration.getRegistrationProtocol().getDescription().getContent())
                     .setCell("Ingression Type", registration.getIngressionType() == null ? ""
                             : registration.getIngressionType().getLocalizedName())
-                    .setCell("Cycle", cycleType.getDescriptionI18N().getContent())
+                    .setCell("Cycle", cycleType == null ? null : cycleType.getDescriptionI18N().getContent())
                     .setCell("Enrolment Date", data.getEnrolmentDate().toString("yyyy-MM-dd"))
                     .setCell("Max Credits Allowed", maxCredits == null ? "" : maxCredits.toString())
                     .setCell("Allowed Semester", allowedSemester == null ? "" : executionYear.getName())
