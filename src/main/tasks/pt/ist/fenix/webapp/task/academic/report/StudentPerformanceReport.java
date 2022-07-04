@@ -56,7 +56,7 @@ public class StudentPerformanceReport extends ReadCustomTask {
                                 .setCell("Enrolment Date", data.getEnrolmentDate() == null ? ""
                                         : data.getEnrolmentDate().toString("yyyy-MM-dd"))
                                 .setCell("Max Credits Allowed", maxCredits == null ? "" : maxCredits.toString())
-                                .setCell("Allowed Semester", allowedSemester == null ? "" : executionYear.getName())
+                                .setCell("Allowed Semester", allowedSemester == null ? "" : allowedSemester.getSemester().toString())
 
                                 .setCell("Enrolment Count", Long.toString(enrolments.get().count()))
                                 .setCell("Enrolment ECTS", Double.toString(enrolments.get()
@@ -106,7 +106,7 @@ public class StudentPerformanceReport extends ReadCustomTask {
                 });
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         spreadsheet.exportToXLSSheet(stream);
-        output("StudentPerformance_" + executionYear.getName().replace("/", "_"), stream.toByteArray());
+        output("StudentPerformance_" + executionYear.getName().replace("/", "_") + ".xlsx", stream.toByteArray());
     }
 
     private Stream<ExecutionYear> executionYears(final Registration registration) {
