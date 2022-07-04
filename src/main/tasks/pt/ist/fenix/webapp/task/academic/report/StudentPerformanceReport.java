@@ -26,81 +26,84 @@ public class StudentPerformanceReport extends ReadCustomTask {
         executionYear.getRegistrationDataByExecutionYearSet().stream()
                 .filter(data -> data.getRegistration().getDegree().isFirstCycle() || data.getRegistration().getDegree().isSecondCycle())
                 .forEach(data -> {
-            final Registration registration = data.getRegistration();
-            final Student student = registration.getStudent();
-            final Person person = student.getPerson();
-            final StudentCurricularPlan studentCurricularPlan = registration.getStudentCurricularPlan(executionYear);
-            final DegreeCurricularPlan degreeCurricularPlan = studentCurricularPlan.getDegreeCurricularPlan();
-            final Degree degree = degreeCurricularPlan.getDegree();
-            final CycleType cycleType = registration.getCycleType(executionYear);
-            final Double maxCredits = data.getMaxCreditsPerYear();
-            final ExecutionSemester allowedSemester = data.getAllowedSemesterForEnrolments();
-            final ExecutionYear ingressionYear = executionYears(registration).min(ExecutionYear::compareTo).orElse(null);
+                    final Registration registration = data.getRegistration();
+                    final Student student = registration.getStudent();
+                    final Person person = student.getPerson();
+                    final StudentCurricularPlan studentCurricularPlan = registration.getStudentCurricularPlan(executionYear);
+                    if (studentCurricularPlan != null) {
 
-            final Supplier<Stream<Enrolment>> enrolments = () -> studentCurricularPlan.getEnrolmentStream()
-                    .filter(enrolment -> enrolment.getExecutionYear() == executionYear);
+                        final DegreeCurricularPlan degreeCurricularPlan = studentCurricularPlan.getDegreeCurricularPlan();
+                        final Degree degree = degreeCurricularPlan.getDegree();
+                        final CycleType cycleType = registration.getCycleType(executionYear);
+                        final Double maxCredits = data.getMaxCreditsPerYear();
+                        final ExecutionSemester allowedSemester = data.getAllowedSemesterForEnrolments();
+                        final ExecutionYear ingressionYear = executionYears(registration).min(ExecutionYear::compareTo).orElse(null);
 
-            spreadsheet.addRow()
-                    .setCell("User", person.getUsername())
-                    .setCell("Name", person.getName())
-                    .setCell("Degree Type", degree.getDegreeType().getName().getContent())
-                    .setCell("Curricular Plan", degreeCurricularPlan.getName())
-                    .setCell("Ingression Year", ingressionYear == null ? null : ingressionYear.getName())
-                    .setCell("Protocol", registration.getRegistrationProtocol() == null ? ""
-                            : registration.getRegistrationProtocol().getDescription().getContent())
-                    .setCell("Ingression Type", registration.getIngressionType() == null ? ""
-                            : registration.getIngressionType().getLocalizedName())
-                    .setCell("Cycle", cycleType == null ? null : cycleType.getDescriptionI18N().getContent())
-                    .setCell("Enrolment Date", data.getEnrolmentDate() == null ? ""
-                            : data.getEnrolmentDate().toString("yyyy-MM-dd"))
-                    .setCell("Max Credits Allowed", maxCredits == null ? "" : maxCredits.toString())
-                    .setCell("Allowed Semester", allowedSemester == null ? "" : executionYear.getName())
+                        final Supplier<Stream<Enrolment>> enrolments = () -> studentCurricularPlan.getEnrolmentStream()
+                                .filter(enrolment -> enrolment.getExecutionYear() == executionYear);
 
-                    .setCell("Enrolment Count", Long.toString(enrolments.get().count()))
-                    .setCell("Enrolment ECTS", Double.toString(enrolments.get()
-                            .mapToDouble(e -> e.getEctsCreditsForCurriculum().doubleValue())
-                            .sum()))
-                    .setCell("Approved Count", Long.toString(enrolments.get().filter(e -> e.isApproved()).count()))
-                    .setCell("Approved ECTS", Double.toString(enrolments.get()
-                            .filter(e -> e.isApproved())
-                            .mapToDouble(e -> e.getEctsCreditsForCurriculum().doubleValue())
-                            .sum()))
+                        spreadsheet.addRow()
+                                .setCell("User", person.getUsername())
+                                .setCell("Name", person.getName())
+                                .setCell("Degree Type", degree.getDegreeType().getName().getContent())
+                                .setCell("Curricular Plan", degreeCurricularPlan.getName())
+                                .setCell("Ingression Year", ingressionYear == null ? null : ingressionYear.getName())
+                                .setCell("Protocol", registration.getRegistrationProtocol() == null ? ""
+                                        : registration.getRegistrationProtocol().getDescription().getContent())
+                                .setCell("Ingression Type", registration.getIngressionType() == null ? ""
+                                        : registration.getIngressionType().getLocalizedName())
+                                .setCell("Cycle", cycleType == null ? null : cycleType.getDescriptionI18N().getContent())
+                                .setCell("Enrolment Date", data.getEnrolmentDate() == null ? ""
+                                        : data.getEnrolmentDate().toString("yyyy-MM-dd"))
+                                .setCell("Max Credits Allowed", maxCredits == null ? "" : maxCredits.toString())
+                                .setCell("Allowed Semester", allowedSemester == null ? "" : executionYear.getName())
 
-                    .setCell("Enrolment Count Sem 1", Long.toString(enrolments.get()
-                            .filter(e -> e.getExecutionPeriod().getSemester().intValue() == 1)
-                            .count()))
-                    .setCell("Enrolment ECTS Sem 1", Double.toString(enrolments.get()
-                            .filter(e -> e.getExecutionPeriod().getSemester().intValue() == 1)
-                            .mapToDouble(e -> e.getEctsCreditsForCurriculum().doubleValue())
-                            .sum()))
-                    .setCell("Approved Count Sem 1", Long.toString(enrolments.get()
-                            .filter(e -> e.getExecutionPeriod().getSemester().intValue() == 1)
-                            .filter(e -> e.isApproved())
-                            .count()))
-                    .setCell("Approved ECTS Sem 1", Double.toString(enrolments.get()
-                            .filter(e -> e.getExecutionPeriod().getSemester().intValue() == 1)
-                            .filter(e -> e.isApproved())
-                            .mapToDouble(e -> e.getEctsCreditsForCurriculum().doubleValue())
-                            .sum()))
+                                .setCell("Enrolment Count", Long.toString(enrolments.get().count()))
+                                .setCell("Enrolment ECTS", Double.toString(enrolments.get()
+                                        .mapToDouble(e -> e.getEctsCreditsForCurriculum().doubleValue())
+                                        .sum()))
+                                .setCell("Approved Count", Long.toString(enrolments.get().filter(e -> e.isApproved()).count()))
+                                .setCell("Approved ECTS", Double.toString(enrolments.get()
+                                        .filter(e -> e.isApproved())
+                                        .mapToDouble(e -> e.getEctsCreditsForCurriculum().doubleValue())
+                                        .sum()))
 
-                    .setCell("Enrolment Count Sem 2", Long.toString(enrolments.get()
-                            .filter(e -> e.getExecutionPeriod().getSemester().intValue() == 2)
-                            .count()))
-                    .setCell("Enrolment ECTS", Double.toString(enrolments.get()
-                            .filter(e -> e.getExecutionPeriod().getSemester().intValue() == 2)
-                            .mapToDouble(e -> e.getEctsCreditsForCurriculum().doubleValue())
-                            .sum()))
-                    .setCell("Approved Count Sem 2", Long.toString(enrolments.get()
-                            .filter(e -> e.getExecutionPeriod().getSemester().intValue() == 2)
-                            .filter(e -> e.isApproved())
-                            .count()))
-                    .setCell("Approved ECTS", Double.toString(enrolments.get()
-                            .filter(e -> e.getExecutionPeriod().getSemester().intValue() == 2)
-                            .filter(e -> e.isApproved())
-                            .mapToDouble(e -> e.getEctsCreditsForCurriculum().doubleValue())
-                            .sum()))
-                    ;
-        });
+                                .setCell("Enrolment Count Sem 1", Long.toString(enrolments.get()
+                                        .filter(e -> e.getExecutionPeriod().getSemester().intValue() == 1)
+                                        .count()))
+                                .setCell("Enrolment ECTS Sem 1", Double.toString(enrolments.get()
+                                        .filter(e -> e.getExecutionPeriod().getSemester().intValue() == 1)
+                                        .mapToDouble(e -> e.getEctsCreditsForCurriculum().doubleValue())
+                                        .sum()))
+                                .setCell("Approved Count Sem 1", Long.toString(enrolments.get()
+                                        .filter(e -> e.getExecutionPeriod().getSemester().intValue() == 1)
+                                        .filter(e -> e.isApproved())
+                                        .count()))
+                                .setCell("Approved ECTS Sem 1", Double.toString(enrolments.get()
+                                        .filter(e -> e.getExecutionPeriod().getSemester().intValue() == 1)
+                                        .filter(e -> e.isApproved())
+                                        .mapToDouble(e -> e.getEctsCreditsForCurriculum().doubleValue())
+                                        .sum()))
+
+                                .setCell("Enrolment Count Sem 2", Long.toString(enrolments.get()
+                                        .filter(e -> e.getExecutionPeriod().getSemester().intValue() == 2)
+                                        .count()))
+                                .setCell("Enrolment ECTS", Double.toString(enrolments.get()
+                                        .filter(e -> e.getExecutionPeriod().getSemester().intValue() == 2)
+                                        .mapToDouble(e -> e.getEctsCreditsForCurriculum().doubleValue())
+                                        .sum()))
+                                .setCell("Approved Count Sem 2", Long.toString(enrolments.get()
+                                        .filter(e -> e.getExecutionPeriod().getSemester().intValue() == 2)
+                                        .filter(e -> e.isApproved())
+                                        .count()))
+                                .setCell("Approved ECTS", Double.toString(enrolments.get()
+                                        .filter(e -> e.getExecutionPeriod().getSemester().intValue() == 2)
+                                        .filter(e -> e.isApproved())
+                                        .mapToDouble(e -> e.getEctsCreditsForCurriculum().doubleValue())
+                                        .sum()))
+                        ;
+                    }
+                });
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         spreadsheet.exportToXLSSheet(stream);
         output("StudentPerformance_" + executionYear.getName().replace("/", "_"), stream.toByteArray());
