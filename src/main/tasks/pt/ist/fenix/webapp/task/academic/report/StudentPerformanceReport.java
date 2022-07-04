@@ -109,8 +109,8 @@ public class StudentPerformanceReport extends ReadCustomTask {
     private Stream<ExecutionYear> executionYears(final Registration registration) {
         Stream<ExecutionYear> stream = registration.getRegistrationDataByExecutionYearSet().stream()
                 .map(data -> data.getExecutionYear());
-        stream = executionYears(stream, registration.getSourceRegistration());
-        return executionYears(stream, registration.getSourceRegistrationForTransition());
+        return executionYears(stream, registration.getSourceRegistration());
+        //return executionYears(stream, registration.getSourceRegistrationForTransition());
     }
 
     private Stream<ExecutionYear> executionYears(final Stream<ExecutionYear> stream, final Registration registration) {
