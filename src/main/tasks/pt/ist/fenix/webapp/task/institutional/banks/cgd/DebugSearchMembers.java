@@ -87,12 +87,13 @@ public class DebugSearchMembers extends ReadCustomTask {
 
                                     @Override
                                     public boolean handleFault(MessageContext context) {
+                                        taskLog("fault message: " + context);
                                         return false;
                                     }
 
                                     @Override
                                     public void close(MessageContext context) {
-
+                                        taskLog("Close message: " + context);
                                     }
                                 });
                             } catch (final NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
@@ -107,29 +108,29 @@ public class DebugSearchMembers extends ReadCustomTask {
 
                             boolean attachment = sender.uploadFormAttachment(registration, rservice
                                     .getRegistrationDeclarationFileForBanks(registration));
-                            taskLog("Sent Form43 ({}) and registration declaration file ({}) for registration {}",
+                            taskLog("Sent Form43 ({}) and registration declaration file ({}) for registration {}%n",
                                     form, attachment, registration.getExternalId() );
                             if (form && attachment) {
                                 FenixFramework.atomic(() -> cgdCard.setSuccessfulSentData(new DateTime()));
-                                taskLog(String.format("CGD: Comunicação efectuada à CGD com sucesso para o utilizador %s", username));
+                                taskLog(String.format("CGD: Comunicação efectuada à CGD com sucesso para o utilizador %s%n", username));
                                 return;
                             } else {
-                                taskLog(String.format("CGD: Comunicação falhou para o utilizador %s. Contactar a CGD.", username));
+                                taskLog(String.format("CGD: Comunicação falhou para o utilizador %s. Contactar a CGD.%n", username));
                                 return;
                             }
                         }
                     }
-                    taskLog(String.format("CGD: Não existe uma matrícula activa para o aluno %s", username));
+                    taskLog(String.format("CGD: Não existe uma matrícula activa para o aluno %s%n", username));
                     return;
                 }
-                taskLog(String.format("CGD: Utilizador %s não é aluno", username));
+                taskLog(String.format("CGD: Utilizador %s não é aluno%n", username));
                 return;
             } else {
-                taskLog(String.format("CGD: Utilizador %s não tem pessoa activa", username));
+                taskLog(String.format("CGD: Utilizador %s não tem pessoa activa%n", username));
                 return;
             }
         }
-        taskLog(String.format("CGD: %s - É necessário autorização a cedência de dados à CGD para efeitos de abertura de conta", username));
+        taskLog(String.format("CGD: %s - É necessário autorização a cedência de dados à CGD para efeitos de abertura de conta%n", username));
     }
 
 }
