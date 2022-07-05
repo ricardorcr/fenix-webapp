@@ -11,7 +11,7 @@ public class DebugIdentities extends ReadCustomTask {
                 .map(identity -> identity.getPersonalInformation())
                 .filter(personalInformation -> personalInformation.getIdentificationDocument() == null)
                 .forEach(personalInformation -> {
-                    taskLog("No ID Document for identity %s%n", personalInformation.getIdentity().getExternalId());
+                    //taskLog("No ID Document for identity %s%n", personalInformation.getIdentity().getExternalId());
                 });
     }
 
