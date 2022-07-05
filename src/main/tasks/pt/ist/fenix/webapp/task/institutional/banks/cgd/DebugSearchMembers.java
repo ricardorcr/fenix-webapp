@@ -5,6 +5,9 @@ import com.qubit.solution.fenixedu.integration.cgd.webservices.CgdIntegrationSer
 import com.qubit.solution.fenixedu.integration.cgd.webservices.messages.member.SearchMemberInput;
 import com.qubit.solution.fenixedu.integration.cgd.webservices.messages.member.SearchMemberOutput;
 import org.apache.commons.lang.BooleanUtils;
+import org.apache.cxf.frontend.ClientProxy;
+import org.apache.cxf.interceptor.LoggingInInterceptor;
+import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.fenixedu.academic.domain.Person;
 import org.fenixedu.academic.domain.student.Registration;
 import org.fenixedu.academic.domain.student.Student;
@@ -78,29 +81,16 @@ public class DebugSearchMembers extends ReadCustomTask {
                                 final Method method = sender.getClass().getDeclaredMethod("getService");
                                 method.setAccessible(true);
                                 final BindingProvider provider = (BindingProvider) method.invoke(sender);
-                                final List<Handler> handlers = provider.getBinding().getHandlerChain();
-                                handlers.add(0, new Handler() {
-                                    @Override
-                                    public boolean handleMessage(final MessageContext context) {
-                                        taskLog("Processing message: " + context);
-                                        context.entrySet().forEach(e -> {
-                                            taskLog("   %s = %s%n", e.getKey(), e.getValue());
-                                        });
-                                        return true;
-                                    }
 
-                                    @Override
-                                    public boolean handleFault(MessageContext context) {
-                                        taskLog("fault message: " + context);
-                                        return false;
-                                    }
+                                final org.apache.cxf.endpoint.Client client = ClientProxy.getClient(provider);
+                                LoggingInInterceptor loggingInInterceptor = new LoggingInInterceptor();
+                                loggingInInterceptor.setPrettyLogging(true);
+                                LoggingOutInterceptor loggingOutInterceptor = new LoggingOutInterceptor();
+                                loggingOutInterceptor.setPrettyLogging(true);
 
-                                    @Override
-                                    public void close(MessageContext context) {
-                                        taskLog("Close message: " + context);
-                                    }
-                                });
-                                provider.getBinding().setHandlerChain(handlers);
+                                client.getInInterceptors().add(loggingInInterceptor);
+                                client.getOutInterceptors().add(loggingOutInterceptor);
+
                             } catch (final NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                                 throw new Error(e);
                             }
