@@ -42,6 +42,7 @@ public class DebugSearchMembers extends ReadCustomTask {
         System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dump", "true");
         System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dumpTreshold", "9999999999999999999999999999999999999");
 
+/*
         final SearchMemberInput input = new SearchMemberInput();
         input.setDocumentID("230124674");
         input.setDocumentType(501);
@@ -50,6 +51,7 @@ public class DebugSearchMembers extends ReadCustomTask {
                 .map(info -> info.getName())
                 .collect(Collectors.joining("; ")));
         final User user = User.findByUsername("ist423218");
+ */
         final CgdCard cgdCard = FenixFramework.getDomainObject("851898173307065");
 /*
         final RegistrationDeclarationForBanksService rservice = new RegistrationDeclarationForBanksService(
