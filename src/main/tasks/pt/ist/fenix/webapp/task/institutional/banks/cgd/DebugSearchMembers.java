@@ -75,7 +75,7 @@ public class DebugSearchMembers extends ReadCustomTask {
                                 final Method method = sender.getClass().getDeclaredMethod("getService");
                                 method.setAccessible(true);
                                 final BindingProvider provider = (BindingProvider) method.invoke(sender);
-                                provider.getBinding().getHandlerChain().add(new Handler() {
+                                provider.getBinding().getHandlerChain().add(0, new Handler() {
                                     @Override
                                     public boolean handleMessage(final MessageContext context) {
                                         taskLog("Processing message: " + context);
