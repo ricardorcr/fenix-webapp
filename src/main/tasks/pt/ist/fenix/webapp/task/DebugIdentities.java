@@ -13,8 +13,12 @@ public class DebugIdentities extends ReadCustomTask {
 //                .filter(personalInformation -> personalInformation.getIdentificationDocument() == null)
 //                .forEach(personalInformation -> {
                   .forEach(identity -> {
-                    //taskLog("No ID Document for identity %s%n", personalInformation.getIdentity().getExternalId());
-                      taskLog("No personal information for: %s%n", identity.getExternalId());
+                      identity.setUser(null);
+                      identity.getAccountSet().stream().forEach(account -> {
+                          account.setUser(null);
+                          account.delete();
+                      });
+//                      identity.delete();
                 });
     }
 
