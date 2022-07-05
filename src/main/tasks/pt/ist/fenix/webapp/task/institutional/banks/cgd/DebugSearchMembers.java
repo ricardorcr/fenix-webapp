@@ -165,7 +165,7 @@ public class DebugSearchMembers extends ReadCustomTask {
             form43Digital.setIDCardProduction(requestCard);
 
             OperationResult setForm43DigitalData = service.setForm43DigitalData(form43Digital);
-            taskLog("Response message: %s%n", setForm43DigitalData.getMessage());
+            taskLog("Response message: %s%n", setForm43DigitalData.getMessage().getValue());
             success = !setForm43DigitalData.isError();
             if (!success) {
                 taskLog("Problems while trying to send form 43 to student with number: "
