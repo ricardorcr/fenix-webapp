@@ -19,12 +19,14 @@ import pt.ist.papyrus.PapyrusClient;
 import pt.ist.papyrus.PapyrusConfiguration;
 import pt.ist.papyrus.PapyrusSettings;
 import pt.ist.registration.process.ui.service.RegistrationDeclarationDataProvider;
+import services.caixaiu.cgd.wingman.iesservice.IIESService;
 
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
 import javax.xml.ws.handler.MessageContext;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class DebugSearchMembers extends ReadCustomTask {
@@ -71,18 +73,20 @@ public class DebugSearchMembers extends ReadCustomTask {
                     for (final Registration registration : student.getRegistrationsSet()) {
                         if (registration.isActive()) {
                             CgdForm43Sender sender = new CgdForm43Sender();
+                            final IIESService service = sender.getClient();
                             try {
                                 final Method method = sender.getClass().getDeclaredMethod("getService");
                                 method.setAccessible(true);
                                 final BindingProvider provider = (BindingProvider) method.invoke(sender);
-                                provider.getBinding().getHandlerChain().add(0, new Handler() {
+                                final List<Handler> handlers = provider.getBinding().getHandlerChain();
+                                handlers.add(new Handler() {
                                     @Override
                                     public boolean handleMessage(final MessageContext context) {
                                         taskLog("Processing message: " + context);
                                         context.entrySet().forEach(e -> {
                                             taskLog("   %s = %s%n", e.getKey(), e.getValue());
                                         });
-                                        return false;
+                                        return true;
                                     }
 
                                     @Override
@@ -96,6 +100,7 @@ public class DebugSearchMembers extends ReadCustomTask {
                                         taskLog("Close message: " + context);
                                     }
                                 });
+                                provider.getBinding().setHandlerChain(handlers);
                             } catch (final NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                                 throw new Error(e);
                             }
