@@ -1,9 +1,10 @@
 package pt.ist.fenix.webapp.task;
 
 import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
+import org.fenixedu.bennu.scheduler.custom.WriteCustomTask;
 import org.fenixedu.connect.domain.ConnectSystem;
 
-public class DebugIdentities extends ReadCustomTask {
+public class DebugIdentities extends WriteCustomTask {
 
     @Override
     public void runTask() throws Exception {
