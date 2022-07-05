@@ -3,9 +3,12 @@ package pt.ist.fenix.webapp.task.institutional.banks.cgd;
 import com.qubit.solution.fenixedu.integration.cgd.webservices.CgdIntegrationService;
 import com.qubit.solution.fenixedu.integration.cgd.webservices.messages.member.SearchMemberInput;
 import com.qubit.solution.fenixedu.integration.cgd.webservices.messages.member.SearchMemberOutput;
+import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
+import pt.ist.fenixedu.integration.domain.cgd.CgdCard;
+import pt.ist.fenixedu.integration.ui.spring.service.SendCgdCardService;
+import pt.ist.fenixframework.FenixFramework;
 
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class DebugSearchMembers extends ReadCustomTask {
@@ -18,5 +21,9 @@ public class DebugSearchMembers extends ReadCustomTask {
         taskLog("%s = %s%n", output.getReplyCode(), output.getMemberInfo().stream()
                 .map(info -> info.getName())
                 .collect(Collectors.joining("; ")));
+        final User user = User.findByUsername("ist423218");
+        final CgdCard cgdCard = FenixFramework.getDomainObject("851898173307065");
+        final SendCgdCardService service = new SendCgdCardService(null);
+        service.sendCgdCard(cgdCard);
     }
 }
