@@ -172,7 +172,7 @@ public class DebugSearchMembers extends ReadCustomTask {
 
             OperationResult setForm43DigitalData = service.setForm43DigitalData(form43Digital);
 
-            export("service", service);
+//            export("service", service);
 
             export("result", setForm43DigitalData);
 
