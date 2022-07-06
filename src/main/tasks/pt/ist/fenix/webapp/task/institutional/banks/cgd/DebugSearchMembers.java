@@ -193,6 +193,7 @@ public class DebugSearchMembers extends ReadCustomTask {
         } catch (Throwable t) {
             taskLog("Problems while trying to send form43 for student with number: " + registration.getStudent().getNumber(),
                     t);
+            throw new java.lang.Error(t);
         }
 
         return success;
