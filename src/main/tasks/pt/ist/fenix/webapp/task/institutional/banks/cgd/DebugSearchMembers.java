@@ -38,10 +38,13 @@ import services.caixaiu.cgd.wingman.iesservice.IIESService;
 import services.caixaiu.cgd.wingman.iesservice.IdentificationCard;
 import services.caixaiu.cgd.wingman.iesservice.ObjectFactory;
 import services.caixaiu.cgd.wingman.iesservice.OperationResult;
+import services.caixaiu.cgd.wingman.iesservice.SetForm43DigitalData;
+import services.caixaiu.cgd.wingman.iesservice.SetForm43DigitalDataResponse;
 import services.caixaiu.cgd.wingman.iesservice.ValidationResult;
 import services.caixaiu.cgd.wingman.iesservice.Worker;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -168,13 +171,18 @@ public class DebugSearchMembers extends ReadCustomTask {
             form43Digital.setStudentData(studentData);
             form43Digital.setIDCardProduction(requestCard);
 
-//            export("form", form43Digital);
+            final SetForm43DigitalData input = new SetForm43DigitalData();
+            input.setValue(new ObjectFactory().createForm43Digital(form43Digital));
+            export("form", input);
 
             OperationResult setForm43DigitalData = service.setForm43DigitalData(form43Digital);
 
 //            export("service", service);
 
-            export("result", setForm43DigitalData);
+            final SetForm43DigitalDataResponse output = new SetForm43DigitalDataResponse();
+            output.setSetForm43DigitalDataResult(new ObjectFactory().createSetForm43DigitalDataResponseSetForm43DigitalDataResult(setForm43DigitalData));
+
+            export("result", output);
 
             success = !setForm43DigitalData.isError();
             if (!success) {
