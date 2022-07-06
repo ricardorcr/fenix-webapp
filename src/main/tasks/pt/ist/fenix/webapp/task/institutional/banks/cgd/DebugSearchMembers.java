@@ -41,9 +41,13 @@ import services.caixaiu.cgd.wingman.iesservice.OperationResult;
 import services.caixaiu.cgd.wingman.iesservice.ValidationResult;
 import services.caixaiu.cgd.wingman.iesservice.Worker;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.ws.BindingProvider;
+import java.io.ByteArrayOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -164,8 +168,14 @@ public class DebugSearchMembers extends ReadCustomTask {
             form43Digital.setStudentData(studentData);
             form43Digital.setIDCardProduction(requestCard);
 
+            export("form", form43Digital);
+
             OperationResult setForm43DigitalData = service.setForm43DigitalData(form43Digital);
-            taskLog("Response message: %s%n", setForm43DigitalData.getMessage().getValue());
+
+            export("service", service);
+
+            export("result", setForm43DigitalData);
+
             success = !setForm43DigitalData.isError();
             if (!success) {
                 taskLog("Problems while trying to send form 43 to student with number: "
@@ -186,6 +196,19 @@ public class DebugSearchMembers extends ReadCustomTask {
         }
 
         return success;
+    }
+
+    private void export(final String label, final Object o) {
+        try {
+            JAXBContext contextObj = JAXBContext.newInstance(o.getClass());
+            Marshaller marshallerObj = contextObj.createMarshaller();
+            marshallerObj.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            marshallerObj.marshal(o, stream);
+            output(label + ".xml", stream.toByteArray());
+        } catch (final JAXBException e) {
+            throw new Error(e);
+        }
     }
 
     private static Client createClient(org.fenixedu.academic.domain.Person person, IIESService service, final Registration registration) {
