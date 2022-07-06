@@ -168,7 +168,7 @@ public class DebugSearchMembers extends ReadCustomTask {
             form43Digital.setStudentData(studentData);
             form43Digital.setIDCardProduction(requestCard);
 
-            export("form", form43Digital);
+//            export("form", form43Digital);
 
             OperationResult setForm43DigitalData = service.setForm43DigitalData(form43Digital);
 
