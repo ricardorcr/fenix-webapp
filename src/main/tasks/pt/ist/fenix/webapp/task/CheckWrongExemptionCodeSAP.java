@@ -46,7 +46,7 @@ public class CheckWrongExemptionCodeSAP extends CustomTask {
                     return true;
                 }
             } catch (Exception e) {
-                taskLog("Documento: %s\t%Evento: %s%n", sapRequest.getDocumentNumber(), sapRequest.getEvent().getExternalId());
+                taskLog("Documento: %s\tEvento: %s%n", sapRequest.getDocumentNumber(), sapRequest.getEvent().getExternalId());
             }
         }
         return false;
