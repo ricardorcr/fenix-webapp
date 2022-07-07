@@ -32,6 +32,7 @@ public class CheckWrongExemptionCodeSAP extends CustomTask {
         row.setCell("Tipo", sr.getRequestType().toString());
         row.setCell("Valor", sr.getValue().toString());
         row.setCell("Data envio", sr.getWhenSent() != null ? sr.getWhenSent().toString("dd/MM/yyyy") : "");
+        row.setCell("Factura", sr.getDocumentNumberForType("ND"));
         row.setCell("Evento", "https://fenix.tecnico.ulisboa.pt/sap-invoice-viewer/" + sr.getEvent().getExternalId());
     }
 
