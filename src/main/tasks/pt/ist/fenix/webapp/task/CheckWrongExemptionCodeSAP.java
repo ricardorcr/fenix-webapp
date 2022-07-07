@@ -16,7 +16,7 @@ public class CheckWrongExemptionCodeSAP extends CustomTask {
                 .filter(sr -> sr.getRequestType() != SapRequestType.INVOICE && sr.getRequestType() != SapRequestType.DEBT && sr.getRequestType() != SapRequestType.DEBT_CREDIT)
                 .filter(sr -> !sr.isInitialization())
                 .filter(sr -> sr.getAnulledRequest() == null && sr.getOriginalRequest() == null)
-                .filter(sr -> sr.getWhenCreated().getYear() >= 2022 && sr.getWhenCreated().getMonthOfYear() >=5)
+                //.filter(sr -> sr.getWhenCreated().getYear() >= 2022 && sr.getWhenCreated().getMonthOfYear() >=5)
                 .filter(this::isWrong)
                 .forEach(sr -> report(spreadsheet, sr));
 
@@ -31,6 +31,7 @@ public class CheckWrongExemptionCodeSAP extends CustomTask {
         row.setCell("Nº Documento SAP", sr.getSapDocumentNumber());
         row.setCell("Tipo", sr.getRequestType().toString());
         row.setCell("Valor", sr.getValue().toString());
+        row.setCell("Data envio", sr.getWhenSent().toString("dd/MM/yyyy"));
         row.setCell("Evento", "https://fenix.tecnico.ulisboa.pt/sap-invoice-viewer/" + sr.getEvent().getExternalId());
     }
 
