@@ -15,6 +15,7 @@ public class CheckWrongExemptionCodeSAP extends CustomTask {
         SapRoot.getInstance().getSapRequestSet().stream()
                 .filter(sr -> sr.getRequestType() != SapRequestType.INVOICE && sr.getRequestType() != SapRequestType.DEBT && sr.getRequestType() != SapRequestType.DEBT_CREDIT)
                 .filter(sr -> !sr.isInitialization())
+                .filter(sr -> sr.getAnulledRequest() == null && sr.getOriginalRequest() == null)
                 .filter(sr -> sr.getWhenCreated().getYear() >= 2022 && sr.getWhenCreated().getMonthOfYear() >=5)
                 .filter(this::isWrong)
                 .forEach(sr -> report(spreadsheet, sr));
