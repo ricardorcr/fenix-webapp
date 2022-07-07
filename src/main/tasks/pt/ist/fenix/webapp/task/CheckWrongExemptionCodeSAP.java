@@ -37,12 +37,16 @@ public class CheckWrongExemptionCodeSAP extends CustomTask {
         final String productCode = sapRequest.getRequestAsJson().get("productCode").getAsString();
         if (productCode.equals("0063")) {
             final String invoiceNumber = sapRequest.getDocumentNumberForType("ND");
-            final String invoiceProductCode = sapRequest.getEvent().getSapRequestSet().stream()
-                    .filter(sr -> sr.getDocumentNumber().equals(invoiceNumber))
-                    .map(sr -> sr.getRequestAsJson().get("productCode").getAsString())
-                    .findAny().get();
-            if (!productCode.equals(invoiceProductCode)) {
-                return true;
+            try {
+                final String invoiceProductCode = sapRequest.getEvent().getSapRequestSet().stream()
+                        .filter(sr -> sr.getDocumentNumber().equals(invoiceNumber))
+                        .map(sr -> sr.getRequestAsJson().get("productCode").getAsString())
+                        .findAny().get();
+                if (!productCode.equals(invoiceProductCode)) {
+                    return true;
+                }
+            } catch (Exception e) {
+                taskLog("Documento: %s\t%Evento: %s%n", sapRequest.getDocumentNumber(), sapRequest.getEvent().getExternalId());
             }
         }
         return false;
