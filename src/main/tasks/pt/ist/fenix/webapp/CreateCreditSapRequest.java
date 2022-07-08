@@ -15,9 +15,9 @@ public class CreateCreditSapRequest extends CustomTask {
 
     @Override
     public void runTask() throws Exception {
-        final Event event = FenixFramework.getDomainObject("1407400653358341");
+        final Event event = FenixFramework.getDomainObject("283785669115965");
         final SapEvent sapEvent = new SapEvent(event);
-        sapEvent.registerCredit(event, getCreditEntry(new Money(1063.47)), false, false);
+        sapEvent.registerCredit(event, getCreditEntry(new Money(360)), false, false);
     }
 
     CreditEntry getCreditEntry(final Money creditAmount) {
