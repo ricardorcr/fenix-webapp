@@ -20,6 +20,7 @@ public class CorrectSapRequest extends CustomTask {
         final JsonObject workingDocument = request.getAsJsonObject("workingDocument");
         workingDocument.addProperty("documentDate", date);
         workingDocument.addProperty("dueDate", date);
+        workingDocument.addProperty("entryDate", date);
         final JsonObject paymentDocument = request.getAsJsonObject("paymentDocument");
         paymentDocument.addProperty("paymentDate", date);
         sr.setRequest(request.toString());
