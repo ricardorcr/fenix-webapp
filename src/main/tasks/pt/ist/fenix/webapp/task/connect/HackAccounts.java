@@ -11,8 +11,13 @@ public class HackAccounts extends CustomTask {
 
     @Override
     public void runTask() throws Exception {
-        final Account account1 = FenixFramework.getDomainObject("1697512810064735");
-        account1.getIdentity().setUser(User.findByUsername("ist419033"));
+        final User user1 = User.findByUsername("ist30047");
+        final User user2 = User.findByUsername("ist419033");
+
+//        final Account account1 = FenixFramework.getDomainObject("1697512810064735");
+//        account1.getIdentity().setUser(User.findByUsername("ist419033"));
+
+        Identity.USER_SWITCH_HANDLER.forEach(consumer -> consumer.accept(user2, user1));
     }
 
 }
