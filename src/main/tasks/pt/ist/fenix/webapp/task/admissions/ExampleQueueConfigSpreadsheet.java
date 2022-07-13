@@ -34,14 +34,14 @@ public class ExampleQueueConfigSpreadsheet extends ReadCustomTask {
 
     public Spreadsheet queueConfigSpreadsheet(final AdmissionProcess admissionProcess) {
         final Spreadsheet spreadsheet = new Spreadsheet("OutcomeQueue");
-        final Spreadsheet spreadsheetBefore = new Spreadsheet("BeforeOutcomeQueue");
+        final Spreadsheet spreadsheetBefore = spreadsheet.addSpreadsheet("BeforeOutcomeQueue");
         admissionProcess.getAdmissionProcessTargetSet().forEach(target -> {
             final String name = target.getName().getContent();
             append(spreadsheet, name, target.getAfterOutcomeQueue());
             append(spreadsheetBefore, name, target.getBeforeOutcomeQueue());
         });
 
-        final Spreadsheet queueSheet = spreadsheet.addSpreadsheet("Queues");
+        final Spreadsheet queueSheet = spreadsheetBefore.addSpreadsheet("Queues");
         QueueingSystem.getInstance().getAttendanceQueueSet().forEach(attendanceQueue -> {
             queueSheet.addRow()
                     .setCell("QueueID", attendanceQueue.getExternalId())
@@ -58,6 +58,7 @@ public class ExampleQueueConfigSpreadsheet extends ReadCustomTask {
         spreadsheet.addRow().setCell("Target", name)
                 .setCell("Start", queue == null ? null : queue.startSchedulePeriod.toString("yyyy-MM-dd HH:mm"))
                 .setCell("End", queue == null ? null : queue.endSchedulePeriod.toString("yyyy-MM-dd HH:mm"))
+                .setCell("QueueID", queue == null ? null : queue.queue.getDescription().getContent())
                 .setCell("Location", location == null ? null : location.getDescription());
     }
 
