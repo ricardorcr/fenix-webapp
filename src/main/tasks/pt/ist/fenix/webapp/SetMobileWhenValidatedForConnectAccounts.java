@@ -12,15 +12,16 @@ import pt.ist.fenixframework.FenixFramework;
 public class SetMobileWhenValidatedForConnectAccounts extends ReadCustomTask {
     @Override
     public void runTask() throws Exception {
-        ConnectSystem.getInstance().getAccountSet().stream()
-                .filter(account -> account.getCreatedInstant() != null)
+        ConnectSystem.getInstance().getAccountSet().stream().parallel()
                 .forEach(this::process);
     }
 
     private void process(final Account account) {
-        final DateTime createdInstant = account.getCreatedInstant();
         FenixFramework.atomic(() -> {
-            account.setMobileWhenValidated(createdInstant);
+            final DateTime createdInstant = account.getCreatedInstant();
+            if (createdInstant != null) {
+                account.setMobileWhenValidated(createdInstant);
+            }
         });
     }
 }
