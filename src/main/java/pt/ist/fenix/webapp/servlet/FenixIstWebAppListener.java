@@ -226,9 +226,8 @@ public class FenixIstWebAppListener implements ServletContextListener, Configura
 
     private String districtFor(final String countryCode, final String zipCode) {
         final PostalCode postalCode = Planet.getEarth().getByAlfa2(countryCode).getPostalCode(zipCode);
-        final JsonObject details = postalCode.getDetails();
-        final String distrito = details == null ? null : JsonUtils.get(details, "Distrito");
-        return distrito;
+        final JsonObject details = postalCode == null ? null : postalCode.getDetails();
+        return details == null ? null : JsonUtils.get(details, "Distrito");
     }
 
 }
