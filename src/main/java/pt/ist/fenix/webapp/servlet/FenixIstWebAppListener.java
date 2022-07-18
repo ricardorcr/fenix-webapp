@@ -27,6 +27,7 @@ import org.fenixedu.ulisboa.integration.sas.service.process.AbstractFillScholars
 import pt.ist.fenix.webapp.Configuration;
 import pt.ist.fenixedu.giaf.invoices.SapEvent;
 import pt.ist.fenixedu.giaf.invoices.Utils;
+import pt.ist.fenixedu.giaf.invoices.ClientMap;
 import pt.ist.fenixframework.FenixFramework;
 import pt.ist.standards.geographic.Planet;
 import pt.ist.standards.geographic.PostalCode;
@@ -292,6 +293,16 @@ public class FenixIstWebAppListener implements ServletContextListener, Configura
         final PostalCode postalCode = Planet.getEarth().getByAlfa2(countryCode).getPostalCode(zipCode);
         final JsonObject details = postalCode == null ? null : postalCode.getDetails();
         return details == null ? null : JsonUtils.get(details, "Distrito");
+    }
+
+    private static Country getValidCountry(final String tin, final Country... countries) {
+        for (int i = 0; i < countries.length; i++) {
+            final Country country = countries[i];
+            if (country != null && TINValidator.isValid(country.getCode().toUpperCase(), tin, false)) {
+                return country;
+            }
+        }
+        return null;
     }
 
 }
