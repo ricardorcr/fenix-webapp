@@ -26,7 +26,7 @@ public class DebugEventStuff extends ReadCustomTask {
         final Event event = FenixFramework.getDomainObject("1978579764118023");
         final Person person = event.getPerson();
         test(person);
-        ClientMap.uVATNumberFor(person);
+        //ClientMap.uVATNumberFor(person);
     }
 
     private String test(final Party party) {
