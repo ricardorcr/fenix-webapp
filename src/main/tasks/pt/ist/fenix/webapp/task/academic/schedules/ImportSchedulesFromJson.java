@@ -107,9 +107,9 @@ public class ImportSchedulesFromJson extends CustomTask {
 					lessonOccupationPeriod = OccupationPeriod.createOccupationPeriodForLesson(executionCourse, beginYearMonthDay, endYearMonthDay);
 				}
 
-				// taskLog("begin %s - end %s - maxLessonsPeriod: %s",
-				// lessonOccupationPeriod.getStart().toString(),
-				// lessonOccupationPeriod.getEnd().toString(), maxLessonsPeriod.getLeft());
+				 taskLog("begin %s - end %s - maxLessonsPeriod: %s",
+				 lessonOccupationPeriod.getStart().toString(),
+				 lessonOccupationPeriod.getEnd().toString(), maxLessonsPeriod.getLeft());
 				Lesson lesson = new Lesson(weekDay, begin, end, shift, frequencyType, executionSemester, lessonOccupationPeriod, room);
 
 				if (occupationPeriods.size() == 0) {
