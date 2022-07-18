@@ -2,9 +2,13 @@ package pt.ist.fenix.webapp.servlet;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.fenixedu.TINValidator;
+import org.fenixedu.academic.domain.Country;
 import org.fenixedu.academic.domain.Person;
 import org.fenixedu.academic.domain.SchoolLevelType;
 import org.fenixedu.academic.domain.accounting.Event;
+import org.fenixedu.academic.domain.organizationalStructure.Party;
+import org.fenixedu.academic.domain.phd.candidacy.PhdProgramCandidacyEvent;
 import org.fenixedu.academic.domain.student.Student;
 import org.fenixedu.admissions.ist.util.QualificationLevelUtil;
 import org.fenixedu.bennu.core.domain.User;
@@ -17,6 +21,7 @@ import org.fenixedu.connect.domain.ConnectSystem;
 import org.fenixedu.connect.domain.Identity;
 import org.fenixedu.connect.domain.identification.PersonalInformation;
 import org.fenixedu.connect.domain.identification.TaxInformation;
+import org.fenixedu.connect.util.AddressUtils;
 import org.fenixedu.git.Repository;
 import org.fenixedu.ulisboa.integration.sas.service.process.AbstractFillScholarshipService;
 import pt.ist.fenix.webapp.Configuration;
@@ -36,6 +41,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.Properties;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -119,23 +125,67 @@ public class FenixIstWebAppListener implements ServletContextListener, Configura
             }
         }
 
-        Event.registerPersonalInformationCheck(person -> {
-            final PersonalInformation personalInformation = personalInformationFor(person);
-            if (personalInformation == null) {
-                throw new Error("Unable to get valid address information. No personal information found for person.");
+        ClientMap.uVATNumberProvider = party -> {
+            final PersonalInformation personalInformation = personalInformationFor((Person) party);
+            if (personalInformation != null) {
+                final TaxInformation taxInformation = personalInformation.getTaxInformation();
+                if (taxInformation != null && taxInformation.isValid()) {
+                    final String tin = taxInformation.getTin();
+                    return tin != null && !tin.isEmpty() ? tin
+                            : (AddressUtils.getCountryCodeFor(taxInformation.getAddressData()) + party.getExternalId());
+                }
             }
 
-            final TaxInformation taxInformation = personalInformation.getTaxInformation();
-            if (taxInformation == null) {
-                throw new Error("Unable to find tax information for person.");
+            final String tin = party.getSocialSecurityNumber();
+            if (tin != null && !tin.trim().isEmpty()) {
+                if (tin.length() > 2
+                        && Character.isAlphabetic(tin.charAt(0))
+                        && Character.isAlphabetic(tin.charAt(1))
+                        && Character.isUpperCase(tin.charAt(0))
+                        && Character.isUpperCase(tin.charAt(1))) {
+                    final String countryCode = tin.substring(0, 2);
+                    final String code = tin.substring(2);
+                    if (TINValidator.isValid(countryCode, code)) {
+                        // all is ok
+                        return tin;
+                    }
+                }
+                final Country country = getValidCountry(tin, party.getCountry(), party.getCountryOfResidence(), (party.isPerson() ? ((Person) party).getCountryOfBirth() : null), Country.readByTwoLetterCode("PT"));
+                if (country != null) {
+                    return country.getCode() + tin;
+                }
             }
+            if (tin != null && tin.length() > 2 && !"PT".equals(tin.substring(0, 2)) && Country.readByTwoLetterCode(tin.substring(0, 2)) != null) {
+                return tin;
+            }
+            final Country country = party.getCountry();
+            if (country != null && !country.getCode().equals("PT")) {
+                return country.getCode() + party.getExternalId();
+            }
+            return "PT999999990";
+        };
 
-            if (!taxInformation.isValid()) {
-                throw new Error("Tax information for person is not valid.");
+        Event.registerPersonalInformationCheck((event, person) -> {
+            if (event instanceof PhdProgramCandidacyEvent) {
+            } else {
+                final PersonalInformation personalInformation = personalInformationFor(person);
+                if (personalInformation == null) {
+                    throw new Error("Unable to get valid address information. No personal information found for person.");
+                }
+
+                final TaxInformation taxInformation = personalInformation.getTaxInformation();
+                if (taxInformation == null) {
+                    throw new Error("Unable to find tax information for person.");
+                }
+
+                if (!taxInformation.isValid()) {
+                    throw new Error("Tax information for person is not valid.");
+                }
             }
         });
 
-        SapEvent.ADDRESS_FILLER = (party, clientData) -> {
+        final BiConsumer<Party, JsonObject> originalFiller = SapEvent.ADDRESS_FILLER;
+        final BiConsumer<Party, JsonObject> correctFiller = (party, clientData) -> {
             final String clientId = clientData.get("clientId").getAsString();
             final String countryCode = clientId.substring(0, 2);
 
@@ -153,6 +203,11 @@ public class FenixIstWebAppListener implements ServletContextListener, Configura
                 throw new Error("Tax information for person is not valid.");
             }
 
+            final String addressCountryCode = AddressUtils.getCountryCodeFor(taxInformation.getAddressData());
+            if (!clientId.startsWith(addressCountryCode)) {
+                throw new Error("Tax information and client ID don't match.");
+            }
+
             final JsonObject address = new JsonParser().parse(taxInformation.getAddressData()).getAsJsonObject();
             final String line1 = JsonUtils.get(address, "firstLine");
             final String line2 = JsonUtils.get(address, "secondLine");
@@ -166,6 +221,15 @@ public class FenixIstWebAppListener implements ServletContextListener, Configura
             clientData.addProperty("region", district == null ? SapEvent.MORADA_DESCONHECIDO
                     : Utils.limitFormat(SapEvent.MAX_SIZE_REGION, district));
             clientData.addProperty("postalCode", zipCode);
+        };
+        SapEvent.ADDRESS_FILLER = (party, clientData) -> {
+            final boolean onlyHasPHDStuff = party.getEventsSet().stream()
+                    .allMatch(event -> event instanceof PhdProgramCandidacyEvent);
+            if (onlyHasPHDStuff && personalInformationFor((Person) party) == null) {
+                originalFiller.accept(party, clientData);
+            } else {
+                correctFiller.accept(party, clientData);
+            }
         };
     }
 
