@@ -37,6 +37,9 @@ public class DebugEventStuff extends ReadCustomTask {
             taskLog("3");
             final TaxInformation taxInformation = personalInformation.getTaxInformation();
             taskLog("4");
+            if (taxInformation != null) {
+                isValidX(taxInformation);
+            }
             if (taxInformation != null && taxInformation.isValid()) {
                 taskLog("5");
                 final String tin = taxInformation.getTin();
@@ -76,6 +79,21 @@ public class DebugEventStuff extends ReadCustomTask {
         }
         return "PT999999990";
     };
+
+    public void isValidX(final TaxInformation taxInformation) {
+        taskLog(" X 1");
+        final String addressCountryCode = AddressUtils.getCountryCodeFor(taxInformation.getAddressData());
+        taskLog(" X 2");
+        taxInformation.getAddressData();
+        taskLog(" X 3");
+        AddressUtils.isValid(taxInformation.getAddressData());
+        taskLog(" X 4");
+        final String tin = taxInformation.getTin();
+        taskLog(" X 5");
+                //&& (isValid(getTin()) || !needsValidation(getTin()))
+                //&& (getCountryCodeFromTin() == null || addressCountryCode.equals(getCountryCodeFromTin()));
+    }
+
 
     private PersonalInformation personalInformationFor(final Person person) {
         final User user = person.getUser();
