@@ -78,7 +78,6 @@ public class MergeExecutionCourses extends CustomTask {
 		output(filename, baos.toByteArray());
 
 		taskLog("\nDone");
-		throw new RuntimeException();
 	}
 
 	private String getCurricularCoursesDescription(ExecutionCourse executionCourse) {
