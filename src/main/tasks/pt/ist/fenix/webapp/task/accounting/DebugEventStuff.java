@@ -30,16 +30,24 @@ public class DebugEventStuff extends ReadCustomTask {
     }
 
     private String test(final Party party) {
+        taskLog("1");
         final PersonalInformation personalInformation = personalInformationFor((Person) party);
+        taskLog("2");
         if (personalInformation != null) {
+            taskLog("3");
             final TaxInformation taxInformation = personalInformation.getTaxInformation();
+            taskLog("4");
             if (taxInformation != null && taxInformation.isValid()) {
+                taskLog("5");
                 final String tin = taxInformation.getTin();
+                taskLog("6");
                 return tin != null && !tin.isEmpty() ? tin
                         : (AddressUtils.getCountryCodeFor(taxInformation.getAddressData()) + party.getExternalId());
             }
+            taskLog("7");
         }
 
+        taskLog("8");
         final String tin = party.getSocialSecurityNumber();
         if (tin != null && !tin.trim().isEmpty()) {
             if (tin.length() > 2
