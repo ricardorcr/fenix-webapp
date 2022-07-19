@@ -107,7 +107,7 @@ public class ImportSchedulesFromJson extends CustomTask {
 					lessonOccupationPeriod = OccupationPeriod.createOccupationPeriodForLesson(executionCourse, beginYearMonthDay, endYearMonthDay);
 				}
 
-				taskLog("begin %s - end %s - maxLessonsPeriod: %s", lessonOccupationPeriod.getStart().toString(), lessonOccupationPeriod.getEnd().toString(), maxLessonsPeriod.getLeft());
+			//	taskLog("begin %s - end %s - maxLessonsPeriod: %s", lessonOccupationPeriod.getStart().toString(), lessonOccupationPeriod.getEnd().toString(), maxLessonsPeriod.getLeft());
 				try {
 					Lesson lesson = new Lesson(weekDay, begin, end, shift, frequencyType, executionSemester, lessonOccupationPeriod, room);
 
@@ -147,7 +147,7 @@ public class ImportSchedulesFromJson extends CustomTask {
 	private Shift getShift(JsonObject shiftJson) {
 		String asString = shiftJson.get("externalId").getAsString();
 		Shift shift = FenixFramework.getDomainObject(asString);
-		taskLog("\n%s", asString);
+		//taskLog("\n%s", asString);
 		if (!FenixFramework.isDomainObjectValid(shift)) {
 			List<ShiftType> types = new ArrayList<ShiftType>();
 			shiftJson.get("shiftTypes").getAsJsonArray().forEach(st -> types.add(ShiftType.valueOf(st.getAsString())));
