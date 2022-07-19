@@ -141,7 +141,7 @@ public class ImportSchedulesFromJson extends CustomTask {
 		}
 
 		taskLog("\nDone! %s shifts", shifts.size());
-		throw new RuntimeException();
+		//throw new RuntimeException();
 	}
 
 	private Shift getShift(JsonObject shiftJson) {
