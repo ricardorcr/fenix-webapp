@@ -92,8 +92,8 @@ public class ImportSchedulesFromJson extends CustomTask {
 
 				final GenericPair<YearMonthDay, YearMonthDay> maxLessonsPeriod = executionCourse.getMaxLessonsPeriod();
 				if (occupationPeriods.size() == 0) {
-					if(instancesArray.size()==0) {
-						taskLog("\nERRO: "+lessonJson.toString());
+					if (instancesArray.size() == 0) {
+						taskLog("\nERRO: " + lessonJson.toString());
 						continue;
 					}
 					YearMonthDay endYearMonthDay = new YearMonthDay(dateFormat.parseLocalDate(instancesArray.get(0).getAsString()));
@@ -107,30 +107,34 @@ public class ImportSchedulesFromJson extends CustomTask {
 					lessonOccupationPeriod = OccupationPeriod.createOccupationPeriodForLesson(executionCourse, beginYearMonthDay, endYearMonthDay);
 				}
 
-				 taskLog("begin %s - end %s - maxLessonsPeriod: %s",
-				 lessonOccupationPeriod.getStart().toString(),
-				 lessonOccupationPeriod.getEnd().toString(), maxLessonsPeriod.getLeft());
-				Lesson lesson = new Lesson(weekDay, begin, end, shift, frequencyType, executionSemester, lessonOccupationPeriod, room);
+				taskLog("begin %s - end %s - maxLessonsPeriod: %s", lessonOccupationPeriod.getStart().toString(), lessonOccupationPeriod.getEnd().toString(), maxLessonsPeriod.getLeft());
+				try {
+					Lesson lesson = new Lesson(weekDay, begin, end, shift, frequencyType, executionSemester, lessonOccupationPeriod, room);
 
-				if (occupationPeriods.size() == 0) {
-					LessonSpaceOccupation lessonSpaceOccupation = lesson.getLessonSpaceOccupation();
-					lesson.setLessonSpaceOccupation(null);
+					if (occupationPeriods.size() == 0) {
+						LessonSpaceOccupation lessonSpaceOccupation = lesson.getLessonSpaceOccupation();
+						lesson.setLessonSpaceOccupation(null);
 
-					final Method method = Lesson.class.getDeclaredMethod("removeLessonSpaceOccupationAndPeriod");
-					method.setAccessible(true);
-					method.invoke(lesson);
-					lesson.setLessonSpaceOccupation(lessonSpaceOccupation);
-				}
-				instancesArray.forEach(day -> {
-
-					try {
-						new LessonInstance(lesson, new YearMonthDay(dateFormat.parseLocalDate(day.getAsString())));
-					} catch (DomainException e) {
-						taskLog("\n LessonInstance DomainException:  %s\n %s - %s - %s - %s", e.getMessage(), shift.getPresentationName(), executionCourse.getExternalId(),
-								room == null ? "null" : room.getName(), day.getAsString());
+						final Method method = Lesson.class.getDeclaredMethod("removeLessonSpaceOccupationAndPeriod");
+						method.setAccessible(true);
+						method.invoke(lesson);
+						lesson.setLessonSpaceOccupation(lessonSpaceOccupation);
 					}
+					instancesArray.forEach(day -> {
 
-				});
+						try {
+							new LessonInstance(lesson, new YearMonthDay(dateFormat.parseLocalDate(day.getAsString())));
+						} catch (DomainException e) {
+							taskLog("\n LessonInstance DomainException:  %s\n %s - %s - %s - %s", e.getMessage(), shift.getPresentationName(), executionCourse.getExternalId(),
+									room == null ? "null" : room.getName(), day.getAsString());
+						}
+
+					});
+				} catch (DomainException e) {
+					taskLog("\n Lesson DomainException:  %s\n %s - %s - %s - %s - %s", e.getMessage(), shift.getPresentationName(), executionCourse.getExternalId(),
+							room == null ? "null" : room.getName(), lessonOccupationPeriod.getStart().toString(), lessonOccupationPeriod.getEnd().toString());
+					continue;
+				}
 
 			}
 
@@ -143,7 +147,7 @@ public class ImportSchedulesFromJson extends CustomTask {
 	private Shift getShift(JsonObject shiftJson) {
 		String asString = shiftJson.get("externalId").getAsString();
 		Shift shift = FenixFramework.getDomainObject(asString);
-		taskLog("\n%s",asString);
+		taskLog("\n%s", asString);
 		if (!FenixFramework.isDomainObjectValid(shift)) {
 			List<ShiftType> types = new ArrayList<ShiftType>();
 			shiftJson.get("shiftTypes").getAsJsonArray().forEach(st -> types.add(ShiftType.valueOf(st.getAsString())));
