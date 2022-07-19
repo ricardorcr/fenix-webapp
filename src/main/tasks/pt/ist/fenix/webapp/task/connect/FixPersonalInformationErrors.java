@@ -80,7 +80,7 @@ public class FixPersonalInformationErrors extends ReadCustomTask {
     private String ssnFor(final Identity identity) {
         final User user = identity.getUser();
         final Person person = user == null ? null : user.getPerson();
-        return person.getSocialSecurityNumber();
+        return person == null ? null : person.getSocialSecurityNumber();
     }
 
     private boolean pt(final TaxInformation taxInformation) {
