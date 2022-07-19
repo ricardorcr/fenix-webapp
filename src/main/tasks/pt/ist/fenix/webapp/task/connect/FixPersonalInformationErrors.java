@@ -47,7 +47,22 @@ public class FixPersonalInformationErrors extends ReadCustomTask {
                     if (physicalAddress != null && (physicalAddress.getCountryOfResidence() == null
                             || physicalAddress.getCountryOfResidence().getCode().equals(countryCode))) {
                         if (taxInformation == null) {
-                            taskLog("Can fill empty tax info for: %s%n", identity.getUser().getUsername());
+                            taskLog("Filled empty tax info for: %s%n", identity.getUser().getUsername());
+
+                            final JsonObject address = new JsonObject();
+                            address.addProperty("firstLine", physicalAddress.getAddress());
+                            address.addProperty("zipCode", physicalAddress.getAreaCode());
+                            final String area = physicalAddress.getArea();
+                            final String location = (area == null || area.trim().isEmpty()) ? fixAreaCode(countryCode, physicalAddress.getAreaCode()) : area;
+                            address.addProperty("location", location);
+                            address.addProperty("countryCode", countryCode);
+
+//                            new TaxInformation(identity.getPersonalInformation(), ssn, address.toString());
+                        } else if (!taxInformation.isValid()) {
+                            taskLog("Fix invalid tax info for: %s from [%s] to [%s]%n",
+                                    identity.getUser().getUsername(),
+                                    taxInformation.getTin(),
+                                    ssn);
                         }
                     }
                 }
@@ -58,6 +73,19 @@ public class FixPersonalInformationErrors extends ReadCustomTask {
             }
  */
         });
+    }
+
+    private String fixAreaCode(final String countryCode, final String areaCode) {
+        if ("PT".equals(countryCode)) {
+            final PostalCode postalCode = Planet.getEarth().getByAlfa2(countryCode).getPostalCode(areaCode);
+            if (postalCode != null) {
+                final JsonObject details = postalCode.getDetails();
+                if (details != null) {
+                    return details.get("Localidade").getAsString();
+                }
+            }
+        }
+        return "";
     }
 
     private PhysicalAddress addressFor(final Identity identity, final String countryCode) {
