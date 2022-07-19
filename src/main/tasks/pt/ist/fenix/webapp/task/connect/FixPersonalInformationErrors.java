@@ -43,7 +43,9 @@ public class FixPersonalInformationErrors extends ReadCustomTask {
                     if (postalCode != null) {
                         final JsonObject details = postalCode.getDetails();
                         if (details == null) {
-                            taskLog("! No details for postcode = %s%n", postalCode);
+                            taskLog("! No details for postcode = %s on identity %s%n",
+                                    taxInformation.getPersonalInformation().getIdentity().getExternalId(),
+                                    zipCode);
                         } else {
                             final String Localidade = details.get("Localidade").getAsString();
                             taskLog("Fixing: %s for %s from [%s] to [%s]%n",
