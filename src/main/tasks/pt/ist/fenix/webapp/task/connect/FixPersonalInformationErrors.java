@@ -41,14 +41,19 @@ public class FixPersonalInformationErrors extends ReadCustomTask {
                 if (zipCode != null && (location == null || location.trim().isEmpty())) {
                     final PostalCode postalCode = Planet.getEarth().getByAlfa2(countryCode).getPostalCode(zipCode);
                     if (postalCode != null) {
-                        final String Localidade = postalCode.getDetails().get("Localidade").getAsString();
-                        taskLog("Fixing: %s for %s from [%s] to [%s]%n",
-                                taxInformation.getPersonalInformation().getIdentity().getExternalId(),
-                                zipCode,
-                                location,
-                                Localidade);
-                        address.addProperty("location", Localidade);
-                        taxInformation.setAddressData(addressData.toString());
+                        final JsonObject details = postalCode.getDetails();
+                        if (details == null) {
+                            taskLog("! No details for postcode = %s%n", postalCode);
+                        } else {
+                            final String Localidade = details.get("Localidade").getAsString();
+                            taskLog("Fixing: %s for %s from [%s] to [%s]%n",
+                                    taxInformation.getPersonalInformation().getIdentity().getExternalId(),
+                                    zipCode,
+                                    location,
+                                    Localidade);
+                            address.addProperty("location", Localidade);
+                            taxInformation.setAddressData(addressData.toString());
+                        }
                     }
                 }
             }
