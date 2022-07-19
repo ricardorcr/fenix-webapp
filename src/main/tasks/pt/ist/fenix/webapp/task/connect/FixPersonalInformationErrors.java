@@ -64,6 +64,8 @@ public class FixPersonalInformationErrors extends ReadCustomTask {
                                         identity.getUser().getUsername(),
                                         taxInformation.getTin(),
                                         ssn);
+                                taxInformation.delete();
+                                new TaxInformation(identity.getPersonalInformation(), ssn, address.toString());
                             }
                         }
                     }
