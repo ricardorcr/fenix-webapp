@@ -47,29 +47,27 @@ public class FixPersonalInformationErrors extends ReadCustomTask {
                     final PhysicalAddress physicalAddress = addressFor(identity, countryCode);
                     if (physicalAddress != null && (physicalAddress.getCountryOfResidence() == null
                             || physicalAddress.getCountryOfResidence().getCode().equals(countryCode))) {
-                        if (taxInformation == null) {
-                            taskLog("Filled empty tax info for: %s%n", identity.getUser().getUsername());
-                            createTaxInfo(identity, ssn, countryCode, physicalAddress);
-                        } else if (!taxInformation.isValid()) {
-                            taskLog("Fix invalid tax info for: %s from [%s] to [%s]%n",
-                                    identity.getUser().getUsername(),
-                                    taxInformation.getTin(),
-                                    ssn);
-                            taxInformation.delete();
-                            createTaxInfo(identity, ssn, countryCode, physicalAddress);
+                        final JsonObject address = addressFor(identity, ssn, countryCode, physicalAddress);
+                        if (address != null) {
+                            if (taxInformation == null) {
+                                taskLog("Filled empty tax info for: %s%n", identity.getUser().getUsername());
+                                new TaxInformation(identity.getPersonalInformation(), ssn, address.toString());
+                            } else if (!taxInformation.isValid()) {
+                                taskLog("Fix invalid tax info for: %s from [%s] to [%s]%n",
+                                        identity.getUser().getUsername(),
+                                        taxInformation.getTin(),
+                                        ssn);
+                                taxInformation.delete();
+                                new TaxInformation(identity.getPersonalInformation(), ssn, address.toString());
+                            }
                         }
                     }
                 }
             }
-/*
-            if (taxInformation == null || !pt(taxInformation)) {
-
-            }
- */
         });
     }
 
-    private void createTaxInfo(final Identity identity, final String ssn, final String countryCode, final PhysicalAddress physicalAddress) {
+    private JsonObject addressFor(final Identity identity, final String ssn, final String countryCode, final PhysicalAddress physicalAddress) {
         final JsonObject address = new JsonObject();
         address.addProperty("firstLine", physicalAddress.getAddress());
         address.addProperty("zipCode", physicalAddress.getAreaCode());
@@ -78,11 +76,7 @@ public class FixPersonalInformationErrors extends ReadCustomTask {
         address.addProperty("location", location);
         address.addProperty("countryCode", countryCode);
 
-        if (!AddressUtils.isValid(address.toString())) {
-            taskLog("Invalid address data for: %s%n", address.toString());
-        }
-        
-        new TaxInformation(identity.getPersonalInformation(), ssn, address.toString());
+        return AddressUtils.isValid(address.toString()) ? address : null;
     }
 
     private String fixAreaCode(final String countryCode, final String areaCode) {
