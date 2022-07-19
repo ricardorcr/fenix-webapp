@@ -43,9 +43,14 @@ public class FixPersonalInformationErrors extends ReadCustomTask {
                     if (postalCode != null) {
                         final JsonObject details = postalCode.getDetails();
                         if (details == null) {
-                            taskLog("! No details for postcode = %s on identity %s%n",
-                                    taxInformation.getPersonalInformation().getIdentity().getExternalId(),
-                                    zipCode);
+                            if (zipCode.equals("2005-336")) {
+                                address.addProperty("location", "SANTARÉM");
+                                taxInformation.setAddressData(address.toString());
+                            } else {
+                                taskLog("! No details for postcode = %s on identity %s%n",
+                                        taxInformation.getPersonalInformation().getIdentity().getExternalId(),
+                                        zipCode);
+                            }
                         } else {
                             final String Localidade = details.get("Localidade").getAsString();
                             taskLog("Fixing: %s for %s from [%s] to [%s]%n",
@@ -54,7 +59,7 @@ public class FixPersonalInformationErrors extends ReadCustomTask {
                                     location,
                                     Localidade);
                             address.addProperty("location", Localidade);
-                            taxInformation.setAddressData(addressData.toString());
+                            taxInformation.setAddressData(address.toString());
                         }
                     }
                 }
