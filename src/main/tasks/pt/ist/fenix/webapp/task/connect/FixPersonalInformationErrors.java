@@ -59,6 +59,11 @@ public class FixPersonalInformationErrors extends ReadCustomTask {
                                         ssn);
                                 taxInformation.delete();
                                 new TaxInformation(identity.getPersonalInformation(), ssn, address.toString());
+                            } else if ("PT".equals(countryCode) && !pt(taxInformation)) {
+                                taskLog("Possible tax info improvement for: %s from [%s] to [%s]%n",
+                                        identity.getUser().getUsername(),
+                                        taxInformation.getTin(),
+                                        ssn);
                             }
                         }
                     }
