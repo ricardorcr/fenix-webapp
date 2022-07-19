@@ -15,6 +15,7 @@ import org.fenixedu.connect.domain.ConnectSystem;
 import org.fenixedu.connect.domain.Identity;
 import org.fenixedu.connect.domain.identification.PersonalInformation;
 import org.fenixedu.connect.domain.identification.TaxInformation;
+import org.fenixedu.connect.util.AddressUtils;
 import pt.ist.fenixframework.FenixFramework;
 import pt.ist.standards.geographic.Planet;
 import pt.ist.standards.geographic.PostalCode;
@@ -77,6 +78,10 @@ public class FixPersonalInformationErrors extends ReadCustomTask {
         address.addProperty("location", location);
         address.addProperty("countryCode", countryCode);
 
+        if (!AddressUtils.isValid(address.toString())) {
+            taskLog("Invalid address data for: %s%n", address.toString());
+        }
+        
         new TaxInformation(identity.getPersonalInformation(), ssn, address.toString());
     }
 
