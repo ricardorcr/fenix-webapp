@@ -65,6 +65,7 @@ public class FixPersonalInformationErrors extends ReadCustomTask {
         final Person person = user == null ? null : user.getPerson();
         return addressStream(person)
                 //.filter(physicalAddress -> physicalAddress.getCountryOfResidence() != null && countryCode.equals(physicalAddress.getCountryOfResidence().getCode()))
+                .filter(physicalAddress -> physicalAddress.getAreaCode() != null)
                 .filter(physicalAddress -> PostalCodeValidator.isValidAreaCode(countryCode, physicalAddress.getAreaCode()))
                 .findAny().orElse(null);
     }
