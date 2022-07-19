@@ -43,7 +43,7 @@ public class FixPersonalInformationErrors extends ReadCustomTask {
             if (ssn != null && ssn.length() > 2) {
                 final String countryCode = ssn.substring(0, 2);
                 final String number = ssn.substring(2);
-                if (TINValidator.isValid(countryCode, number, true)) {
+                if (TINValidator.isValid(countryCode, number, true) && isPersonalNumber(ssn)) {
                     final PhysicalAddress physicalAddress = addressFor(identity, countryCode);
                     if (physicalAddress != null && (physicalAddress.getCountryOfResidence() == null
                             || physicalAddress.getCountryOfResidence().getCode().equals(countryCode))) {
@@ -182,5 +182,47 @@ public class FixPersonalInformationErrors extends ReadCustomTask {
                                 )
                 );
     };
+
+    private boolean isPersonalNumber(final String tin) {
+        if (tin != null && "PT".equals(tin.substring(0, 2))) {
+            final String number = tin.substring(2);
+            if (allNinesAndZeros(number)) {
+                return false;
+            }
+            for (int i = 0; i < number.length(); i++) {
+                final char c = number.charAt(i);
+                final char nc = i + 1 < number.length() ? number.charAt(i + 1) : 'X';
+                if (c == '0') {
+                    // skip;
+                } else if (c == '1' || c == '2' || c == '3') {
+                    return true;
+                } else if (c == '4' && nc == '5') {
+                    return true;
+                } else if (c == '7' && (nc == '0' || nc == '4' || nc == '5')) {
+                    return true;
+                } else if (c == '7' && nc == '7') {
+                    return true;
+                } else if (c == '7' && nc == '8') {
+                    return true;
+                } else if (c == '9' && nc == '8') {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            return false;
+        }
+        return true;
+    }
+
+    private boolean allNinesAndZeros(final String number) {
+        for (int i = 0; i < number.length(); i++) {
+            final char c = number.charAt(i);
+            if (c != '0' && c != '9') {
+                return false;
+            }
+        }
+        return true;
+    }
 
 }
