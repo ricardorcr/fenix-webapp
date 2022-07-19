@@ -2,6 +2,7 @@ package pt.ist.fenix.webapp.servlet;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.fenixedu.PostalCodeValidator;
 import org.fenixedu.TINValidator;
 import org.fenixedu.academic.domain.Country;
 import org.fenixedu.academic.domain.Person;
@@ -25,9 +26,9 @@ import org.fenixedu.connect.util.AddressUtils;
 import org.fenixedu.git.Repository;
 import org.fenixedu.ulisboa.integration.sas.service.process.AbstractFillScholarshipService;
 import pt.ist.fenix.webapp.Configuration;
+import pt.ist.fenixedu.giaf.invoices.ClientMap;
 import pt.ist.fenixedu.giaf.invoices.SapEvent;
 import pt.ist.fenixedu.giaf.invoices.Utils;
-import pt.ist.fenixedu.giaf.invoices.ClientMap;
 import pt.ist.fenixframework.FenixFramework;
 import pt.ist.standards.geographic.Planet;
 import pt.ist.standards.geographic.PostalCode;
@@ -221,7 +222,8 @@ public class FenixIstWebAppListener implements ServletContextListener, Configura
             clientData.addProperty("city", Utils.limitFormat(SapEvent.MAX_SIZE_CITY, location));
             clientData.addProperty("region", district == null ? SapEvent.MORADA_DESCONHECIDO
                     : Utils.limitFormat(SapEvent.MAX_SIZE_REGION, district));
-            clientData.addProperty("postalCode", zipCode);
+            clientData.addProperty("postalCode", zipCode == null || zipCode.isEmpty()
+                    ? PostalCodeValidator.examplePostCodeFor(countryCode) : zipCode);
         };
         SapEvent.ADDRESS_FILLER = (party, clientData) -> {
             final boolean onlyHasPHDStuff = party.getEventsSet().stream()
