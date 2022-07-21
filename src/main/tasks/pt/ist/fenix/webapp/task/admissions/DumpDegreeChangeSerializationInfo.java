@@ -75,8 +75,10 @@ public class DumpDegreeChangeSerializationInfo extends ReadCustomTask {
                     row.setCell("weightedGrade", registration == null ? "" : finalGrade.getValue());
                     row.setCell("ects", registration == null ? "" : ects.toPlainString());
                     row.setCell("highschool_average", highschool_average == null ? "" : highschool_average.value().toPlainString());
-                    row.setCell("first_ingression_grade", first_ingression_grade == null ? "" : first_ingression_grade.value().toPlainString());
-                    row.setCell("second_ingression_grade", second_ingression_grade == null ? "" : second_ingression_grade.value().toPlainString());
+                    row.setCell("first_ingression_grade", first_ingression_grade == null || first_ingression_grade.value() == null
+                            ? "" : first_ingression_grade.value().toPlainString());
+                    row.setCell("second_ingression_grade", second_ingression_grade == null || second_ingression_grade.value() == null
+                            ? "" : second_ingression_grade.value().toPlainString());
                     row.setCell("MA", registration == null ? "" : ma.toPlainString());
 
                 });
