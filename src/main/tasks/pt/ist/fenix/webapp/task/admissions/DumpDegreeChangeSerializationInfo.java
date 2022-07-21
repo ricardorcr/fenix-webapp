@@ -65,6 +65,10 @@ public class DumpDegreeChangeSerializationInfo extends ReadCustomTask {
                     final DynamicForm.Quantity first_ingression_grade = dynamicForm.get("first_ingression_grade");
                     final DynamicForm.Quantity second_ingression_grade = dynamicForm.get("second_ingression_grade");
 
+                    final BigDecimal p1 = first_ingression_grade == null || first_ingression_grade.value() == null ? null : first_ingression_grade.value();
+                    final BigDecimal p2 = second_ingression_grade == null || second_ingression_grade.value() == null ? null : second_ingression_grade.value();
+                    final BigDecimal pi = p1 == null && p2 == null ? null : p1 == null ? p2 : p2 == null ? p1 : p1.add(p2).divide(new BigDecimal(2), RoundingMode.HALF_EVEN);
+
                     final Spreadsheet.Row row = spreadsheet.addRow();
                     row.setCell("application", application.getExternalId());
                     row.setCell("isISTStudent", Boolean.toString(registration != null));
@@ -79,6 +83,8 @@ public class DumpDegreeChangeSerializationInfo extends ReadCustomTask {
                             ? "" : first_ingression_grade.value().toPlainString());
                     row.setCell("second_ingression_grade", second_ingression_grade == null || second_ingression_grade.value() == null
                             ? "" : second_ingression_grade.value().toPlainString());
+                    row.setCell("MS", highschool_average == null ? "" : highschool_average.value().toPlainString());
+                    row.setCell("PI", pi == null ? "" : pi.toPlainString());
                     row.setCell("MA", registration == null ? "" : ma.toPlainString());
 
                 });
