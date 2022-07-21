@@ -67,16 +67,6 @@ public class DumpDegreeChangeSerializationInfo extends ReadCustomTask {
                     row.setCell("weightedGrade", registration == null ? "" : finalGrade.getValue());
                     row.setCell("ects", registration == null ? "" : ects.toPlainString());
                     row.setCell("MA", registration == null ? "" : ma.toPlainString());
-
-                    spreadsheet.addRow().setCell("Label", "RawGrade").setCell("Value", curriculum.getRawGrade().getValue());
-                    spreadsheet.addRow().setCell("Label", "FinalGrade").setCell("Value", curriculum.getFinalGrade().getValue());
-                    spreadsheet.addRow().setCell("Label", "ECTS").setCell("Value", curriculum.getSumEctsCredits());
-                    spreadsheet.addRow().setCell("Label", "CurricularYear").setCell("Value", curriculum.getCurricularYear());
-                    spreadsheet.addRow().setCell("Label", "EnrolledYears").setCell("Value", Long.toString(enrolledYears));
-                    spreadsheet.addRow().setCell("Label", "TotalYears").setCell("Value", curriculum.getTotalCurricularYears());
-                    spreadsheet.addRow().setCell("Label", "Remainging ECTS").setCell("Value", curriculum.getRemainingCredits());
-                    spreadsheet.addRow().setCell("Label", "State").setCell("Value", registration.getLastState().getStateType().getDescription());
-
                 });
 
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
