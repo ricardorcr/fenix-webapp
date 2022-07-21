@@ -22,6 +22,7 @@ Fenix Webapp is the aggregator project for IST's Fenix Installation.
 3. Modify both files accordingly
 4. `export JAVA_OPTS="-server -Xms256m -Xmx1024m -XX:PermSize=384m"`
 5. `export MAVEN_OPTS="$JAVA_OPTS"`
+6. Install ImageMagic. Some features including the presentation of user photos requires this tool to be available to the running JVM on the underlying Operating System.
 
 
 #Compiling
