@@ -25,15 +25,15 @@ public class RefundOldEvent extends CustomTask {
                 new BigDecimal(1375), "PT50003300004550524974305");
 
 //        //TODO run a 2nd time with this uncommented, after generating the new requests
-//        final SapRequest refundRequest = new SapRequest(event1, "PT236090321", Money.valueOf(1375), "NR0", SapRequestType.REIMBURSEMENT,
-//                Money.ZERO, new JsonObject());
-//        refundRequest.setIntegrated(true);
-//        refundRequest.setSent(true);
-//
-//        final SapRequest creditRequest = new SapRequest(event1, "PT236090321", Money.valueOf(1375), "NA0", SapRequestType.CREDIT,
-//                Money.ZERO, new JsonObject());
-//        creditRequest.setIntegrated(true);
-//        creditRequest.setSent(true);
+        final SapRequest refundRequest = new SapRequest(event1, "PT236090321", Money.valueOf(1375), "NR0", SapRequestType.REIMBURSEMENT,
+                Money.ZERO, new JsonObject());
+        refundRequest.setIntegrated(true);
+        refundRequest.setSent(true);
+
+        final SapRequest creditRequest = new SapRequest(event1, "PT236090321", Money.valueOf(1375), "NA0", SapRequestType.CREDIT,
+                Money.ZERO, new JsonObject());
+        creditRequest.setIntegrated(true);
+        creditRequest.setSent(true);
 
         Event.canBeRefunded = (event) -> {
             final DebtInterestCalculator calculator = event.getDebtInterestCalculator(new DateTime());
