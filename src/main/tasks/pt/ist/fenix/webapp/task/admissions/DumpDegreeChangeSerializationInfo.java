@@ -9,7 +9,7 @@ import org.fenixedu.academic.domain.student.curriculum.ICurriculum;
 import org.fenixedu.admissions.domain.AdmissionProcess;
 import org.fenixedu.admissions.util.DynamicForm;
 import org.fenixedu.bennu.core.domain.User;
-import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
+import org.fenixedu.bennu.scheduler.custom.WriteCustomTask;
 import org.fenixedu.commons.spreadsheet.Spreadsheet;
 import org.fenixedu.connect.domain.Identity;
 import pt.ist.fenixframework.FenixFramework;
@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.stream.Stream;
 
-public class DumpDegreeChangeSerializationInfo extends ReadCustomTask {
+public class DumpDegreeChangeSerializationInfo extends WriteCustomTask {
 
     @Override
     public void runTask() throws Exception {
@@ -48,7 +48,7 @@ public class DumpDegreeChangeSerializationInfo extends ReadCustomTask {
                     final ICurriculum curriculum = registration == null ? null : registration.getCurriculum();
                     final BigDecimal finalGrade = registration == null ? null : curriculum.getRawGrade().getNumericValue()
                             .multiply(new BigDecimal(10))
-                            .setScale(0, RoundingMode.HALF_EVEN);
+                            .setScale(0, RoundingMode.HALF_UP);
                     final BigDecimal ects = registration == null ? null : curriculum.getSumEctsCredits();
                     final BigDecimal ma;
                     if (registration == null) {
@@ -67,7 +67,7 @@ public class DumpDegreeChangeSerializationInfo extends ReadCustomTask {
 
                     final BigDecimal p1 = first_ingression_grade == null || first_ingression_grade.value() == null ? null : first_ingression_grade.value();
                     final BigDecimal p2 = second_ingression_grade == null || second_ingression_grade.value() == null ? null : second_ingression_grade.value();
-                    final BigDecimal pi = p1 == null && p2 == null ? null : p1 == null ? p2 : p2 == null ? p1 : p1.add(p2).divide(new BigDecimal(2), 1, RoundingMode.HALF_EVEN);
+                    final BigDecimal pi = p1 == null && p2 == null ? null : p1 == null ? p2 : p2 == null ? p1 : p1.add(p2).divide(new BigDecimal(2), 1, RoundingMode.HALF_UP);
 
                     final Spreadsheet.Row row = spreadsheet.addRow();
                     row.setCell("application", application.getExternalId());
@@ -86,7 +86,27 @@ public class DumpDegreeChangeSerializationInfo extends ReadCustomTask {
                     row.setCell("MS", highschool_average == null ? "" : highschool_average.value().toPlainString());
                     row.setCell("PI", pi == null ? "" : pi.toPlainString());
                     row.setCell("MA", registration == null ? "" : ma.toPlainString());
+
+                    final JsonObject gradeData = new JsonObject();
+                    if (highschool_average != null) {
+                        gradeData.addProperty("a", highschool_average.value().intValue()); // ms
+                    }
+                    if (pi != null) {
+                        gradeData.addProperty("b", pi.doubleValue()); // pi
+                    }
+                    if (registration != null) {
+                        gradeData.addProperty("c", ma.intValue()); // ma
+                    }
+                    final JsonObject dataObject = application.getDataObject();
+                    dataObject.add("gradeData", gradeData);
+                    application.setData(dataObject.toString());
+                    if (gradeData.get("a") != null && gradeData.get("b") != null && gradeData.get("c") != null) {
+                        final BigDecimal grade = application.calculateGrade(gradeData);
+                        application.setGrade(grade);
+                    }
                 });
+
+        process.getAdmissionProcessTargetSet().forEach(target -> target.calculateAdmissions());
 
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         spreadsheet.exportToXLSSheet(stream);
