@@ -1,23 +1,9 @@
 package pt.ist.fenix.webapp.task.admissions;
 
 import com.google.gson.JsonObject;
-import org.fenixedu.academic.domain.Person;
-import org.fenixedu.academic.domain.student.Registration;
-import org.fenixedu.academic.domain.student.RegistrationDataByExecutionYear;
-import org.fenixedu.academic.domain.student.Student;
-import org.fenixedu.academic.domain.student.curriculum.ICurriculum;
 import org.fenixedu.admissions.domain.AdmissionProcess;
-import org.fenixedu.admissions.util.DynamicForm;
-import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.scheduler.custom.WriteCustomTask;
-import org.fenixedu.commons.spreadsheet.Spreadsheet;
-import org.fenixedu.connect.domain.Identity;
 import pt.ist.fenixframework.FenixFramework;
-
-import java.io.ByteArrayOutputStream;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.stream.Stream;
 
 public class DeleteGradeOfExcludedStudents extends WriteCustomTask {
 
@@ -29,10 +15,14 @@ public class DeleteGradeOfExcludedStudents extends WriteCustomTask {
                 .filter(application -> application.getLockInstant() != null)
                 .filter(application -> application.getAccepted() != null && !application.getAccepted().booleanValue())
                 .forEach(application -> {
+                    final JsonObject data = application.getDataObject();
                     taskLog("%s = %s : %s%n",
                             application.getExternalId(),
                             application.getGrade(),
-                            application.getDataObject().get("gradeData"));
+                            data.get("gradeData"));
+                    application.setGrade(null);
+                    data.remove("gradeData");
+                    application.setData(data.toString());
                 });
     }
 
