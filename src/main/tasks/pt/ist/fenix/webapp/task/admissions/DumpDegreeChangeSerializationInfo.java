@@ -16,7 +16,6 @@ import pt.ist.fenixframework.FenixFramework;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.stream.Stream;
 
@@ -49,7 +48,7 @@ public class DumpDegreeChangeSerializationInfo extends ReadCustomTask {
                     final ICurriculum curriculum = registration == null ? null : registration.getCurriculum();
                     final BigDecimal finalGrade = registration == null ? null : curriculum.getRawGrade().getNumericValue()
                             .multiply(new BigDecimal(10))
-                            .round(new MathContext(0, RoundingMode.HALF_DOWN));
+                            .setScale(0, RoundingMode.HALF_EVEN);
                     final BigDecimal ects = registration == null ? null : curriculum.getSumEctsCredits();
                     final BigDecimal ma;
                     if (registration == null) {
