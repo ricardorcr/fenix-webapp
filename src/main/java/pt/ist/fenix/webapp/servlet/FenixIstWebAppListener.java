@@ -218,10 +218,12 @@ public class FenixIstWebAppListener implements ServletContextListener, Configura
             final String zipCode = JsonUtils.get(address, "zipCode");
             final String district = districtFor(countryCode, zipCode);
 
-            clientData.addProperty("street", Utils.limitFormat(SapEvent.MAX_SIZE_ADDRESS, street));
-            clientData.addProperty("city", Utils.limitFormat(SapEvent.MAX_SIZE_CITY, location));
-            clientData.addProperty("region", district == null ? SapEvent.MORADA_DESCONHECIDO
-                    : Utils.limitFormat(SapEvent.MAX_SIZE_REGION, district));
+            clientData.addProperty("street", Utils.limitFormat(SapEvent.MAX_SIZE_ADDRESS, street == null || street.isEmpty()
+                    ? SapEvent.MORADA_DESCONHECIDO : street));
+            clientData.addProperty("city", Utils.limitFormat(SapEvent.MAX_SIZE_CITY, location == null || location.isEmpty()
+                    ? SapEvent.MORADA_DESCONHECIDO : location));
+            clientData.addProperty("region", district == null || district.isEmpty()
+                    ? SapEvent.MORADA_DESCONHECIDO : Utils.limitFormat(SapEvent.MAX_SIZE_REGION, district));
             clientData.addProperty("postalCode", zipCode == null || zipCode.isEmpty()
                     ? PostalCodeValidator.examplePostCodeFor(countryCode) : zipCode);
         };
