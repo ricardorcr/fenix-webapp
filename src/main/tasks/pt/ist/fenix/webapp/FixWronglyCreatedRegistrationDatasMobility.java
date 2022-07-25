@@ -15,6 +15,7 @@ public class FixWronglyCreatedRegistrationDatasMobility extends CustomTask {
                 .filter(rd -> rd.getRegistration().getRegistrationProtocol() == mobility)
                 .filter(rd -> rd.getExecutionYear() == currentYear)
                 .filter(rd -> rd.getRegistration().getStartExecutionYear() == currentYear.getNextExecutionYear())
+                .filter(rd -> rd.getRegistration().getEnrolments(currentYear).isEmpty())
                 .forEach(rd -> taskLog("%s\t%s%n", rd.getRegistration().getNumber(), rd.getRegistration().getDegreeName()));
     }
 }
