@@ -4,6 +4,8 @@ import org.fenixedu.academic.domain.OccupationPeriodType;
 import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
 
+import java.util.stream.Collectors;
+
 public class DebugOccupationPeriods extends ReadCustomTask {
     @Override
     public void runTask() throws Exception {
@@ -14,8 +16,13 @@ public class DebugOccupationPeriods extends ReadCustomTask {
                 //.filter(ref -> ref.getSemester().intValue() == executionSemester.getSemester().intValue())
                 //.filter(ref -> overlap(ref.getCurricularYears().getYears(), curricularYears))
                 .filter(ref -> ref.getCurricularYears() == null)
+                .map(ref -> ref.getExecutionDegree().getExecutionYear())
+                .collect(Collectors.toSet())
+                .forEach(executionYear -> taskLog("%s%n", executionYear.getName()));
+/*
                 .forEach(ref -> {
                     taskLog("ref has null years " + ref.getExternalId());
                 });
+ */
     }
 }
