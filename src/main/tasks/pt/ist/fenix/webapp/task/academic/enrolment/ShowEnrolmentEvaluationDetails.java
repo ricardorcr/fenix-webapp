@@ -21,7 +21,7 @@ public class ShowEnrolmentEvaluationDetails extends ReadCustomTask {
                                 ee.getGradeValue(),
                                 ee.getMarkSheet() == null ? "null" : ee.getMarkSheet().getCreationDateDateTime().toString(),
                                 ee.getRectificationMarkSheet() == null ? "null" : ee.getRectificationMarkSheet().getCreationDateDateTime().toString(),
-                                ee.getPerson().getUsername()
+                                ee.getPerson() == null ? "" : ee.getPerson().getUsername()
                         );
                     });
                 });
