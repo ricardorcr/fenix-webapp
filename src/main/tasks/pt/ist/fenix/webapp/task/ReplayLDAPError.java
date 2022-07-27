@@ -38,8 +38,9 @@ public class ReplayLDAPError extends ReadCustomTask {
                 taskLog("1");
                 api.createUser(UserAccountInfo.usernameFor(account));
             }
-            taskLog("2");
-            api.createOrEditPassword(UserAccountInfo.usernameFor(account), password);
+            final String username = UserAccountInfo.usernameFor(account);
+            taskLog("2 " + username);
+            api.createOrEditPassword(username, password);
         //}
     }
 
