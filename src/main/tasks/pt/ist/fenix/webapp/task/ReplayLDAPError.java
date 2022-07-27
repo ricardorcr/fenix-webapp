@@ -34,6 +34,7 @@ public class ReplayLDAPError extends ReadCustomTask {
         //if (canSetPassword(account)) {
             final CiistAdminUserAPI api = new CiistAdminUserAPI();
             final JsonObject userConnect = api.userInfo(UserAccountInfo.usernameFor(account));
+            taskLog("userInfo: " + userConnect.toString());
             if (userConnect == null) {
                 taskLog("1");
                 api.createUser(UserAccountInfo.usernameFor(account));
