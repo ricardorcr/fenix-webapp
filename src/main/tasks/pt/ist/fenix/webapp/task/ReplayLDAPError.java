@@ -1,5 +1,8 @@
 package pt.ist.fenix.webapp.task;
 
+import com.google.gson.JsonObject;
+import org.fenixedu.admissions.ist.domain.UserAccountInfo;
+import org.fenixedu.admissions.ist.service.CiistAdminUserAPI;
 import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
 import org.fenixedu.connect.domain.Account;
 import org.fenixedu.connect.pluggable.password.PluggablePassword;
@@ -20,17 +23,24 @@ public class ReplayLDAPError extends ReadCustomTask {
         if (!pluggablePassword.canSetPassword(loggedAccount)) {
             throw new ConnectError(HttpStatus.PRECONDITION_FAILED, "account.cannot.set.password");
         }
-/*
-        final String password = JsonUtils.parse(body).get("password").getAsString();
-        if (loggedAccount.has2FALogin(twoFactorToken) || !loggedAccount.has2FAMethod()) {
-            pluggablePassword.setPassword(loggedAccount, password);
-            setPassword(loggedAccount);
-            return ResponseEntity.ok().build();
-        }
-        // Logout for security purposes.
-        // If the logged account does not have an active 2fa token, this is probably a request made outside the application.
-        Authenticate.logout(httpRequest, httpResponse);
-        throw new ConnectError(HttpStatus.FORBIDDEN, "error.account.has.no.2fa.login");
-*/
+
+        final String password = "Avdflksjrgflksjfg%&//%(%(/&%!";
+        //if (loggedAccount.has2FALogin(twoFactorToken) || !loggedAccount.has2FAMethod()) {
+            setPassword(loggedAccount, password);
+        //}
     }
+
+    public void setPassword(final Account account, final String password) {
+        //if (canSetPassword(account)) {
+            final CiistAdminUserAPI api = new CiistAdminUserAPI();
+            final JsonObject userConnect = api.userInfo(UserAccountInfo.usernameFor(account));
+            if (userConnect == null) {
+                taskLog("1");
+                api.createUser(UserAccountInfo.usernameFor(account));
+            }
+            taskLog("2");
+            api.createOrEditPassword(UserAccountInfo.usernameFor(account), password);
+        //}
+    }
+
 }
