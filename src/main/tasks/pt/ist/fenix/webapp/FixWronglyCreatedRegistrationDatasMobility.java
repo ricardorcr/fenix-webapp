@@ -25,7 +25,7 @@ public class FixWronglyCreatedRegistrationDatasMobility extends CustomTask {
                 .filter(rd -> rd.getRegistration().getEnrolments(currentYear).isEmpty())
                 .forEach(rd -> {
                     report(rd, spreadsheet);
-                    rd.delete();
+                    //rd.delete();
                 });
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
