@@ -29,6 +29,7 @@ public class CheckSpecialSeasonEnrolmentLimits extends ReadCustomTask {
                     });
                     spreadsheet.addRow()
                             .setCell("User", user.getUsername())
+                            .setCell("E-mail", user.getEmail())
                             .setCell("Semester 1", d[0])
                             .setCell("Semester 2", d[1])
                             .setCell("Total", d[2]);
