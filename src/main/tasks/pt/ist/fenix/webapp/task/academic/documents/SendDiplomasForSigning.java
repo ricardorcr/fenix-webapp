@@ -17,7 +17,6 @@ import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
 import org.joda.time.DateTime;
-import pt.ist.registration.process.handler.CandidacySignalHandler;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -57,17 +56,37 @@ public class SendDiplomasForSigning extends ReadCustomTask {
     }
 
     private void processPDF(final File file) throws IOException {
-        if (file.getName().indexOf("_ist") < 0) {
+        if (file.getName().indexOf("_ist") < 0 && file.getName().startsWith("A")) {
             final byte[] content = Files.readAllBytes(file.toPath());
             final String text = readTextFromPDF(content);
 
+/*
             final int i1 = text.indexOf("<ist_id>");
             final int i2 = text.indexOf("</ist_id>");
+*/
+            int i1 = -1;
+            int i2 = -1;
+            for (int i = text.indexOf("ist"); i >= 0 && i < text.length(); i = text.indexOf("ist", i + 1)) {
+                int k = 0;
+                for (int j = i + 3; j < text.length(); j++) {
+                    if (Character.isDigit(text.charAt(j))) {
+                        k = j;
+                    } else {
+                        k = 0;
+                        break;
+                    }
+                }
+                if (k > i) {
+                    i1 = i;
+                    i2 = k;
+                }
+            }
 
             if (i1 < 0 || i2 < 0 || i2 < i1) {
                 taskLog("No TecnicoID tag found in file: %s%n", file.toPath());
             } else {
-                final String id = text.substring(i1 + 8, i2).trim().replace(" ", "");
+                //final String id = text.substring(i1 + 8, i2).trim().replace(" ", "");
+                final String id = text.substring(i1, i2 + 1).trim().replace(" ", "");
                 if (id.isEmpty() || id.length() < 4) {
                     taskLog("No username found in file %s%n", file.getPath());
                 } else {
