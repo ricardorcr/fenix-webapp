@@ -56,7 +56,7 @@ public class SendDiplomasForSigning extends ReadCustomTask {
     }
 
     private void processPDF(final File file) throws IOException {
-        if (file.getName().indexOf("_ist") < 0 && file.getName().startsWith("A")) {
+        if (file.getName().indexOf("_ist") < 0 && file.getName().startsWith("B")) {
             final byte[] content = Files.readAllBytes(file.toPath());
             final String text = readTextFromPDF(content);
 
