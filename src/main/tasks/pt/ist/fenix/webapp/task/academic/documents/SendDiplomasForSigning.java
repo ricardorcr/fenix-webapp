@@ -32,7 +32,7 @@ import java.util.UUID;
 
 public class SendDiplomasForSigning extends ReadCustomTask {
 
-    private final String DIR = "/afs/ist.utl.pt/ciist/fenix/fenix060/diplomas-alunos";
+    private final String DIR = "/afs/ist.utl.pt/ciist/fenix/fenix060/diplomas-alunos_2022";
 
     @Override
     public void runTask() throws Exception {
@@ -47,8 +47,8 @@ public class SendDiplomasForSigning extends ReadCustomTask {
         } else {
             if (file.getName().endsWith(".pdf")) {
                 try {
-                    //processPDF(file);
-                    sendFileToSigner(file);
+                    processPDF(file);
+                    //sendFileToSigner(file);
                 } catch (IOException e) {
                     taskLog("Error processing file: %s%n", file.getPath());
                 }
