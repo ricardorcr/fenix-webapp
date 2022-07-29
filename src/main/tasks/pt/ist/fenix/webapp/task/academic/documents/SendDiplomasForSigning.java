@@ -46,8 +46,8 @@ public class SendDiplomasForSigning extends ReadCustomTask {
         } else {
             if (file.getName().endsWith(".pdf")) {
                 try {
-                    processPDF(file);
-                    //sendFileToSigner(file);
+                    //processPDF(file);
+                    sendFileToSigner(file);
                 } catch (IOException e) {
                     taskLog("Error processing file: %s%n", file.getPath());
                 }
