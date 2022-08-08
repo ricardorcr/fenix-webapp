@@ -2,9 +2,9 @@ package pt.ist.fenix.webapp.task;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.nio.file.Files;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.fenixedu.academic.domain.Person;
 import org.fenixedu.academic.domain.accessControl.ActiveStudentsGroup;
@@ -17,9 +17,6 @@ import org.fenixedu.bennu.core.groups.Group;
 import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
 import org.fenixedu.commons.spreadsheet.Spreadsheet;
 
-import java.nio.file.Files;
-
-import kong.unirest.Unirest;
 import pt.ist.fenixedu.contracts.domain.accessControl.ActiveEmployees;
 import pt.ist.fenixedu.contracts.domain.accessControl.ActiveGrantOwner;
 import pt.ist.fenixedu.contracts.domain.accessControl.ActiveResearchers;
@@ -58,8 +55,10 @@ public class ReportUsers extends ReadCustomTask {
 
         taskLog("....");
         final String filename = "/afs/ist.utl.pt/ciist/fenix/fenix015/ist/google/email_list_02082022_145754.csv";
-        String body = Unirest.get(filename).asString().getBody();
-        Stream.of(body.split("\r\n")).forEach(email -> {
+        Files.readAllLines(new File(filename).toPath()).stream()
+        .map(line -> line.split("\t"))
+        .forEach(line -> {
+           String email = line[0];
             User user = find(email.toLowerCase(), userMap, ldap);
             if (user == null && email.endsWith("@ist.utl.pt")) {
                 user = find(email.replaceAll("ist.utl.pt", "tecnico.ulisboa.pt"), userMap, ldap);
