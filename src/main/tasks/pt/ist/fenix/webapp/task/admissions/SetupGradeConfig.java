@@ -11,7 +11,9 @@ public class SetupGradeConfig extends WriteCustomTask implements RemoteReader {
     public void runTask() throws Exception {
         final AdmissionProcess process = FenixFramework.getDomainObject("571432513830959");
         process.setGradeConfig(string("teachersPromotionGradeConfig.json"));
-        process.setResultsPublished(true);
+        //process.setGradeConfig(null);
+        process.setResultsPublished(false);
+        process.setHasAdmissionGranted(false);
     }
 
 }
