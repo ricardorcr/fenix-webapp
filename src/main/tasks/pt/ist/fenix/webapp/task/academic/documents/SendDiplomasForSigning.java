@@ -177,7 +177,7 @@ public class SendDiplomasForSigning extends ReadCustomTask {
             formDataMultiPart.bodyPart(new FormDataBodyPart("title", title));
             formDataMultiPart.bodyPart(new FormDataBodyPart("description", description));
             formDataMultiPart.bodyPart(new FormDataBodyPart("externalIdentifier", uuid));
-            //formDataMultiPart.bodyPart(new FormDataBodyPart("signatureField", CandidacySignalHandler.SIGNATURE_FIELD));
+            formDataMultiPart.bodyPart(new FormDataBodyPart("signatureField", "signatureField"));
 
             final String nounce = Jwts.builder().setSubject(uuid).signWith(SignatureAlgorithm.HS512, RegistrationProcessConfiguration.signerJwtSecret()).compact();
 
