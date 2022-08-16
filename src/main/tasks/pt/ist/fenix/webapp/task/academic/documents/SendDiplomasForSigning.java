@@ -150,7 +150,11 @@ public class SendDiplomasForSigning extends ReadCustomTask {
 
         final String title = filename.substring(0, filename.length() - 4);
 
-        sendDocumentToBeSigned("oIK0zjNu", title, title, filename, stream, UUID.randomUUID().toString(), "ist24439");
+        final int j = title.lastIndexOf('_');
+        final String username = title.substring(j + 1);
+
+        taskLog("Uploading %s for %s%n", title, username);
+        sendDocumentToBeSigned("oIK0zjNu", title, title, filename, stream, UUID.randomUUID().toString(), username);
 
         final String newFilename = filename.replace(".pdf", ".sent.pdf");
         file.renameTo(new File(file.getParent() + File.separator + newFilename));
