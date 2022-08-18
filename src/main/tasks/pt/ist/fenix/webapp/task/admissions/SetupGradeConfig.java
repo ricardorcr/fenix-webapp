@@ -18,6 +18,7 @@ public class SetupGradeConfig extends WriteCustomTask implements RemoteReader {
                 .flatMap(target -> target.getApplicationSet().stream())
                 .forEach(application -> {
                     application.setGrade(null);
+                    application.setAccepted(null);
                 });
     }
 
