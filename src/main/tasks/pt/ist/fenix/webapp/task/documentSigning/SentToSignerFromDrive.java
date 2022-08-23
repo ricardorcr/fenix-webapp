@@ -110,8 +110,8 @@ public class SentToSignerFromDrive extends ReadCustomTask {
             formDataMultiPart.bodyPart(new FormDataBodyPart("externalIdentifier", uuid));
             formDataMultiPart.bodyPart(new FormDataBodyPart("signatureField", CandidacySignalHandler.SIGNATURE_FIELD));
 
-            final String nounce = Jwts.builder().setSubject(uuid).signWith(SignatureAlgorithm.HS512, RegistrationProcessConfiguration.signerJwtSecret()).compact();
-            formDataMultiPart.bodyPart(new FormDataBodyPart("callbackUrl", ""));
+            //final String nounce = Jwts.builder().setSubject(uuid).signWith(SignatureAlgorithm.HS512, RegistrationProcessConfiguration.signerJwtSecret()).compact();
+            //formDataMultiPart.bodyPart(new FormDataBodyPart("callbackUrl", ""));
             final Client client = ClientBuilder.newClient();
             client.register(MultiPartFeature.class);
             client.register(JsonBodyReaderWriter.class);
