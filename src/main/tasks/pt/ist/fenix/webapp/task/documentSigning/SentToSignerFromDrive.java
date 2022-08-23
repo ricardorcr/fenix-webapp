@@ -119,6 +119,7 @@ public class SentToSignerFromDrive extends ReadCustomTask {
                     .request().header("Authorization", "Bearer " + compactJws)
                     .post(Entity.entity(formDataMultiPart, MediaType.MULTIPART_FORM_DATA_TYPE), String.class);
         } catch (final IOException e) {
+            e.printStackTrace();
             throw new Error(e);
         }
     }
