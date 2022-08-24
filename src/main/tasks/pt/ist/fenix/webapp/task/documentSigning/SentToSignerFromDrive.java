@@ -3,6 +3,13 @@ package pt.ist.fenix.webapp.task.documentSigning;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.PdfAnnotation;
+import com.itextpdf.text.pdf.PdfFormField;
+import com.itextpdf.text.pdf.PdfName;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfStamper;
+import com.itextpdf.text.pdf.PdfString;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import kong.unirest.HttpResponse;
@@ -12,6 +19,7 @@ import org.fenixedu.bennu.core.rest.JsonBodyReaderWriter;
 import org.fenixedu.bennu.core.util.CoreConfiguration;
 import org.fenixedu.bennu.io.domain.DriveAPIStorage;
 import org.fenixedu.bennu.io.domain.FileSupport;
+import org.fenixedu.bennu.papyrus.domain.SignatureFieldSettings;
 import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
 import org.fenixedu.jwt.Tools;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
@@ -26,6 +34,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
@@ -48,9 +57,39 @@ public class SentToSignerFromDrive extends ReadCustomTask {
             final byte[] content = read(downloadLink);
             taskLog("%s = %s bytes%n", name, content.length);
             final String title = name.replace(".pdf", "");
-            final ByteArrayInputStream stream = new ByteArrayInputStream(content);
+            final ByteArrayInputStream stream = new ByteArrayInputStream(addField(content));
             final String uuid = UUID.randomUUID().toString();
             sendDocumentToBeSigned(SIGNING_QUEUE, title, title, name, stream, uuid);
+        }
+    }
+
+    private byte[] addField(final byte[] content) {
+        //final SignatureFieldSettings settings = new SignatureFieldSettings(150, 320, 550, 220, "signatureField", 1);
+        final SignatureFieldSettings settings = new SignatureFieldSettings(100, 450, 500, 350, "signatureField", 1);
+        return generateDocumentWithSignatureField(new ByteArrayInputStream(content), settings);
+    }
+
+    public byte[] generateDocumentWithSignatureField(final InputStream fileStream, final SignatureFieldSettings settings) {
+        if (fileStream == null) {
+            return null;
+        }
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            PdfReader original = new PdfReader(fileStream);
+            PdfStamper stp = new PdfStamper(original, bos);
+            PdfFormField sig = PdfFormField.createSignature(stp.getWriter());
+            sig.setWidget(new com.itextpdf.text.Rectangle(settings.getLlx(), settings.getLly(), settings.getUrx(), settings.getUry()), null);
+            sig.setFlags(PdfAnnotation.FLAGS_PRINT);
+            sig.put(PdfName.DA, new PdfString("/Helv 0 Tf 0 g"));
+            sig.setFieldName(settings.getName());
+            sig.setPage(settings.getPage());
+            stp.addAnnotation(sig, settings.getPage());
+
+            stp.getOverContent(settings.getPage());
+            stp.close();
+            return bos.toByteArray();
+        } catch (IOException | DocumentException e) {
+            throw new Error(e);
         }
     }
 
