@@ -26,13 +26,20 @@ public class AddMoreTargetsToNavyStuff extends CustomTask {
     protected static final Locale EN = new Locale("en", "GB");
 
     private static final Set<String> allowedNavyDegrees = new HashSet<String>() {{
-        add("MEIC-A");
-        add("MEIC-T");
+//        add("MEIC-A");
+//        add("MEIC-T");
         add("MEAN");
     }};
 
     @Override
     public void runTask() throws Exception {
+        final AdmissionProcessTarget target = FenixFramework.getDomainObject("571552772927056");
+        target.delete();
+        final AdmissionProcessTarget target2 = FenixFramework.getDomainObject("853027749632704");
+        target2.delete();
+
+
+        if (true) return;
         final AdmissionProcess admissionProcess = FenixFramework.getDomainObject("571432513831068");
         final ExecutionYear executionYear = ExecutionYear.readCurrentExecutionYear().getNextExecutionYear();
         final IngressionType ingressionType = IngressionType.findIngressionTypeByCode("AD").get();
