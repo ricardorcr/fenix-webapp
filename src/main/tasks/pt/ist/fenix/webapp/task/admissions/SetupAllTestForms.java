@@ -29,6 +29,8 @@ public class SetupAllTestForms extends CustomTask implements RemoteReader {
         final String raidesForm = string("raidesForm.json");
         final String mobilityRaidesForm = string("raidesMobilityForm.json");
 
+        setup("Termos e Condições", string("acceptTermsForm.json"));
+
         setup("Processo Valorização Docentes",  string("teachersPromotionForm.json"));
 
         setup("Segundo Ciclo - Form Candidatura",  string("2ndCycleFormData.json"));
@@ -78,7 +80,6 @@ public class SetupAllTestForms extends CustomTask implements RemoteReader {
 
         setup("HACS com Seriação", string("hassFormData.json"));
         setup("HACS Colocação Direta", string("hassFormDataPlaceByApplicationOrder.json"));
-
     }
 
     private void setup(String name, String form) {
