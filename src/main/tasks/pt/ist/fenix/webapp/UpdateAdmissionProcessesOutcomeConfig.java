@@ -36,11 +36,13 @@ public class UpdateAdmissionProcessesOutcomeConfig extends CustomTask {
             outcomeConfigJson.addProperty("needsDocumentsConfirmation", false);
             outcomeConfigJson.addProperty("changeOutcomeState", true);
             outcomeConfigJson.addProperty("automaticEnrollment", true);
+            outcomeConfigJson.addProperty("tutorDistribution", true);
         } else if (Utils.isDegreeType(admissionProcess)) {
             outcomeConfigJson.addProperty("needsDocumentsConfirmation", true);
             outcomeConfigJson.addProperty("changeOutcomeState", true);
             if (admissionProcess.getTitle().getContent().contains("Maiores")) {
                 outcomeConfigJson.addProperty("automaticEnrollment", true);
+                outcomeConfigJson.addProperty("tutorDistribution", true);
             }
         } else if (Utils.isDegreeSpecificRegimentType(admissionProcess)) {
             final AdmissionProcessTarget target = admissionProcess.getAdmissionProcessTargetSet().iterator().next();
