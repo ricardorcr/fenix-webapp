@@ -29,6 +29,18 @@ public class HackAlternativeEventTemplateDescriptions extends WriteCustomTask {
                     .map(s -> s.replace(
                             "limits enrolments to a maximum of 30.0 ECTS",
                             "limits enrolments to a maximum of 50% of ECTS allowed for the normal regime."))
+                    .map(s -> s.replace(
+                            "Este plano limita as inscrições no ano letivo a 30.0 ECTS.",
+                            "Este plano limita as inscrições a um máximo de 50% ECTS permitidos para o regime normal."))
+                    .map(s -> s.replace(
+                            "This plan limits enrolments for the entire year to 30.0 ECTS.",
+                            "This plan limits enrolments for the entire year to to a maximum of 50% of ECTS allowed for the normal regime."))
+                    .map(s -> s.replace(
+                            "Este plano limita as inscrições no ano letivo a 42.0 ECTS.",
+                            "Este plano limita as inscrições a um máximo de 70% ECTS permitidos para o regime normal."))
+                    .map(s -> s.replace(
+                            "This plan limits enrolments for the entire year to 42.0 ECTS.",
+                            "This plan limits enrolments for the entire year to to a maximum of 70% of ECTS allowed for the normal regime."))
                     ;
             taskLog("%s%n%s%n%n%s%n%s%n%n%n%n",
                     title.getContent(PT),
