@@ -2,11 +2,12 @@ package pt.ist.fenix.webapp.task.academic.events;
 
 import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
+import org.fenixedu.bennu.scheduler.custom.WriteCustomTask;
 import org.fenixedu.commons.i18n.LocalizedString;
 
 import java.util.Locale;
 
-public class HackAlternativeEventTemplateDescriptions extends ReadCustomTask {
+public class HackAlternativeEventTemplateDescriptions extends WriteCustomTask {
 
     private static final Locale PT = Locale.forLanguageTag("pt-PT");
     private static final Locale EN = Locale.forLanguageTag("en-GB");
@@ -34,6 +35,8 @@ public class HackAlternativeEventTemplateDescriptions extends ReadCustomTask {
                     title.getContent(EN),
                     description.getContent(PT),
                     description.getContent(EN));
+            eventTemplate.setTitle(title);
+            eventTemplate.setDescription(description);
         });
     }
 
