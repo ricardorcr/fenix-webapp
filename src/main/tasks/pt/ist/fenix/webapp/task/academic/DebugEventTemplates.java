@@ -14,7 +14,7 @@ public class DebugEventTemplates extends ReadCustomTask {
         for (final Registration registration : student.getRegistrationsSet()) {
             taskLog("Registration: %s%n", registration.getDegree().getPresentationName());
             final EventTemplate eventTemplate = registration.getEventTemplate();
-            taskLog("Registration event template: %s%n", eventTemplate.getTitle().getContent());
+            taskLog("Registration event template: %s%n", eventTemplate == null ? null : eventTemplate.getTitle().getContent());
             for (final RegistrationDataByExecutionYear dataByYear : registration.getRegistrationDataByExecutionYearSet()) {
                 EventTemplate eventTemplateForYear = dataByYear.getEventTemplate();
                 if (eventTemplateForYear == null) {
