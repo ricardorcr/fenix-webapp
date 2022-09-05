@@ -43,7 +43,7 @@ public class SeparateSpecificRegistration extends CustomTask {
     @Override
     public void runTask() throws Exception {
         //TODO possibly check hasValidExternalSecondCycle
-        final Registration registration = FenixFramework.getDomainObject("846684083033064"); //9745
+        final Registration registration = FenixFramework.getDomainObject("1409634036438872"); //87093
         registration.getStudentCurricularPlanStream()
                 .filter(this::canSeparate)
                 .forEach(this::createNewSecondCycle);
