@@ -461,7 +461,7 @@ public class SeparateSpecificRegistration extends CustomTask {
     private boolean hasValidExternalSecondCycle(final StudentCurricularPlan studentCurricularPlan) {
         final CycleCurriculumGroup secondCycle = studentCurricularPlan.getSecondCycle();
         return secondCycle != null && secondCycle.isExternal()
-                && secondCycle.hasEnrolment(ExecutionSemester.readActualExecutionSemester()) //this case does not have but it's to separate
+//                && secondCycle.hasEnrolment(ExecutionSemester.readActualExecutionSemester()) //this case does not have but it's to separate
                 && hasActiveExecutionDegree(secondCycle);
     }
 
