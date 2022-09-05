@@ -43,7 +43,7 @@ public class SeparateSpecificRegistration extends CustomTask {
     @Override
     public void runTask() throws Exception {
         //TODO possibly check hasValidExternalSecondCycle
-        final Registration registration = FenixFramework.getDomainObject("1409634036442560"); //90524
+        final Registration registration = FenixFramework.getDomainObject("846684083033064"); //9745
         registration.getStudentCurricularPlanStream()
                 .filter(this::canSeparate)
                 .forEach(this::createNewSecondCycle);
@@ -461,7 +461,7 @@ public class SeparateSpecificRegistration extends CustomTask {
     private boolean hasValidExternalSecondCycle(final StudentCurricularPlan studentCurricularPlan) {
         final CycleCurriculumGroup secondCycle = studentCurricularPlan.getSecondCycle();
         return secondCycle != null && secondCycle.isExternal()
-//                && secondCycle.hasEnrolment(ExecutionSemester.readActualExecutionSemester()) //this case does not have but it's to separate
+                && secondCycle.hasEnrolment(ExecutionSemester.readActualExecutionSemester()) //this case does not have but it's to separate
                 && hasActiveExecutionDegree(secondCycle);
     }
 
