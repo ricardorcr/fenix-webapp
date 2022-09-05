@@ -12,15 +12,18 @@ public class DebugEventTemplates extends ReadCustomTask {
     public void runTask() throws Exception {
         final Student student = Student.readStudentByNumber(96542);
         for (final Registration registration : student.getRegistrationsSet()) {
+            taskLog("Registration: %s%n", registration.getDegree().getPresentationName());
             final EventTemplate eventTemplate = registration.getEventTemplate();
+            taskLog("Registration event template: %s%n", eventTemplate.getTitle().getContent());
             for (final RegistrationDataByExecutionYear dataByYear : registration.getRegistrationDataByExecutionYearSet()) {
                 EventTemplate eventTemplateForYear = dataByYear.getEventTemplate();
                 if (eventTemplateForYear == null) {
                     eventTemplateForYear = eventTemplate;
                 }
+/*
                 final EventTemplateConfig templateConfig = eventTemplateForYear.getConfigFor(dataByYear.getExecutionYear()
                         .getBeginLocalDate().plusDays(12).toDateTimeAtStartOfDay());
-
+*/
             }
         }
     }
