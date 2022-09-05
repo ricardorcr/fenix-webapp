@@ -44,6 +44,14 @@ public class UpdateAdmissionProcessesOutcomeConfig extends CustomTask {
                 outcomeConfigJson.addProperty("automaticEnrollment", true);
                 outcomeConfigJson.addProperty("tutorDistribution", true);
             }
+            if (admissionProcess.getTitle().getContent().contains("Internacionais")) {
+                outcomeConfigJson.addProperty("automaticEnrollment", true);
+                outcomeConfigJson.addProperty("tutorDistribution", true);
+            }
+            if (admissionProcess.getTitle().getContent().contains("Titulares")) {
+                outcomeConfigJson.addProperty("automaticEnrollment", true);
+                outcomeConfigJson.addProperty("tutorDistribution", true);
+            }
         } else if (Utils.isDegreeSpecificRegimentType(admissionProcess)) {
             final AdmissionProcessTarget target = admissionProcess.getAdmissionProcessTargetSet().iterator().next();
             final String protocolID = target.getOutcomeConfigJson().get("protocol").getAsString();
