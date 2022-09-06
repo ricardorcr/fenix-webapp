@@ -33,6 +33,7 @@ import org.fenixedu.connect.domain.Account;
 import org.fenixedu.connect.domain.Identity;
 import pt.ist.fenixframework.FenixFramework;
 
+import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -933,32 +934,11 @@ public class ExportMinorResultsWizard extends ReadCustomTask implements RemoteRe
 
     @Override
     public void runTask() throws Exception {
-        final Map<String, Double> natureMap = loadNatureMap();
-        final Application application = FenixFramework.getDomainObject("852890310676841");
-        double appNature = 1d;
-//        if (mfc < 0) {
-            final JsonObject appGrade = applicationStreamFor(application.getAccount())
-                    .filter(app -> app != application)
-                    .filter(app -> app.getLockInstant() != null)
-                    .filter(Application::getAdmitted)
-                    .filter(this::isNotMobility)
-                    .peek(app -> taskLog("app: %s : %s : %s : %s%n", app.getExternalId(),
-                            app.getAdmissionProcessTarget().getName().getContent(),
-                            app.getAdmissionProcessTarget().getAdmissionProcess().getTitle().getContent(),
-                            gradeDataFor(natureMap, app)))
-                    .map(app -> gradeDataFor(natureMap, app))
-                    .filter(Objects::nonNull)
-                    .max(Comparator.comparing(this::calc))
-                    .orElse(null);
-            if (appGrade != null) {
-                appNature = appGrade.get("b").getAsDouble();
-//                mfc = appGrade.get("c").getAsDouble();
-            }
-//        } else {
-//            isISTStudent = true;
-//        }
-
-        taskLog("appNature = %s%n", appNature);
-
+        final AdmissionProcess process = FenixFramework.getDomainObject("852907490541640");
+        final Spreadsheet spreadsheet = computeAndExport(process, false);
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        spreadsheet.exportToXLSSheet(stream);
+        output("results.xlsx", stream.toByteArray());
     }
+
 }
