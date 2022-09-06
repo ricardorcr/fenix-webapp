@@ -5,13 +5,15 @@ import org.fenixedu.academic.domain.degreeStructure.CycleType;
 import org.fenixedu.admissions.domain.AdmissionProcess;
 import org.fenixedu.admissions.domain.AdmissionProcessTarget;
 import org.fenixedu.admissions.domain.AdmissionsSystem;
+import org.fenixedu.admissions.domain.Application;
 import org.fenixedu.admissions.ist.domain.Survey;
 import org.fenixedu.admissions.ist.domain.Utils;
 import org.fenixedu.admissions.util.RemoteReader;
 import org.fenixedu.bennu.core.json.JsonUtils;
-import org.fenixedu.bennu.scheduler.custom.WriteCustomTask;
+import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
+import pt.ist.fenixframework.FenixFramework;
 
-public class SetupULisboaSurveyes extends WriteCustomTask implements RemoteReader {
+public class SetupULisboaSurveyes extends ReadCustomTask implements RemoteReader {
 
     final JsonObject surveyCycle1 = object("cycle1.json");
     final JsonObject surveyCycle2 = object("cycle2.json");
@@ -33,12 +35,22 @@ public class SetupULisboaSurveyes extends WriteCustomTask implements RemoteReade
                             : null;
                     if (survey != null) {
                         taskLog("app = %s%n", application.getAccount().getEmail());
-                        if (Survey.survey(application, survey.get("surveyId").getAsString()) == null) {
-                            Survey.addSurvey(application, survey);
-                        }
+                        add(application, survey);
                     }
                 });
         ;
+    }
+
+    private void add(final Application application, final JsonObject survey) {
+        try {
+            FenixFramework.atomic(() -> {
+                if (Survey.survey(application, survey.get("surveyId").getAsString()) == null) {
+                    Survey.addSurvey(application, survey);
+                }
+            });
+        } catch (final Throwable t) {
+            taskLog("   Failled to add survey to %s%n", application.getExternalId());
+        }
     }
 
     private void init(final AdmissionProcessTarget admissionProcessTarget) {
