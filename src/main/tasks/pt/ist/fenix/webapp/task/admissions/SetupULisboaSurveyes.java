@@ -32,10 +32,12 @@ public class SetupULisboaSurveyes extends WriteCustomTask implements RemoteReade
                             : cycleType == CycleType.SECOND_CYCLE ? surveyCycle2
                             : null;
                     if (survey != null) {
+/*
                         taskLog("app = %s%n", application.getAccount().getEmail());
                         if (Survey.survey(application, survey.get("surveyId").getAsString()) == null) {
                             Survey.addSurvey(application, survey);
                         }
+ */
                     }
                 });
         ;
