@@ -36,10 +36,6 @@ public class InitSurveys extends ReadCustomTask {
 
     @Override
     public void runTask() throws Exception {
-        basicRemoteCall("get_session_key", params -> {
-            params.add(LimeSurveySDKConfiguration.getConfiguration().limeSurveyUsername());
-            params.add(LimeSurveySDKConfiguration.getConfiguration().limeSurveyPassword());
-        });
 
         final int id1 = 918456;
         final int id2 = 865334;
