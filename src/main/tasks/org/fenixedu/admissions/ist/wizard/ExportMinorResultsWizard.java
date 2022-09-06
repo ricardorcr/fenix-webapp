@@ -482,6 +482,7 @@ public class ExportMinorResultsWizard extends ReadCustomTask implements RemoteRe
                     .filter(app -> app != application)
                     .filter(app -> app.getLockInstant() != null)
                     .filter(Application::getAdmitted)
+                    .filter(this::isNotMobility)
                     .map(app -> gradeDataFor(natureMap, app))
                     .filter(Objects::nonNull)
                     .max(Comparator.comparing(this::calc))
@@ -589,6 +590,13 @@ public class ExportMinorResultsWizard extends ReadCustomTask implements RemoteRe
             result.addProperty("possibleTargetDegreeNames", possibleTargetDegreeNames.toString());
 
         });
+    }
+
+    private boolean isNotMobility(final Application application) {
+        final AdmissionProcess process = application.getAdmissionProcessTarget().getAdmissionProcess();
+        return (!Utils.isOutboundMobilityType(process))
+                && (!Utils.isMobilityDoubleDegreeType(application))
+                && (!Utils.isMobilityType(application));
     }
 
     private Double calc(final JsonObject appGrade) {
