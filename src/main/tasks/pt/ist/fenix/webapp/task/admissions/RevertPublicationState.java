@@ -7,7 +7,7 @@ import pt.ist.fenixframework.FenixFramework;
 public class RevertPublicationState extends WriteCustomTask {
     @Override
     public void runTask() throws Exception {
-        final AdmissionProcess process = FenixFramework.getDomainObject("571432513830959");
+        final AdmissionProcess process = FenixFramework.getDomainObject("571432513831074");
         process.setResultsPublished(false);
     }
 }
