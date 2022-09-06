@@ -48,7 +48,7 @@ import java.util.stream.Stream;
 
 public class ExportMinorResultsWizard extends ReadCustomTask implements RemoteReader {
 
-    private static final long THRESHOLD = 1l;
+    private static final long THRESHOLD = 10l;
 
     private final Map<String, JsonObject> levels = new HashMap<>();
     private final Map<Degree, Set<Degree>> incompatibilityMap = new HashMap<>();
@@ -83,6 +83,19 @@ public class ExportMinorResultsWizard extends ReadCustomTask implements RemoteRe
 
         loadIncompatibilityMap();
 
+        final Spreadsheet results = computeAndExport(process, new HashSet<>());
+
+        if (log) {
+            FenixFramework.atomic(() -> {
+                new AdmissionsLog(AdmissionsLogVisibility.PROCESS_MANAGERS, process,
+                        BundleUtil.getLocalizedString("resources.AdmissionsISTResources", "log.admissions.process.minor.export.results"));
+            });
+        }
+
+        return results;
+    }
+
+    public Spreadsheet computeAndExport(final AdmissionProcess process, final Set<String> minorsToRemove) {
         final Spreadsheet results = new Spreadsheet("Results");
         final Spreadsheet minorsSheet = results.addSpreadsheet("Minors");
         final Spreadsheet registrationSheet = minorsSheet.addSpreadsheet("Registrations");
@@ -90,6 +103,7 @@ public class ExportMinorResultsWizard extends ReadCustomTask implements RemoteRe
         final Spreadsheet minorOptions = degreePlacementSheet.addSpreadsheet("Minor Options");
 
         final List<String> availableSlots = loadAvailableSlots(process);
+        availableSlots.removeAll(minorsToRemove);
         final List<String> placedSlots = new ArrayList<>();
         final List<String> chosen = new ArrayList<>();
         final Map<String, Spreadsheet.Row> minorRows = loadMinorRows(process, minorsSheet);
@@ -221,19 +235,17 @@ public class ExportMinorResultsWizard extends ReadCustomTask implements RemoteRe
                     }
                 });
 
-        minorRows.forEach((k, v) -> v.setCell("Students",
-                Long.toString(placedSlots.stream().filter(s -> s.equals(k)).count())));
+        minorRows.forEach((k, v) -> {
+            final long placedCount = placedSlots.stream().filter(s -> s.equals(k)).count();
+            v.setCell("Students", Long.toString(placedCount));
+            if (placedCount < THRESHOLD) {
+                minorsToRemove.add(k);
+            }
+        });
         minorRows.forEach((k, v) -> v.setCell("Chosen By",
                 Long.toString(chosen.stream().filter(s -> s.equals(k)).count())));
 
-        if (log) {
-            FenixFramework.atomic(() -> {
-                new AdmissionsLog(AdmissionsLogVisibility.PROCESS_MANAGERS, process,
-                        BundleUtil.getLocalizedString("resources.AdmissionsISTResources", "log.admissions.process.minor.export.results"));
-            });
-        }
-
-        return results;
+        return minorsToRemove.isEmpty() ? results : computeAndExport(process, minorsToRemove);
     }
 
     private Set<Degree> readDegrees(final JsonObject result) {
