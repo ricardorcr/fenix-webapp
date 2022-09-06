@@ -941,6 +941,7 @@ public class ExportMinorResultsWizard extends ReadCustomTask implements RemoteRe
                     .filter(app -> app != application)
                     .filter(app -> app.getLockInstant() != null)
                     .filter(Application::getAdmitted)
+                    .filter(this::isNotMobility)
                     .peek(app -> taskLog("app: %s : %s : %s : %s%n", app.getExternalId(),
                             app.getAdmissionProcessTarget().getName().getContent(),
                             app.getAdmissionProcessTarget().getAdmissionProcess().getTitle().getContent(),
