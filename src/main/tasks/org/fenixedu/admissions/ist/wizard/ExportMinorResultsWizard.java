@@ -235,17 +235,19 @@ public class ExportMinorResultsWizard extends ReadCustomTask implements RemoteRe
                     }
                 });
 
+        final Set<String> nextMinorsToRemove = new HashSet<>();
         minorRows.forEach((k, v) -> {
             final long placedCount = placedSlots.stream().filter(s -> s.equals(k)).count();
             v.setCell("Students", Long.toString(placedCount));
             if (placedCount < THRESHOLD) {
-                minorsToRemove.add(k);
+                nextMinorsToRemove.add(k);
             }
         });
         minorRows.forEach((k, v) -> v.setCell("Chosen By",
                 Long.toString(chosen.stream().filter(s -> s.equals(k)).count())));
 
-        return minorsToRemove.isEmpty() ? results : computeAndExport(process, minorsToRemove);
+        return nextMinorsToRemove.isEmpty() || minorsToRemove.containsAll(nextMinorsToRemove) ? results
+                : computeAndExport(process, nextMinorsToRemove);
     }
 
     private Set<Degree> readDegrees(final JsonObject result) {
