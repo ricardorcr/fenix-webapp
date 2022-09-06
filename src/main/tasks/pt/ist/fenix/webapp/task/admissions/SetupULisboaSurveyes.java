@@ -24,7 +24,7 @@ public class SetupULisboaSurveyes extends ReadCustomTask implements RemoteReader
         AdmissionsSystem.getInstance().getAdmissionProcessSet().stream()
                 .filter(this::needToApplySurvey)
                 .flatMap(admissionProcess -> admissionProcess.getAdmissionProcessTargetSet().stream())
-                .peek(this::init)
+                //.peek(this::init)
                 .flatMap(admissionProcessTarget -> admissionProcessTarget.getApplicationSet().stream())
                 .forEach(application -> {
                     final AdmissionProcessTarget admissionProcessTarget = application.getAdmissionProcessTarget();
