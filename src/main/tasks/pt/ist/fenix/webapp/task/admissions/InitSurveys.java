@@ -24,6 +24,8 @@ public class InitSurveys extends ReadCustomTask {
         paramSetter.accept(params);
         body.addProperty("id", UUID.randomUUID().toString());
 
+        taskLog("Params: %s%n", body.toString());
+
         final String url = "https://surveys.tecnico.ulisboa.pt/index.php?r=admin/remotecontrol";
         final HttpResponse<String> response = Unirest.post(url).header("Content-Type", "application/json").body(body).asString();
 
@@ -38,7 +40,7 @@ public class InitSurveys extends ReadCustomTask {
             params.add(LimeSurveySDKConfiguration.getConfiguration().limeSurveyUsername());
             params.add(LimeSurveySDKConfiguration.getConfiguration().limeSurveyPassword());
         });
-        
+
         final int id1 = 918456;
         final int id2 = 865334;
         try (final LimeSurveyClient client = new LimeSurveyClient()) {
