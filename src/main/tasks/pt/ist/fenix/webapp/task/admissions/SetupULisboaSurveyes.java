@@ -24,8 +24,10 @@ public class SetupULisboaSurveyes extends ReadCustomTask implements RemoteReader
         AdmissionsSystem.getInstance().getAdmissionProcessSet().stream()
                 .filter(this::needToApplySurvey)
                 .flatMap(admissionProcess -> admissionProcess.getAdmissionProcessTargetSet().stream())
-                //.peek(this::init)
+                .filter(this::init)
                 .flatMap(admissionProcessTarget -> admissionProcessTarget.getApplicationSet().stream())
+                .filter(application -> application.getLockInstant() != null)
+                .filter(application -> Utils.registrationFor(application) != null)
                 .forEach(application -> {
                     final AdmissionProcessTarget admissionProcessTarget = application.getAdmissionProcessTarget();
                     final JsonObject config = admissionProcessTarget.getOutcomeConfigJson();
@@ -53,7 +55,7 @@ public class SetupULisboaSurveyes extends ReadCustomTask implements RemoteReader
         }
     }
 
-    private void init(final AdmissionProcessTarget admissionProcessTarget) {
+    private boolean init(final AdmissionProcessTarget admissionProcessTarget) {
         final JsonObject config = admissionProcessTarget.getOutcomeConfigJson();
         final CycleType cycleType = cycleTypeFor(config);
         final JsonObject survey = cycleType == CycleType.FIRST_CYCLE ? surveyCycle1
@@ -63,9 +65,11 @@ public class SetupULisboaSurveyes extends ReadCustomTask implements RemoteReader
             taskLog("Unable to init: %s > %s%n",
                     admissionProcessTarget.getAdmissionProcess().getTitle().getContent(),
                     admissionProcessTarget.getName().getContent());
+            return false;
         } else {
             config.add("surveyConcludeBoarding", survey);
-            admissionProcessTarget.setOutcomeConfig(config.toString());
+            //admissionProcessTarget.setOutcomeConfig(config.toString());
+            return true;
         }
     }
 
