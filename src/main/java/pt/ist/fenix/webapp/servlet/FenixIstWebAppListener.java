@@ -10,10 +10,13 @@ import org.fenixedu.academic.domain.SchoolLevelType;
 import org.fenixedu.academic.domain.accounting.Event;
 import org.fenixedu.academic.domain.organizationalStructure.Party;
 import org.fenixedu.academic.domain.phd.candidacy.PhdProgramCandidacyEvent;
+import org.fenixedu.academic.domain.student.Registration;
 import org.fenixedu.academic.domain.student.Student;
 import org.fenixedu.admissions.ist.util.QualificationLevelUtil;
 import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.core.json.JsonUtils;
+import org.fenixedu.bennu.core.signals.DomainObjectEvent;
+import org.fenixedu.bennu.core.signals.Signal;
 import org.fenixedu.bennu.core.util.CoreConfiguration;
 import org.fenixedu.bennu.core.util.TransactionalThread;
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
@@ -26,6 +29,7 @@ import org.fenixedu.connect.util.AddressUtils;
 import org.fenixedu.git.Repository;
 import org.fenixedu.ulisboa.integration.sas.service.process.AbstractFillScholarshipService;
 import pt.ist.fenix.webapp.Configuration;
+import pt.ist.fenix.webapp.service.EventTemplateService;
 import pt.ist.fenixedu.giaf.invoices.ClientMap;
 import pt.ist.fenixedu.giaf.invoices.SapEvent;
 import pt.ist.fenixedu.giaf.invoices.Utils;
@@ -236,6 +240,10 @@ public class FenixIstWebAppListener implements ServletContextListener, Configura
                 correctFiller.accept(party, clientData);
             }
         };
+
+        Signal.register("CreatedRegistrationWithoutContext", (DomainObjectEvent<Registration> event) -> {
+            EventTemplateService.initEventTemplate(event.getInstance(), null);
+        });
     }
 
     @Override

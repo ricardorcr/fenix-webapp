@@ -30,6 +30,8 @@ import org.fenixedu.bennu.core.domain.groups.NamedGroup;
 import org.fenixedu.bennu.core.groups.Group;
 import org.fenixedu.bennu.core.json.JsonUtils;
 import org.fenixedu.bennu.core.security.Authenticate;
+import org.fenixedu.bennu.core.signals.DomainObjectEvent;
+import org.fenixedu.bennu.core.signals.Signal;
 import org.fenixedu.bennu.scheduler.CronTask;
 import org.fenixedu.bennu.scheduler.annotation.Task;
 import org.fenixedu.commons.i18n.LocalizedString;
@@ -212,6 +214,7 @@ public class TransitionSCPs extends CronTask {
                                             final Registration newRegistration = new Registration(student.getPerson(), destinationSecondCycleDCP,
                                                     studentCurricularPlan.getRegistration().getRegistrationProtocol(), CycleType.SECOND_CYCLE, ExecutionYear.readCurrentExecutionYear());
                                             newRegistration.setIngressionType(studentCurricularPlan.getRegistration().getIngressionType());
+                                            Signal.emit("CreatedRegistrationWithoutContext", new DomainObjectEvent<>(newRegistration));
                                         } else {
                                             final DegreeCurricularPlan destinationFirstCycleDCP = findDestination(firstCycle.getDegreeCurricularPlanOfDegreeModule(), CycleType.FIRST_CYCLE);
                                             final StudentCurricularPlan destinationSCP = student.getRegistrationsSet().stream()
@@ -260,6 +263,7 @@ public class TransitionSCPs extends CronTask {
                                     newRegistration.setIngressionType(studentCurricularPlan.getRegistration().getIngressionType());
                                     taskLog("Creating new first cycle registration for student plan for %s%n",
                                             studentCurricularPlan.getRegistration().getPerson().getUsername());
+                                    Signal.emit("CreatedRegistrationWithoutContext", new DomainObjectEvent<>(newRegistration));
                                 }
                             }
                         }
@@ -412,6 +416,10 @@ public class TransitionSCPs extends CronTask {
             if (destinationRegistration.getActiveState().getStateType().equals(RegistrationStateType.TRANSITED)) {
                 //it was transitioned to an existing registration that was transitioned to another one previously and it needs to be active
                 RegistrationState.createRegistrationStateWithoutValidation(destinationRegistration, person,new DateTime(), RegistrationStateType.REGISTERED, null);
+            }
+
+            if (destinationRegistration.getEventTemplate() == null) {
+                Signal.emit("CreatedRegistrationWithoutContext", new DomainObjectEvent<>(destinationRegistration));
             }
 
             Message.fromSystem()
