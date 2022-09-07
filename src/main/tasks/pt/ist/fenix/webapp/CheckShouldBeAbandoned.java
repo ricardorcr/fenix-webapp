@@ -33,6 +33,8 @@ import java.util.function.Predicate;
 
 public class CheckShouldBeAbandoned extends CustomTask {
 
+    private static final String RESOURCE_BUNDLE = "FENIXEDU_IST_INTEGRATION_RESOURCES";
+  
     @Override
     public void runTask() throws Exception {
 
@@ -116,14 +118,14 @@ public class CheckShouldBeAbandoned extends CustomTask {
                     taskLog("Terceiro If");
                     return false;
                 }
-//                final YearMonthDay now = new YearMonthDay();
-//                final RegistrationState state =
-//                        RegistrationState.createRegistrationState(registration, null, (now.isBefore(getWhenToAbandon()
-//                                .getBeginDateYearMonthDay()) ? getWhenToAbandon().getBeginDateYearMonthDay() : now)
-//                                .toDateTimeAtMidnight(), RegistrationStateType.EXTERNAL_ABANDON);
-//
-//                state.setRemarks(RenderUtils.getFormatedResourceString(RESOURCE_BUNDLE,
-//                        "message.academicAdministration.abandonState.observations"));
+                final YearMonthDay now = new YearMonthDay();
+                final RegistrationState state =
+                        RegistrationState.createRegistrationState(registration, null, (now.isBefore(getWhenToAbandon()
+                                .getBeginDateYearMonthDay()) ? getWhenToAbandon().getBeginDateYearMonthDay() : now)
+                                .toDateTimeAtMidnight(), RegistrationStateType.EXTERNAL_ABANDON);
+
+                state.setRemarks(RenderUtils.getFormatedResourceString(RESOURCE_BUNDLE,
+                        "message.academicAdministration.abandonState.observations"));
 
                 return true;
             }
