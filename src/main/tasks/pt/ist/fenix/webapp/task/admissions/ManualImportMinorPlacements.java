@@ -30,6 +30,15 @@ public class ManualImportMinorPlacements extends ReadCustomTask implements Sheet
             return;
         }
 */
+        admissionProcess.getAdmissionProcessTargetSet().stream()
+                .flatMap(target -> target.getApplicationSet().stream())
+                .filter(application -> application.getLockInstant() != null)
+                .filter(application -> (application.getLockInstant() != null && application.getAccepted() == null)
+                        || (application.getAccepted() != null && application.getAccepted() && application.getGrade() == null))
+                .forEach(application -> {
+                    taskLog("App %s not graded.%n");
+                });
+        
         xlsxRowStream(content, "Results")
                 .skip(1)
                 .forEach(row -> {
