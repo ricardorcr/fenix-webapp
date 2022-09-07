@@ -1,5 +1,6 @@
 package pt.ist.fenix.webapp.task.admissions;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import kong.unirest.Unirest;
@@ -99,7 +100,13 @@ public class SetupAllTestForms extends CustomTask implements RemoteReader {
         outcome.getAsJsonObject("type").add("answer", ls("Quero experimentar os formulários", "I want to try out the forms").json());
         admissionProcess.setOutcomeConfig(outcome.toString());
 
-        admissionProcess.setFormData(form.replace("{admissionProcess}", admissionProcess.getExternalId()));
+        String formReplaced = form.replace("{admissionProcess}", admissionProcess.getExternalId());
+        if (name.startsWith("DGES")) {
+            final JsonElement jsonElement = JsonParser.parseString(formReplaced);
+            final JsonObject jsonObject = jsonElement.getAsJsonObject().get("forms").getAsJsonObject().get("beforeOutcome").getAsJsonObject();
+            formReplaced = jsonObject.toString();
+        }
+        admissionProcess.setFormData(formReplaced);
 
         admissionProcess.createAdmissionProcessTarget(ls(name, name), null);
     }
