@@ -83,6 +83,7 @@ public class InitConfirmationSlots extends WriteCustomTask {
             throw new Error("Queue has no slots");
         }
         config.addProperty("confirmationDocumentQueue", queue.getExternalId());
+        admissionProcessTarget.setOutcomeConfig(config.toString());
         return true;
     }
 
