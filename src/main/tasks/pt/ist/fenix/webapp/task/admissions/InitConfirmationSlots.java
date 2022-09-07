@@ -78,6 +78,7 @@ public class InitConfirmationSlots extends WriteCustomTask {
 
     private boolean init(final AdmissionProcessTarget admissionProcessTarget) {
         final JsonObject config = admissionProcessTarget.getOutcomeConfigJson();
+        taskLog("%s%n", admissionProcessTarget.getExternalId());
         final Degree degree = FenixFramework.getDomainObject(config.get("degree").getAsString());
         final String queueID = degree.getCurrentCampus().iterator().next().getName().indexOf("agus") >= 0 ?
                 "853070699298819" : "853070699298818";
