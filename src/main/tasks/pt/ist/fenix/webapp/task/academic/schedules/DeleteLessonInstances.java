@@ -15,7 +15,6 @@ public class DeleteLessonInstances extends CustomTask {
     public void runTask() throws Exception {
         final Spreadsheet spreadsheet = new Spreadsheet("InstanciasDia23");
         
-        
         LocalDate date = new LocalDate(2022, 12, 23);
         ExecutionSemester executionSemester = ExecutionSemester.readActualExecutionSemester().getNextExecutionPeriod();
         taskLog(executionSemester.getQualifiedName());
@@ -28,7 +27,7 @@ public class DeleteLessonInstances extends CustomTask {
                     row.setCell("UC",  li.getLesson().getExecutionCourse().getName());
                     row.setCell("Turno",  li.getLesson().getShift().getNome());
                     row.setCell("Instância",  li.getDay().toString());
-                 //   li.delete();
+                    li.delete();
                 });
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
