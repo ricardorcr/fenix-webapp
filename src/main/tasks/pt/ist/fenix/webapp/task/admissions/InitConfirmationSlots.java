@@ -27,7 +27,6 @@ public class InitConfirmationSlots extends WriteCustomTask {
                 .filter(this::needToApplySurvey)
                 .flatMap(admissionProcess -> admissionProcess.getAdmissionProcessTargetSet().stream())
                 .filter(this::init)
-                .filter(this::cycle)
                 .flatMap(admissionProcessTarget -> admissionProcessTarget.getApplicationSet().stream())
                 .filter(application -> application.getLockInstant() != null)
                 .filter(application -> Utils.registrationFor(application) != null)
@@ -68,12 +67,6 @@ public class InitConfirmationSlots extends WriteCustomTask {
                     .findAny().isPresent();
         }
         return !isAlreadyStudent;
-    }
-
-    private boolean cycle(final AdmissionProcessTarget target) {
-        final JsonObject config = target.getOutcomeConfigJson();
-        final CycleType cycleType = cycleTypeFor(config);
-        return cycleType == CycleType.FIRST_CYCLE;
     }
 
     private boolean init(final AdmissionProcessTarget admissionProcessTarget) {
