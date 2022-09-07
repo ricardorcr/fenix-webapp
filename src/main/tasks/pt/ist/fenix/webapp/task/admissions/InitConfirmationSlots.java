@@ -54,7 +54,7 @@ public class InitConfirmationSlots extends WriteCustomTask {
 
         taskLog("Need %s slots%n", slots);
 
-        throw new Error("Abort TX");
+//        throw new Error("Abort TX");
     }
 
     private boolean needsSlot(final Application application) {
