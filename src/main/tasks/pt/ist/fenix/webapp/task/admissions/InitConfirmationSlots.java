@@ -36,8 +36,8 @@ public class InitConfirmationSlots extends WriteCustomTask {
                 .forEach(application -> {
                     final AdmissionProcessTarget admissionProcessTarget = application.getAdmissionProcessTarget();
                     final JsonObject config = admissionProcessTarget.getOutcomeConfigJson();
-                    final Degree degree = FenixFramework.getDomainObject(config.get("degree").getAsString());
-                    final String queueID = degree.getCurrentCampus().iterator().next().getName().indexOf("agus") >= 0 ?
+                    final Degree degree = config.get("degree") == null ? null : FenixFramework.getDomainObject(config.get("degree").getAsString());
+                    final String queueID = degree != null && degree.getCurrentCampus().iterator().next().getName().indexOf("agus") >= 0 ?
                             "853070699298819" : "853070699298818";
                     slots++;
                     if (queueID == null) {
@@ -78,9 +78,8 @@ public class InitConfirmationSlots extends WriteCustomTask {
 
     private boolean init(final AdmissionProcessTarget admissionProcessTarget) {
         final JsonObject config = admissionProcessTarget.getOutcomeConfigJson();
-        taskLog("%s%n", admissionProcessTarget.getExternalId());
-        final Degree degree = FenixFramework.getDomainObject(config.get("degree").getAsString());
-        final String queueID = degree.getCurrentCampus().iterator().next().getName().indexOf("agus") >= 0 ?
+        final Degree degree = config.get("degree") == null ? null : FenixFramework.getDomainObject(config.get("degree").getAsString());
+        final String queueID = degree != null && degree.getCurrentCampus().iterator().next().getName().indexOf("agus") >= 0 ?
                 "853070699298819" : "853070699298818";
         if (queueID == null) {
             throw new Error("No cycle for: " + admissionProcessTarget.getExternalId()
