@@ -19,6 +19,7 @@ public class ManualImportMinorPlacements extends ReadCustomTask implements Sheet
         final byte[] content = Files.readAllBytes(new File(filename).toPath());
 
         final AdmissionProcess admissionProcess = FenixFramework.getDomainObject("852907490541640");
+/*
         if ((!Utils.isHACS(admissionProcess) || Utils.isHACSWithFirstComeFirstServe(admissionProcess))
                 || admissionProcess.getAdmissionProcessTargetSet().size() != 1
                 || admissionProcess.getAdmissionProcessTargetSet().stream()
@@ -28,7 +29,7 @@ public class ManualImportMinorPlacements extends ReadCustomTask implements Sheet
                         || (application.getAccepted() != null && application.getAccepted() && application.getGrade() == null))) {
             return;
         }
-
+*/
         xlsxRowStream(content, "Results")
                 .skip(1)
                 .forEach(row -> {
