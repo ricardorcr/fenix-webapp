@@ -5,7 +5,6 @@ import org.fenixedu.academic.domain.degreeStructure.CycleType;
 import org.fenixedu.admissions.domain.AdmissionProcess;
 import org.fenixedu.admissions.domain.AdmissionProcessTarget;
 import org.fenixedu.admissions.domain.AdmissionsSystem;
-import org.fenixedu.admissions.ist.domain.RegistrationProcessState;
 import org.fenixedu.admissions.ist.domain.Utils;
 import org.fenixedu.bennu.core.json.JsonUtils;
 import org.fenixedu.bennu.scheduler.custom.WriteCustomTask;
@@ -70,12 +69,8 @@ public class InitConfirmationSlots extends WriteCustomTask {
     }
 
     private boolean needToApplySurvey(final AdmissionProcess admissionProcess) {
-        return admissionProcess.getTitle().getContent().indexOf("2023") > 0 && (
-                Utils.isDegreeType(admissionProcess)
-                        || Utils.isDegreeSpecificRegimentType(admissionProcess)
-                        || Utils.isReinstatement(admissionProcess)
-                        || Utils.isDges(admissionProcess)
-        );
+        return admissionProcess.getTitle().getContent().indexOf("2023") > 0
+                && Utils.needsDocumentConfirmation(admissionProcess);
     }
 
     private CycleType cycleTypeFor(final JsonObject config) {
