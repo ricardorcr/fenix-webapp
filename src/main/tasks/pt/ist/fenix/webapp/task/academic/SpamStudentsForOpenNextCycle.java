@@ -20,8 +20,7 @@ public class SpamStudentsForOpenNextCycle extends WriteCustomTask {
                 .forEach(scp -> {
                     final Person person = scp.getPerson();
                     final boolean female = person.isFemale();
-                    taskLog("%s%n", person.getUsername());
-                    final String message = "Car" + (female ? "a" : "o") + " " + person.getName() + 
+                    final String message = "Car" + (female ? "a" : "o") + " " + person.getName() +
                             "\n\nDe modo a poder efetuar a matrícula no segundo ciclo e prosseguir com as inscrições " +
                             "em 2022/2023 foi disponibilizao uma funcionalidade na primeira página do portal de estudante " +
                             "do Fénix e também na primeira página do portal do alumni para quem entretanto tenha ficado " +
@@ -30,23 +29,17 @@ public class SpamStudentsForOpenNextCycle extends WriteCustomTask {
                             "habitual em disciplinas já no curso de mestrado." +
                             "\n\nCaso já tenha procedido à abertura do segundo ciclo para se poder inscrever em 2022/2023 " +
                             "por favor ignore esta mensagem.\n\n" +
-                            "\n\n" +
                             "Votos de um bom novo ano letivo." +
                             "\n\n" +
                             "Os melhore cumprimentos," +
-                            "\nA Equipa FenixEdi";
+                            "\nA Equipa FenixEdu";
                     taskLog("%s%n", message);
-                    if (female) {
-                        return;
-                    }
-/*
+
                     Message.fromSystem()
                             .to(Group.users(person.getUser()))
                             .subject("Matrícula 2022/2023 - Abertura Mestrado")
                             .textBody(message)
                             .send();
-
- */
                 });
                 ;
     }
