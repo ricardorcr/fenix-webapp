@@ -68,7 +68,7 @@ public class InitConfirmationSlots extends WriteCustomTask {
     private boolean cycle(final AdmissionProcessTarget target) {
         final JsonObject config = target.getOutcomeConfigJson();
         final CycleType cycleType = cycleTypeFor(config);
-        return cycleType == CycleType.SECOND_CYCLE;
+        return cycleType == CycleType.FIRST_CYCLE;
     }
 
     private boolean init(final AdmissionProcessTarget admissionProcessTarget) {
