@@ -1,6 +1,7 @@
 package pt.ist.fenix.webapp.task.admissions;
 
 import com.google.gson.JsonObject;
+import org.fenixedu.academic.domain.Degree;
 import org.fenixedu.academic.domain.degreeStructure.CycleType;
 import org.fenixedu.academic.domain.student.Registration;
 import org.fenixedu.academic.domain.student.Student;
@@ -8,9 +9,13 @@ import org.fenixedu.admissions.domain.AdmissionProcess;
 import org.fenixedu.admissions.domain.AdmissionProcessTarget;
 import org.fenixedu.admissions.domain.AdmissionsSystem;
 import org.fenixedu.admissions.domain.Application;
+import org.fenixedu.admissions.ist.domain.RegistrationProcessState;
 import org.fenixedu.admissions.ist.domain.Utils;
+import org.fenixedu.admissions.ist.service.RegistrationService;
 import org.fenixedu.bennu.core.json.JsonUtils;
 import org.fenixedu.bennu.scheduler.custom.WriteCustomTask;
+import org.fenixedu.queueing.domain.AttendanceQueue;
+import pt.ist.fenixframework.FenixFramework;
 
 public class InitConfirmationSlots extends WriteCustomTask {
 
@@ -26,17 +31,15 @@ public class InitConfirmationSlots extends WriteCustomTask {
                 .flatMap(admissionProcessTarget -> admissionProcessTarget.getApplicationSet().stream())
                 .filter(application -> application.getLockInstant() != null)
                 .filter(application -> Utils.registrationFor(application) != null)
-                //.filter(application -> Utils.outcomeStateFor(application) == RegistrationProcessState.REGISTERED)
+                .filter(application -> Utils.outcomeStateFor(application) == RegistrationProcessState.REGISTERED)
                 .filter(application -> needsSlot(application))
                 .forEach(application -> {
                     final AdmissionProcessTarget admissionProcessTarget = application.getAdmissionProcessTarget();
                     final JsonObject config = admissionProcessTarget.getOutcomeConfigJson();
-                    final CycleType cycleType = cycleTypeFor(config);
-                    final String queueID = cycleType == CycleType.FIRST_CYCLE ? ""
-                            : cycleType == CycleType.SECOND_CYCLE ? ""
-                            : null;
+                    final Degree degree = FenixFramework.getDomainObject(config.get("degree").getAsString());
+                    final String queueID = degree.getCurrentCampus().iterator().next().getName().indexOf("agus") >= 0 ?
+                            "853070699298819" : "853070699298818";
                     slots++;
-/*
                     if (queueID == null) {
                         throw new Error("No cycle for: " + admissionProcessTarget.getExternalId()
                                 + " " + admissionProcessTarget.getAdmissionProcess().getExternalId());
@@ -45,12 +48,14 @@ public class InitConfirmationSlots extends WriteCustomTask {
                     if (queue == null || queue.getAttendanceSlotSet().isEmpty()) {
                         throw new Error("Queue has no slots");
                     }
- */
+
+                    RegistrationService.addToConfirmationQueueIfNeeded(application);
                     slots++;
                 });
-        ;
 
         taskLog("Need %s slots%n", slots);
+
+        throw new Error("Abort TX");
     }
 
     private boolean needsSlot(final Application application) {
@@ -73,11 +78,9 @@ public class InitConfirmationSlots extends WriteCustomTask {
 
     private boolean init(final AdmissionProcessTarget admissionProcessTarget) {
         final JsonObject config = admissionProcessTarget.getOutcomeConfigJson();
-        final CycleType cycleType = cycleTypeFor(config);
-        final String queueID = cycleType == CycleType.FIRST_CYCLE ? ""
-                : cycleType == CycleType.SECOND_CYCLE ? ""
-                : null;
-/*
+        final Degree degree = FenixFramework.getDomainObject(config.get("degree").getAsString());
+        final String queueID = degree.getCurrentCampus().iterator().next().getName().indexOf("agus") >= 0 ?
+                "853070699298819" : "853070699298818";
         if (queueID == null) {
             throw new Error("No cycle for: " + admissionProcessTarget.getExternalId()
                     + " " + admissionProcessTarget.getAdmissionProcess().getExternalId());
@@ -87,7 +90,6 @@ public class InitConfirmationSlots extends WriteCustomTask {
             throw new Error("Queue has no slots");
         }
         config.addProperty("confirmationDocumentQueue", queue.getExternalId());
- */
         return true;
     }
 
