@@ -2,6 +2,8 @@ package pt.ist.fenix.webapp.task.admissions;
 
 import com.google.gson.JsonObject;
 import org.fenixedu.academic.domain.degreeStructure.CycleType;
+import org.fenixedu.academic.domain.student.Registration;
+import org.fenixedu.academic.domain.student.Student;
 import org.fenixedu.admissions.domain.AdmissionProcess;
 import org.fenixedu.admissions.domain.AdmissionProcessTarget;
 import org.fenixedu.admissions.domain.AdmissionsSystem;
@@ -25,6 +27,7 @@ public class InitConfirmationSlots extends WriteCustomTask {
                 .filter(application -> application.getLockInstant() != null)
                 .filter(application -> Utils.registrationFor(application) != null)
                 //.filter(application -> Utils.outcomeStateFor(application) == RegistrationProcessState.REGISTERED)
+                .filter(application -> needsSlot(application))
                 .forEach(application -> {
                     final AdmissionProcessTarget admissionProcessTarget = application.getAdmissionProcessTarget();
                     final JsonObject config = admissionProcessTarget.getOutcomeConfigJson();
@@ -48,6 +51,18 @@ public class InitConfirmationSlots extends WriteCustomTask {
         ;
 
         taskLog("Need %s slots%n", slots);
+    }
+
+    private boolean needsSlot(final Application application) {
+        boolean isAlreadyStudent = false;
+        final Student student = application.getAccount().getUser().getPerson().getStudent();
+        if (student != null) {
+            final Registration registration = Utils.registrationFor(application);
+            isAlreadyStudent = student.getRegistrationStream()
+                    .filter(r -> r != registration)
+                    .findAny().isPresent();
+        }
+        return !isAlreadyStudent;
     }
 
     private boolean cycle(final AdmissionProcessTarget target) {
