@@ -46,6 +46,6 @@ public class ReportAbandonStateEnrolments extends ReadCustomTask {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         spreadsheet.exportToXLSSheet(baos);
-        output("Abandonos_2022_2023.xlxs", baos.toByteArray());
+        output("Abandonos_2022_2023.xlsx", baos.toByteArray());
     }
 }
