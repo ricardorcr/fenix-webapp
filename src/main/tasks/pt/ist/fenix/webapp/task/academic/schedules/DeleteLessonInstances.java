@@ -27,7 +27,7 @@ public class DeleteLessonInstances extends CustomTask {
                     row.setCell("UC",  li.getLesson().getExecutionCourse().getName());
                     row.setCell("Turno",  li.getLesson().getShift().getNome());
                     row.setCell("Instância",  li.getDay().toString());
-                 //   li.delete();
+                   li.delete();
                 });
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
