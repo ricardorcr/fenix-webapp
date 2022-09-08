@@ -18,7 +18,7 @@ public class CheckProcessConfig extends ReadCustomTask {
                     final JsonElement needsDocumentsConfirmation = config.get("needsDocumentsConfirmation");
                     final JsonElement automaticEnrollment = config.get("automaticEnrollment");
                     final JsonElement tutorDistribution = config.get("tutorDistribution");
-                    taskLog("%s: %s%n   %s%n   %s%n   %s%n",
+                    taskLog("%s: %s%n   needsDocumentsConfirmation: %s%n   automaticEnrollment: %s%n   tutorDistribution: %s%n",
                             admissionProcess.getExternalId(),
                             admissionProcess.getTitle().getContent(),
                             needsDocumentsConfirmation != null && needsDocumentsConfirmation.getAsBoolean(),
