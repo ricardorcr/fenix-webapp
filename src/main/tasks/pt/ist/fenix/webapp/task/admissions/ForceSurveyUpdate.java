@@ -37,9 +37,9 @@ public class ForceSurveyUpdate extends WriteCustomTask {
     public boolean hasCompletedSurvey(final String surveyId, final String email) {
         final JsonObject params = new JsonObject();
         params.addProperty("email", email);
-        final JsonObject result = LimeSurveySDK.getParticipantProperties(surveyId, params);
-        taskLog("Lime response: %s%n", result.toString());
-        final String completed = JsonUtils.get(result, "completed");
+        final JsonObject response = LimeSurveySDK.getParticipantProperties(surveyId, params);
+        final JsonObject result = response.getAsJsonObject("result");
+        final String completed = result == null ? null : JsonUtils.get(result, "completed");
         return completed != null && completed.length() > 15;
     }
 
