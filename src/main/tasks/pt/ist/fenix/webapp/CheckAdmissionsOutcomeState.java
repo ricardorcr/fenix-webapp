@@ -23,6 +23,7 @@ public class CheckAdmissionsOutcomeState extends CustomTask {
 //        taskLog("All activities done: %s%n", mandatoryActivitiesDone);
 
         AdmissionsSystem.getInstance().getAdmissionProcessSet().stream()
+                .filter(ap -> !Utils.isDges(ap) && Utils.isDegreeType(ap))
                 .flatMap(ap -> ap.getAdmissionProcessTargetSet().stream())
                 .flatMap(target -> target.getApplicationSet().stream())
                 .forEach(this::checkNeededChangeOutcomeState);
