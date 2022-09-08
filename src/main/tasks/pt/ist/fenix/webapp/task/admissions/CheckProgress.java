@@ -6,6 +6,7 @@ import org.fenixedu.admissions.domain.AdmissionsSystem;
 import org.fenixedu.admissions.domain.Application;
 import org.fenixedu.admissions.ist.domain.MobilityProcessState;
 import org.fenixedu.admissions.ist.domain.RegistrationProcessState;
+import org.fenixedu.admissions.ist.domain.Survey;
 import org.fenixedu.admissions.ist.domain.UserAccountInfo;
 import org.fenixedu.admissions.ist.domain.Utils;
 import org.fenixedu.bennu.core.domain.User;
@@ -33,6 +34,7 @@ public class CheckProgress extends ReadCustomTask {
         long hasPassword = 0l;
         long hasDataAuthorization = 0l;
         long hasSurvey = 0l;
+        long hasSurveyResponse = 0l;
         long hasSlotForDocumentConfirmation = 0l;
         long hasSlotForCampusVisit = 0l;
 
@@ -88,6 +90,14 @@ public class CheckProgress extends ReadCustomTask {
                             }
                         }
                     }
+
+                    final boolean surveyPresent = Survey.surveys(application).findAny().isPresent();
+                    if (surveyPresent) {
+                        hasSurvey++;
+                    }
+                    if (surveyPresent && !Survey.pendingResponse(application)) {
+                        hasSurveyResponse++;
+                    }
                 }
             });
         }
@@ -120,7 +130,8 @@ public class CheckProgress extends ReadCustomTask {
                     row.setCell("Com E-mail", Long.toString(counter.hasEmail));
                     row.setCell("Com Password", Long.toString(counter.hasPassword));
                     row.setCell("Com Autorização de Dados", Long.toString(counter.hasDataAuthorization));
-                    row.setCell("Inquérito Respondido", Long.toString(counter.hasSurvey));
+                    row.setCell("Com Inquérito", Long.toString(counter.hasSurvey));
+                    row.setCell("Inquérito Respondido", Long.toString(counter.hasSurveyResponse));
                     row.setCell("Com Slot Confirmação Documentos", Long.toString(counter.hasSlotForDocumentConfirmation));
                     row.setCell("Com Slot Visita Campus", Long.toString(counter.hasSlotForCampusVisit));
                 });
