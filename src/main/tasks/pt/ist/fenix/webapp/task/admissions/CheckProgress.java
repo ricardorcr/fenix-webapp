@@ -102,7 +102,7 @@ public class CheckProgress extends ReadCustomTask {
                     }
 
                     final Registration registration = Utils.registrationFor(application);
-                    if (!registration.getShiftsSet().isEmpty()) {
+                    if (registration != null && !registration.getShiftsSet().isEmpty()) {
                         hasSchedule++;
                     }
                 }
