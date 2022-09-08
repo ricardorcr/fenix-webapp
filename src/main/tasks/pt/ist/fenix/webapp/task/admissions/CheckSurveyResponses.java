@@ -36,8 +36,15 @@ public class CheckSurveyResponses extends ReadCustomTask implements RemoteReader
                             : cycleType == CycleType.SECOND_CYCLE ? surveyCycle2
                             : null;
                     if (survey != null) {
+/*
                         taskLog("app = %s%n", application.getAccount().getEmail());
                         add(application, survey);
+
+ */
+                        Survey.surveys(application).forEach(s -> {
+                            taskLog("Application: %s%n", application.getExternalId());
+                            taskLog("   %s%n", s.toString());
+                        });
                     }
                 });
         ;
