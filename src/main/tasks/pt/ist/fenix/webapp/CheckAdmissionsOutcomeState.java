@@ -2,6 +2,7 @@ package pt.ist.fenix.webapp;
 
 import com.google.gson.JsonObject;
 import org.fenixedu.academic.domain.Person;
+import org.fenixedu.academic.domain.ExecutionYear;
 import org.fenixedu.admissions.domain.AdmissionProcess;
 import org.fenixedu.admissions.domain.AdmissionsSystem;
 import org.fenixedu.admissions.domain.Application;
@@ -23,9 +24,14 @@ public class CheckAdmissionsOutcomeState extends CustomTask {
 //        taskLog("All activities done: %s%n", mandatoryActivitiesDone);
 
         AdmissionsSystem.getInstance().getAdmissionProcessSet().stream()
-                .filter(ap -> !Utils.isDges(ap) && Utils.isDegreeType(ap))
+                .filter(ap -> !Utils.isDges(ap))
                 .flatMap(ap -> ap.getAdmissionProcessTargetSet().stream())
+                .filter(target -> {
+                    final ExecutionYear executionYear = Utils.yearFor(target);
+                    return executionYear != null && executionYear.getName().contains("2023");
+                })
                 .flatMap(target -> target.getApplicationSet().stream())
+                .filter(app -> Utils.registrationFor(app) != null)
                 .forEach(this::checkNeededChangeOutcomeState);
     }
 
