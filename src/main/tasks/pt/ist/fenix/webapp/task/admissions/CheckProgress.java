@@ -118,31 +118,45 @@ public class CheckProgress extends ReadCustomTask {
                 .forEach(admissionProcess -> {
                     final Counter counter = new Counter(admissionProcess);
 
-                    final Spreadsheet.Row row = spreadsheet.addRow();
-                    row.setCell("Instância", admissionProcess.getTitle().getContent());
-                    row.setCell("Colocados", Long.toString(counter.admitted));
-                    row.setCell("A Embarcar", Long.toString(counter.boarding));
-                    row.setCell("Pendentes de Confirmação", Long.toString(counter.pendingConfirmation));
-                    row.setCell("Approvados", Long.toString(counter.approved));
-                    row.setCell("Confirmados", Long.toString(counter.confirmed));
-                    row.setCell("Rejeitados", Long.toString(counter.rejected));
-                    row.setCell("Com Utilizador", Long.toString(counter.hasUser));
-                    row.setCell("Com E-mail", Long.toString(counter.hasEmail));
-                    row.setCell("Com Password", Long.toString(counter.hasPassword));
-                    row.setCell("Com Autorização de Dados", Long.toString(counter.hasDataAuthorization));
-                    row.setCell("Com Inquérito", Long.toString(counter.hasSurvey));
-                    row.setCell("Inquérito Respondido", Long.toString(counter.hasSurveyResponse));
-                    row.setCell("Com Slot Confirmação Documentos", Long.toString(counter.hasSlotForDocumentConfirmation));
-                    row.setCell("Com Slot Visita Campus", Long.toString(counter.hasSlotForCampusVisit));
+                    report(admissionProcess.getTitle().getContent(), counter, spreadsheet);
                 });
+        final Stream<Application> streamX = AdmissionsSystem.getInstance().getAdmissionProcessSet().stream()
+                .filter(this::include)
+                .flatMap(admissionProcess -> admissionProcess.getAdmissionProcessTargetSet().stream())
+                .flatMap(target -> target.getApplicationSet().stream());
+        final Counter counter = new Counter(streamX);
+        report("Total", counter, spreadsheet);
 
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         spreadsheet.exportToXLSSheet(stream);
         output("StatusReport.xlsx", stream.toByteArray());
     }
 
+    private void report(String title, final Counter counter, final Spreadsheet spreadsheet) {
+        final Spreadsheet.Row row = spreadsheet.addRow();
+        row.setCell("Instância", title);
+        row.setCell("Colocados", Long.toString(counter.admitted));
+        row.setCell("A Embarcar", Long.toString(counter.boarding));
+        row.setCell("Pendentes de Confirmação", Long.toString(counter.pendingConfirmation));
+        row.setCell("Approvados", Long.toString(counter.approved));
+        row.setCell("Confirmados", Long.toString(counter.confirmed));
+        row.setCell("Rejeitados", Long.toString(counter.rejected));
+        row.setCell("Com Utilizador", Long.toString(counter.hasUser));
+        row.setCell("Com E-mail", Long.toString(counter.hasEmail));
+        row.setCell("Com Password", Long.toString(counter.hasPassword));
+        row.setCell("Com Autorização de Dados", Long.toString(counter.hasDataAuthorization));
+        row.setCell("Com Inquérito", Long.toString(counter.hasSurvey));
+        row.setCell("Inquérito Respondido", Long.toString(counter.hasSurveyResponse));
+        row.setCell("Com Slot Confirmação Documentos", Long.toString(counter.hasSlotForDocumentConfirmation));
+        row.setCell("Com Slot Visita Campus", Long.toString(counter.hasSlotForCampusVisit));
+
+    }
+
     private boolean include(final AdmissionProcess admissionProcess) {
-        return admissionProcess.getTitle().getContent().indexOf("2023") > 0;
+        return admissionProcess.getTitle().getContent().indexOf("2023") > 0
+                && !Utils.isMinor(admissionProcess)
+                && !Utils.isHACS(admissionProcess)
+                && !Utils.isOutboundMobilityType(admissionProcess);
     }
 
 }
