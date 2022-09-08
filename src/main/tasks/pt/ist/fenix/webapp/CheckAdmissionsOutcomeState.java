@@ -6,6 +6,7 @@ import org.fenixedu.academic.domain.ExecutionYear;
 import org.fenixedu.admissions.domain.AdmissionProcess;
 import org.fenixedu.admissions.domain.AdmissionsSystem;
 import org.fenixedu.admissions.domain.Application;
+import org.fenixedu.admissions.ist.service.RegistrationService;
 import org.fenixedu.admissions.ist.domain.RegistrationProcessState;
 import org.fenixedu.admissions.ist.domain.Survey;
 import org.fenixedu.admissions.ist.domain.UserAccountInfo;
@@ -83,6 +84,8 @@ public class CheckAdmissionsOutcomeState extends CustomTask {
                 if (Utils.isToChangeOutcomeState(admissionProcess)) {
                     if (Utils.needsDocumentConfirmation(admissionProcess)) {
                         taskLog("Should change for REGISTERED - %s - %s%n", application.getExternalId(), application.getAdmissionProcessTarget().getAdmissionProcess().getTitle().getContent());
+                        RegistrationService.setOutcomeState(application, RegistrationProcessState.REGISTERED);
+                        RegistrationService.addToConfirmationQueueIfNeeded(application);                                                                               
                     } else {
                         taskLog("Should change for CONFIRMED - %s%n", application.getExternalId(), application.getAdmissionProcessTarget().getAdmissionProcess().getTitle().getContent());
                     }
