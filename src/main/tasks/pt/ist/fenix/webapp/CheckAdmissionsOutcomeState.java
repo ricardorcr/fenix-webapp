@@ -3,6 +3,7 @@ package pt.ist.fenix.webapp;
 import com.google.gson.JsonObject;
 import org.fenixedu.academic.domain.Person;
 import org.fenixedu.admissions.domain.AdmissionProcess;
+import org.fenixedu.admissions.domain.AdmissionsSystem;
 import org.fenixedu.admissions.domain.Application;
 import org.fenixedu.admissions.ist.domain.RegistrationProcessState;
 import org.fenixedu.admissions.ist.domain.Survey;
@@ -17,11 +18,14 @@ public class CheckAdmissionsOutcomeState extends CustomTask {
 
     @Override
     public void runTask() throws Exception {
-        final Application application = FenixFramework.getDomainObject("852890310675974"); //571415333968005
-        final boolean mandatoryActivitiesDone = allMandatoryActivitiesDone(application);
-        taskLog("All activities done: %s%n", mandatoryActivitiesDone);
+//        final Application application = FenixFramework.getDomainObject("852890310675974"); //571415333968005
+//        final boolean mandatoryActivitiesDone = allMandatoryActivitiesDone(application);
+//        taskLog("All activities done: %s%n", mandatoryActivitiesDone);
 
-        checkNeededChangeOutcomeState(application);
+        AdmissionsSystem.getInstance().getAdmissionProcessSet().stream()
+                .flatMap(ap -> ap.getAdmissionProcessTargetSet().stream())
+                .flatMap(target -> target.getApplicationSet().stream())
+                .forEach(this::checkNeededChangeOutcomeState);
     }
 
     public boolean allMandatoryActivitiesDone(final Application application) {
@@ -67,9 +71,9 @@ public class CheckAdmissionsOutcomeState extends CustomTask {
                 final AdmissionProcess admissionProcess = application.getAdmissionProcessTarget().getAdmissionProcess();
                 if (Utils.isToChangeOutcomeState(admissionProcess)) {
                     if (Utils.needsDocumentConfirmation(admissionProcess)) {
-                        taskLog("Should change for REGISTERED");
+                        taskLog("Should change for REGISTERED - %s%n", application.getExternalId());
                     } else {
-                        taskLog("Should change for CONFIRMED");
+                        taskLog("Should change for CONFIRMED - %s%n", application.getExternalId());
                     }
                 }
             }
