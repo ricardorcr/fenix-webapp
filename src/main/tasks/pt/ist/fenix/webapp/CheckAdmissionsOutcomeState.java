@@ -2,28 +2,26 @@ package pt.ist.fenix.webapp;
 
 import com.google.gson.JsonObject;
 import org.fenixedu.academic.domain.Person;
-import org.fenixedu.academic.domain.student.RegistrationProtocol;
 import org.fenixedu.admissions.domain.AdmissionProcess;
-import org.fenixedu.admissions.domain.AdmissionProcessTarget;
 import org.fenixedu.admissions.domain.Application;
+import org.fenixedu.admissions.ist.domain.RegistrationProcessState;
 import org.fenixedu.admissions.ist.domain.Survey;
 import org.fenixedu.admissions.ist.domain.UserAccountInfo;
 import org.fenixedu.admissions.ist.domain.Utils;
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
-import pt.ist.fenixedu.integration.domain.SantanderCard;
 import org.fenixedu.connect.domain.Identity;
+import pt.ist.fenixedu.integration.domain.SantanderCard;
 import pt.ist.fenixframework.FenixFramework;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class CheckAdmissionsOutcomeState extends CustomTask {
 
     @Override
     public void runTask() throws Exception {
-        final Application application = FenixFramework.getDomainObject("852890310675974");//852890310675974 //571415333968005
+        final Application application = FenixFramework.getDomainObject("852890310675974"); //571415333968005
         final boolean mandatoryActivitiesDone = allMandatoryActivitiesDone(application);
-        taskLog("All done: %s%n", mandatoryActivitiesDone);
+        taskLog("All activities done: %s%n", mandatoryActivitiesDone);
+
+        checkNeededChangeOutcomeState(application);
     }
 
     public boolean allMandatoryActivitiesDone(final Application application) {
@@ -47,6 +45,7 @@ public class CheckAdmissionsOutcomeState extends CustomTask {
                                 if (processAfterOutcomeForm != null) {
                                     final JsonObject dataObject = application.getDataObject();
                                     if (dataObject.has("outcomeState")) {
+                                        taskLog("outcomeState");
                                         return !dataObject.get("outcomeState").getAsJsonObject().get("canEditPostOutcomeForm").getAsBoolean();
                                     }
                                 } else {
@@ -59,6 +58,22 @@ public class CheckAdmissionsOutcomeState extends CustomTask {
             }
         }
         return false;
+    }
+
+    private void checkNeededChangeOutcomeState(final Application application) {
+        final Enum outcomeState = Utils.outcomeStateFor(application);
+        if (outcomeState == RegistrationProcessState.BOARDING) {
+            if (Utils.allMandatoryActivitiesDone(application)) {
+                final AdmissionProcess admissionProcess = application.getAdmissionProcessTarget().getAdmissionProcess();
+                if (Utils.isToChangeOutcomeState(admissionProcess)) {
+                    if (Utils.needsDocumentConfirmation(admissionProcess)) {
+                        taskLog("Should change for REGISTERED");
+                    } else {
+                        taskLog("Should change for CONFIRMED");
+                    }
+                }
+            }
+        }
     }
 
 }
