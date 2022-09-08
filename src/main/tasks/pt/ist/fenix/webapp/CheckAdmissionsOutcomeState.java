@@ -21,7 +21,7 @@ public class CheckAdmissionsOutcomeState extends CustomTask {
 
     @Override
     public void runTask() throws Exception {
-        final Application application = FenixFramework.getDomainObject("571415333968005");
+        final Application application = FenixFramework.getDomainObject("852890310675974");//852890310675974 //571415333968005
         final boolean mandatoryActivitiesDone = allMandatoryActivitiesDone(application);
         taskLog("All done: %s%n", mandatoryActivitiesDone);
     }
