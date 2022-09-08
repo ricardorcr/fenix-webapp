@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.fenixedu.admissions.domain.Application;
 import org.fenixedu.admissions.ist.domain.Survey;
+import org.fenixedu.bennu.core.json.JsonUtils;
 import org.fenixedu.bennu.core.util.CoreConfiguration;
 import org.fenixedu.bennu.scheduler.custom.WriteCustomTask;
 import org.fenixedu.collaboration.limesurvey.LimeSurveySDK;
@@ -30,7 +31,16 @@ public class ForceSurveyUpdate extends WriteCustomTask {
             return min.endsWith("1") || min.endsWith("3") || min.endsWith("5") || min.endsWith("7") || min.endsWith("9");
         }
         taskLog("Should " + Survey.email(survey) + " " + Survey.id(survey));
-        return LimeSurveySDK.hasCompletedSurvey(Survey.id(survey), Survey.email(survey));
+        return hasCompletedSurvey(Survey.id(survey), Survey.email(survey));
+    }
+
+    public boolean hasCompletedSurvey(final String surveyId, final String email) {
+        final JsonObject params = new JsonObject();
+        params.addProperty("email", email);
+        final JsonObject result = LimeSurveySDK.getParticipantProperties(surveyId, params);
+        taskLog("Lime response: %s%n", result.toString());
+        final String completed = JsonUtils.get(result, "completed");
+        return completed != null && completed.length() > 15;
     }
 
     private void markAsCompleted(final Application application, final String surveyId) {
