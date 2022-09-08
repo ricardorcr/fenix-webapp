@@ -82,9 +82,9 @@ public class CheckAdmissionsOutcomeState extends CustomTask {
                 final AdmissionProcess admissionProcess = application.getAdmissionProcessTarget().getAdmissionProcess();
                 if (Utils.isToChangeOutcomeState(admissionProcess)) {
                     if (Utils.needsDocumentConfirmation(admissionProcess)) {
-                        taskLog("Should change for REGISTERED - %s%n", application.getExternalId());
+                        taskLog("Should change for REGISTERED - %s - %s%n", application.getExternalId(), application.getAdmissionProcessTarget().getAdmissionProcess().getTitle().getContent());
                     } else {
-                        taskLog("Should change for CONFIRMED - %s%n", application.getExternalId());
+                        taskLog("Should change for CONFIRMED - %s%n", application.getExternalId(), application.getAdmissionProcessTarget().getAdmissionProcess().getTitle().getContent());
                     }
                 }
             }
