@@ -27,8 +27,12 @@ public class CheckAdmissionsOutcomeState extends CustomTask {
                 .filter(ap -> !Utils.isDges(ap))
                 .flatMap(ap -> ap.getAdmissionProcessTargetSet().stream())
                 .filter(target -> {
-                    final ExecutionYear executionYear = Utils.yearFor(target);
-                    return executionYear != null && executionYear.getName().contains("2023");
+                    if (target.getOutcomeConfigJson() != null) {
+                        final ExecutionYear executionYear = Utils.yearFor(target);
+                        return executionYear != null && executionYear.getName().contains("2023");
+                    } else {
+                        return false;
+                    }
                 })
                 .flatMap(target -> target.getApplicationSet().stream())
                 .filter(app -> Utils.registrationFor(app) != null)
