@@ -9,7 +9,7 @@ public class ChangeMinorSlots extends CustomTask implements RemoteReader {
 
     @Override
     public void runTask() throws Exception {
-        final AdmissionProcess process = FenixFramework.getDomainObject("852907490541640");
+        final AdmissionProcess process = FenixFramework.getDomainObject("571432513831078");
         process.setFormData(string("test/minorHack.json"));
     }
 
