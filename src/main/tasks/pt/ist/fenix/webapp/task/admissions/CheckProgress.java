@@ -1,6 +1,5 @@
 package pt.ist.fenix.webapp.task.admissions;
 
-import org.fenixedu.academic.domain.DomainOperationLog;
 import org.fenixedu.academic.domain.student.Registration;
 import org.fenixedu.admissions.domain.AdmissionProcess;
 import org.fenixedu.admissions.domain.AdmissionsSystem;
@@ -10,12 +9,11 @@ import org.fenixedu.admissions.ist.domain.RegistrationProcessState;
 import org.fenixedu.admissions.ist.domain.Survey;
 import org.fenixedu.admissions.ist.domain.UserAccountInfo;
 import org.fenixedu.admissions.ist.domain.Utils;
+import org.fenixedu.admissions.ist.service.AuthorizePersonalDataAccessService;
 import org.fenixedu.bennu.core.domain.User;
-import org.fenixedu.bennu.core.security.Authenticate;
 import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
 import org.fenixedu.commons.spreadsheet.Spreadsheet;
 import org.fenixedu.connect.domain.Identity;
-import pt.ist.fenixedu.integration.domain.CardDataAuthorizationLog;
 
 import java.io.ByteArrayOutputStream;
 import java.util.stream.Stream;
@@ -82,12 +80,7 @@ public class CheckProgress extends ReadCustomTask {
                                 }
                             }
 
-                            final long dataAuthRespo = user.getPerson().getDomainOperationLogsSet().stream()
-                                    .filter(CardDataAuthorizationLog.class::isInstance)
-                                    .sorted(DomainOperationLog.COMPARATOR_BY_WHEN_DATETIME.reversed())
-                                    .map(CardDataAuthorizationLog.class::cast)
-                                    .count();
-                            if (dataAuthRespo > 4l) {
+                            if (AuthorizePersonalDataAccessService.hasCompletedAllDataAccessResponses(user)) {
                                 hasDataAuthorization++;
                             }
                         }
@@ -157,8 +150,6 @@ public class CheckProgress extends ReadCustomTask {
         row.setCell("Com Slot Confirmação Documentos", Long.toString(counter.hasSlotForDocumentConfirmation));
         row.setCell("Com Slot Visita Campus", Long.toString(counter.hasSlotForCampusVisit));
         row.setCell("Com Horário", Long.toString(counter.hasSchedule));
-
-
     }
 
     private boolean include(final AdmissionProcess admissionProcess) {
