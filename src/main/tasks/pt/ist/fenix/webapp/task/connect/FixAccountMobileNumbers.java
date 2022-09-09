@@ -35,7 +35,13 @@ public class FixAccountMobileNumbers extends ReadCustomTask {
         });
         Collections.reverse(prefixes);
 
-        ConnectSystem.getInstance().getAccountSet().stream().parallel().forEach(a -> fix(prefixes, a));
+        ConnectSystem.getInstance().getAccountSet().stream().parallel().forEach(a -> {
+            try {
+                fix(prefixes, a);
+            } catch (final Throwable t) {
+                taskLog("Filled %s%n", a.getExternalId());
+            }
+        });
     }
 
     private void fix(final List<String> prefixes, final Account account) {
