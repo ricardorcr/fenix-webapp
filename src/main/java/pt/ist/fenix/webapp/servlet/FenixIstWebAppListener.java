@@ -27,6 +27,8 @@ import org.fenixedu.connect.domain.identification.PersonalInformation;
 import org.fenixedu.connect.domain.identification.TaxInformation;
 import org.fenixedu.connect.util.AddressUtils;
 import org.fenixedu.git.Repository;
+import org.fenixedu.messaging.core.template.DeclareMessageTemplate;
+import org.fenixedu.messaging.core.template.TemplateParameter;
 import org.fenixedu.ulisboa.integration.sas.service.process.AbstractFillScholarshipService;
 import pt.ist.fenix.webapp.Configuration;
 import pt.ist.fenix.webapp.service.EventTemplateService;
@@ -50,6 +52,72 @@ import java.util.Properties;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+@DeclareMessageTemplate(id = "queueing.slot.unschedule.confirm.registration", bundle = "resources.QueueingResources",
+        description = "queueing.slot.unschedule.description", subject = "queueing.slot.unschedule.subject",
+        text = "queueing.slot.unschedule.body",
+        parameters = { @TemplateParameter(id = "scheduledStart", description = "queueing.slot.unschedule.scheduledStart"),
+                @TemplateParameter(id = "location", description = "queueing.slot.unschedule.location"),
+                @TemplateParameter(id = "queue", description = "queueing.slot.unschedule.queue"),
+                @TemplateParameter(id = "message", description = "queueing.slot.unschedule.message") })
+@DeclareMessageTemplate(id = "queueing.slot.schedule.confirm.registration", bundle = "resources.QueueingResources",
+        description = "queueing.slot.schedule.description", subject = "queueing.slot.schedule.subject",
+        text = "queueing.slot.schedule.body",
+        parameters = { @TemplateParameter(id = "scheduledStart", description = "queueing.slot.schedule.scheduledStart"),
+                @TemplateParameter(id = "locationType", description = "queueing.slot.schedule.locationType"),
+                @TemplateParameter(id = "location", description = "queueing.slot.schedule.location"),
+                @TemplateParameter(id = "queue", description = "queueing.slot.schedule.queue") })
+@DeclareMessageTemplate(id = "queueing.slot.reschedule.confirm.registration", bundle = "resources.QueueingResources",
+        description = "queueing.slot.reschedule.description", subject = "queueing.slot.reschedule.subject",
+        text = "queueing.slot.reschedule.body",
+        parameters = { @TemplateParameter(id = "scheduledStart", description = "queueing.slot.reschedule.scheduledStart"),
+                @TemplateParameter(id = "locationType", description = "queueing.slot.reschedule.locationType"),
+                @TemplateParameter(id = "location", description = "queueing.slot.reschedule.location"),
+                @TemplateParameter(id = "queue", description = "queueing.slot.reschedule.queue") })
+
+@DeclareMessageTemplate(id = "queueing.slot.unschedule.identity.validation", bundle = "resources.QueueingResources",
+        description = "queueing.slot.unschedule.description", subject = "queueing.slot.unschedule.subject",
+        text = "queueing.slot.unschedule.body",
+        parameters = { @TemplateParameter(id = "scheduledStart", description = "queueing.slot.unschedule.scheduledStart"),
+                @TemplateParameter(id = "location", description = "queueing.slot.unschedule.location"),
+                @TemplateParameter(id = "queue", description = "queueing.slot.unschedule.queue"),
+                @TemplateParameter(id = "message", description = "queueing.slot.unschedule.message") })
+@DeclareMessageTemplate(id = "queueing.slot.schedule.identity.validation", bundle = "resources.QueueingResources",
+        description = "queueing.slot.schedule.description", subject = "queueing.slot.schedule.subject",
+        text = "queueing.slot.schedule.body",
+        parameters = { @TemplateParameter(id = "scheduledStart", description = "queueing.slot.schedule.scheduledStart"),
+                @TemplateParameter(id = "locationType", description = "queueing.slot.schedule.locationType"),
+                @TemplateParameter(id = "location", description = "queueing.slot.schedule.location"),
+                @TemplateParameter(id = "queue", description = "queueing.slot.schedule.queue") })
+@DeclareMessageTemplate(id = "queueing.slot.reschedule.identity.validation", bundle = "resources.QueueingResources",
+        description = "queueing.slot.reschedule.description", subject = "queueing.slot.reschedule.subject",
+        text = "queueing.slot.reschedule.body",
+        parameters = { @TemplateParameter(id = "scheduledStart", description = "queueing.slot.reschedule.scheduledStart"),
+                @TemplateParameter(id = "locationType", description = "queueing.slot.reschedule.locationType"),
+                @TemplateParameter(id = "location", description = "queueing.slot.reschedule.location"),
+                @TemplateParameter(id = "queue", description = "queueing.slot.reschedule.queue") })
+
+@DeclareMessageTemplate(id = "queueing.slot.unschedule.campus.visit", bundle = "resources.QueueingResources",
+        description = "queueing.slot.unschedule.description", subject = "queueing.slot.unschedule.subject",
+        text = "queueing.slot.unschedule.body",
+        parameters = { @TemplateParameter(id = "scheduledStart", description = "queueing.slot.unschedule.scheduledStart"),
+                @TemplateParameter(id = "location", description = "queueing.slot.unschedule.location"),
+                @TemplateParameter(id = "queue", description = "queueing.slot.unschedule.queue"),
+                @TemplateParameter(id = "message", description = "queueing.slot.unschedule.message") })
+@DeclareMessageTemplate(id = "queueing.slot.schedule.campus.visit", bundle = "resources.QueueingResources",
+        description = "queueing.slot.schedule.description", subject = "queueing.slot.schedule.subject",
+        text = "queueing.slot.schedule.body",
+        parameters = { @TemplateParameter(id = "scheduledStart", description = "queueing.slot.schedule.scheduledStart"),
+                @TemplateParameter(id = "locationType", description = "queueing.slot.schedule.locationType"),
+                @TemplateParameter(id = "location", description = "queueing.slot.schedule.location"),
+                @TemplateParameter(id = "queue", description = "queueing.slot.schedule.queue") })
+@DeclareMessageTemplate(id = "queueing.slot.reschedule.campus.visit", bundle = "resources.QueueingResources",
+        description = "queueing.slot.reschedule.description", subject = "queueing.slot.reschedule.subject",
+        text = "queueing.slot.reschedule.body",
+        parameters = { @TemplateParameter(id = "scheduledStart", description = "queueing.slot.reschedule.scheduledStart"),
+                @TemplateParameter(id = "locationType", description = "queueing.slot.reschedule.locationType"),
+                @TemplateParameter(id = "location", description = "queueing.slot.reschedule.location"),
+                @TemplateParameter(id = "queue", description = "queueing.slot.reschedule.queue") })
 
 @WebListener
 public class FenixIstWebAppListener implements ServletContextListener, Configuration {
