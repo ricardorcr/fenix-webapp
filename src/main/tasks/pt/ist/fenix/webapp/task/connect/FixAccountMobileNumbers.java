@@ -32,6 +32,7 @@ public class FixAccountMobileNumbers extends ReadCustomTask {
             final int i = Integer.compare(s1.length(), s2.length());
             return i == 0 ? s1.compareTo(s2) : i;
         });
+        Collections.reverse(prefixes);
 
         prefixes.forEach(s -> taskLog("%s%n", s));
 
