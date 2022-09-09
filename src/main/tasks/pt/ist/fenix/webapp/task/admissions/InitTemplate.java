@@ -3,6 +3,7 @@ package pt.ist.fenix.webapp.task.admissions;
 import org.fenixedu.bennu.scheduler.custom.WriteCustomTask;
 import org.fenixedu.messaging.core.domain.MessageTemplate;
 import org.fenixedu.messaging.core.template.DeclareMessageTemplate;
+import org.fenixedu.messaging.core.template.DeclareMessageTemplates;
 import org.fenixedu.messaging.core.template.TemplateParameter;
 import org.fenixedu.queueing.domain.AttendanceQueue;
 import pt.ist.fenixframework.FenixFramework;
@@ -48,7 +49,8 @@ public class InitTemplate extends WriteCustomTask {
     }
 
     private void set(final String id, final String unschedule, final String schedule, final String reschedule) {
-        Arrays.stream(this.getClass().getAnnotationsByType(DeclareMessageTemplate.class))
+        Arrays.stream(this.getClass().getAnnotationsByType(DeclareMessageTemplates.class))
+                .flatMap(t -> Arrays.stream(t.value()))
                 .forEach(MessageTemplate::declare);
 
         final AttendanceQueue queue = FenixFramework.getDomainObject(id);
