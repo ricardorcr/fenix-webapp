@@ -35,20 +35,7 @@ public class FixAccountMobileNumbers extends ReadCustomTask {
         });
         Collections.reverse(prefixes);
 
-//        ConnectSystem.getInstance().getAccountSet().stream().parallel().forEach(a -> fix(prefixes, a));
-
-        Message.fromSystem().singleTos("luis.cruz@tecnico.pt", "jdsm@ist.utl.pt")
-                .subject("Tecnico Lisboa - Account Access Fixed")
-                .textBody("An error in your account registration that may have caused problems " +
-                        "logging into Tecnico Lisboa's Connect portal was now fixed." +
-                        "\n\nThis issue would only affect login attempts outside your country." +
-                        "\n\nWe apologize for any inconvenience." +
-                        "\n\nIf you have any further issues accessing our systems please contact " +
-                        "our IT services." +
-                        "\n\n\nBest Regards," +
-                        "\n\nThe FenixEdu Team")
-                .send();
-
+        ConnectSystem.getInstance().getAccountSet().stream().parallel().forEach(a -> fix(prefixes, a));
     }
 
     private void fix(final List<String> prefixes, final Account account) {
@@ -67,12 +54,14 @@ public class FixAccountMobileNumbers extends ReadCustomTask {
                         final long number = Long.parseLong(numberString);
                         final String fix = prefix + number;
                         if (!mobile.equals(fix)) {
+                            taskLog("%s%n", account.getExternalId());
                             taskLog("Fixing account: %s : %s -> %s %s%n",
                                     account.getEmail(),
                                     mobile,
                                     prefix,
                                     number);
                             account.setMobile(fix);
+/*
                             Message.fromSystem().singleTos(account.getEmail())
                                     .subject("Tecnico Lisboa - Account Access Fixed")
                                     .textBody("An error in your account registration that may have caused problems " +
@@ -84,6 +73,7 @@ public class FixAccountMobileNumbers extends ReadCustomTask {
                                             "\n\n\nBest Regards," +
                                             "\n\nThe FenixEdu Team")
                                     .send();
+*/
                         }
                     }
                 }
