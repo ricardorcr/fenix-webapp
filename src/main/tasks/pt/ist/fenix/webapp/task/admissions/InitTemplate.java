@@ -1,10 +1,13 @@
 package pt.ist.fenix.webapp.task.admissions;
 
 import org.fenixedu.bennu.scheduler.custom.WriteCustomTask;
+import org.fenixedu.messaging.core.domain.MessageTemplate;
 import org.fenixedu.messaging.core.template.DeclareMessageTemplate;
 import org.fenixedu.messaging.core.template.TemplateParameter;
 import org.fenixedu.queueing.domain.AttendanceQueue;
 import pt.ist.fenixframework.FenixFramework;
+
+import java.util.Arrays;
 
 @DeclareMessageTemplate(id = "queueing.slot.unschedule.confirm.registration", bundle = "resources.QueueingResources",
         description = "queueing.slot.unschedule.description", subject = "queueing.slot.unschedule.subject",
@@ -45,6 +48,9 @@ public class InitTemplate extends WriteCustomTask {
     }
 
     private void set(final String id, final String unschedule, final String schedule, final String reschedule) {
+        Arrays.stream(this.getClass().getAnnotationsByType(DeclareMessageTemplate.class))
+                .forEach(MessageTemplate::declare);
+
         final AttendanceQueue queue = FenixFramework.getDomainObject(id);
         queue.setEmailTemplateUnSchedule(unschedule);
         queue.setEmailTemplateReSchedule(reschedule);
