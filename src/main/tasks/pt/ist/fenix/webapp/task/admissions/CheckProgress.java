@@ -1,6 +1,7 @@
 package pt.ist.fenix.webapp.task.admissions;
 
 import org.fenixedu.academic.domain.DomainOperationLog;
+import org.fenixedu.academic.domain.student.Registration;
 import org.fenixedu.admissions.domain.AdmissionProcess;
 import org.fenixedu.admissions.domain.AdmissionsSystem;
 import org.fenixedu.admissions.domain.Application;
@@ -37,6 +38,7 @@ public class CheckProgress extends ReadCustomTask {
         long hasSurveyResponse = 0l;
         long hasSlotForDocumentConfirmation = 0l;
         long hasSlotForCampusVisit = 0l;
+        long hasSchedule = 0l;
 
         private Counter(final Stream<Application> stream) {
             stream.forEach(application -> {
@@ -98,6 +100,11 @@ public class CheckProgress extends ReadCustomTask {
                     if (surveyPresent && !Survey.pendingResponse(application)) {
                         hasSurveyResponse++;
                     }
+
+                    final Registration registration = Utils.registrationFor(application);
+                    if (registration != null && !registration.getShiftsSet().isEmpty()) {
+                        hasSchedule++;
+                    }
                 }
             });
         }
@@ -149,6 +156,8 @@ public class CheckProgress extends ReadCustomTask {
         row.setCell("Inquérito Respondido", Long.toString(counter.hasSurveyResponse));
         row.setCell("Com Slot Confirmação Documentos", Long.toString(counter.hasSlotForDocumentConfirmation));
         row.setCell("Com Slot Visita Campus", Long.toString(counter.hasSlotForCampusVisit));
+        row.setCell("Com Horário", Long.toString(counter.hasSchedule));
+
 
     }
 
