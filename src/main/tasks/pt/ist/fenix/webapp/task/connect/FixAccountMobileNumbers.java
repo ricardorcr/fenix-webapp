@@ -5,6 +5,7 @@ import org.fenixedu.connect.domain.Account;
 import org.fenixedu.connect.domain.ConnectSystem;
 import org.fenixedu.connect.domain.Identity;
 import org.fenixedu.connect.domain.identification.PersonalInformation;
+import org.fenixedu.messaging.core.domain.Message;
 import pt.ist.fenixframework.FenixFramework;
 import pt.ist.standards.telecommunications.DailingCode;
 import pt.ist.standards.util.ResourceReader;
@@ -34,9 +35,20 @@ public class FixAccountMobileNumbers extends ReadCustomTask {
         });
         Collections.reverse(prefixes);
 
-        prefixes.forEach(s -> taskLog("%s%n", s));
+//        ConnectSystem.getInstance().getAccountSet().stream().parallel().forEach(a -> fix(prefixes, a));
 
-        ConnectSystem.getInstance().getAccountSet().stream().parallel().forEach(a -> fix(prefixes, a));
+        Message.fromSystem().singleTos("luis.cruz@tecnico.pt", "jdsm@ist.utl.pt")
+                .subject("Tecnico Lisboa - Account Access Fixed")
+                .textBody("An error in your account registration that may have caused problems " +
+                        "logging into Tecnico Lisboa's Connect portal was now fixed." +
+                        "\n\nThis issue would only affect login attempts outside your country." +
+                        "\n\nWe apologize for any inconvenience." +
+                        "\n\nIf you have any further issues accessing our systems please contact " +
+                        "our IT services." +
+                        "\n\n\nBest Regards," +
+                        "\n\nThe FenixEdu Team")
+                .send();
+
     }
 
     private void fix(final List<String> prefixes, final Account account) {
@@ -60,6 +72,18 @@ public class FixAccountMobileNumbers extends ReadCustomTask {
                                     mobile,
                                     prefix,
                                     number);
+                            account.setMobile(fix);
+                            Message.fromSystem().singleTos(account.getEmail())
+                                    .subject("Tecnico Lisboa - Account Access Fixed")
+                                    .textBody("An error in your account registration that may have caused problems " +
+                                            "logging into Tecnico Lisboa's Connect portal was now fixed." +
+                                            "\n\nThis issue would only affect login attempts outside your country." +
+                                            "\n\nWe apologize for any inconvenience." +
+                                            "\n\nIf you have any further issues accessing our systems please contact " +
+                                            "our IT services." +
+                                            "\n\n\nBest Regards," +
+                                            "\n\nThe FenixEdu Team")
+                                    .send();
                         }
                     }
                 }
