@@ -27,7 +27,7 @@ public class FixAccountMobileNumbers extends ReadCustomTask {
                             final String prefix = DailingCode.dailingPrefixFor(countryCode);
                             if (mobile.startsWith(prefix)) {
                                 final String numberString = mobile.substring(prefix.length());
-                                final int number = Integer.parseInt(numberString);
+                                final long number = Long.parseLong(numberString);
                                 final String fix = prefix + number;
                                 if (!mobile.equals(fix)) {
                                     taskLog("Fixing account: %s : %s -> %s %s%n",
