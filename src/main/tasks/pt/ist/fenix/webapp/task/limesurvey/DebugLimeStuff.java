@@ -12,7 +12,7 @@ public class DebugLimeStuff extends ReadCustomTask {
         final User user = User.findByUsername("ist1105708");
         user.getIdentity().getAccountSet().stream()
                 .flatMap(a -> a.getApplicationSet().stream())
-                .peek(application -> Survey.updateResponseStatus(application))
+//                .peek(application -> Survey.updateResponseStatus(application))
                 .flatMap(application -> Survey.surveys(application))
                 .filter(survey -> Survey.pendingResponse(survey))
                 .forEach(survey -> {
