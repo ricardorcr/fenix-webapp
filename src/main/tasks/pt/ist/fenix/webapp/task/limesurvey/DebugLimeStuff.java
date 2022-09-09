@@ -14,9 +14,10 @@ public class DebugLimeStuff extends ReadCustomTask {
                 .flatMap(a -> a.getApplicationSet().stream())
 //                .peek(application -> Survey.updateResponseStatus(application))
                 .flatMap(application -> Survey.surveys(application))
-                .filter(survey -> Survey.pendingResponse(survey))
+                //.filter(survey -> Survey.pendingResponse(survey))
                 .forEach(survey -> {
                     taskLog("%s : %s%n", Survey.id(survey), Survey.email(survey));
+                    taskLog("   %s%n", survey.toString());
                 });
 
     }
