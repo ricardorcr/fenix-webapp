@@ -21,6 +21,9 @@ public class DebugDgesImport extends ReadCustomTask {
                             executionDegree.getExecutionYear().getYear(),
                             executionDegree.getCampus().getExternalId(),
                             executionDegree.getCampus().getName());
+                    if (!executionDegree.getCampus().getExecutionDegrees().equals("2448131360898")) {
+                        executionDegree.setCampus(FenixFramework.getDomainObject("2448131360898"));
+                    }
                 }
             }
         }
