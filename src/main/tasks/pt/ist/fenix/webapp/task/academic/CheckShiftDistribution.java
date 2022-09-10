@@ -34,7 +34,7 @@ public class CheckShiftDistribution extends ReadCustomTask {
         final Map<ExecutionDegree, Set<Integer>> map = executionYear.getShiftDistribution().getShiftDistributionEntriesSet().stream()
                 .collect(Collectors.toMap(e -> e.getExecutionDegree(), e -> toSet(e), (s1, s2) -> merge(s1, s2)));
         final Map<ExecutionDegree, Set<Integer>> mapD = executionYear.getShiftDistribution().getShiftDistributionEntriesSet().stream()
-                .filter(shiftDistributionEntry -> !shiftDistributionEntry.alreadyDistributed())
+                .filter(shiftDistributionEntry -> shiftDistributionEntry.alreadyDistributed())
                 .collect(Collectors.toMap(e -> e.getExecutionDegree(), e -> toSet(e), (s1, s2) -> merge(s1, s2)));
 
         final Spreadsheet spreadsheet = new Spreadsheet("DistributionCheck");
