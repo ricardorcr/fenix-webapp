@@ -14,7 +14,7 @@ public class DebugDgesImport extends WriteCustomTask {
     @Override
     public void runTask() throws Exception {
         final ExecutionYear executionYear = ExecutionYear.readCurrentExecutionYear();
-        final Degree degree = FenixFramework.getDomainObject("2761663971567");
+        final Degree degree = FenixFramework.getDomainObject("2761663971605");
         for (final DegreeCurricularPlan degreeCurricularPlan : degree.getDegreeCurricularPlansSet()) {
             for (final ExecutionDegree executionDegree : degreeCurricularPlan.getExecutionDegreesSet()) {
                 if (executionDegree != null && executionDegree.getCampus() != null) {
