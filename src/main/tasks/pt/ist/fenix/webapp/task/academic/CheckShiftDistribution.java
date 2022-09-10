@@ -14,6 +14,7 @@ import org.fenixedu.admissions.domain.Application;
 import org.fenixedu.admissions.ist.domain.Utils;
 import org.fenixedu.bennu.core.json.JsonUtils;
 import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
+import org.fenixedu.bennu.scheduler.custom.WriteCustomTask;
 import org.fenixedu.commons.spreadsheet.Spreadsheet;
 import pt.ist.fenixframework.DomainObject;
 import pt.ist.fenixframework.FenixFramework;
@@ -25,11 +26,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class CheckShiftDistribution extends ReadCustomTask {
+public class CheckShiftDistribution extends WriteCustomTask {
 
     @Override
     public void runTask() throws Exception {
         final ExecutionYear executionYear = ExecutionYear.readCurrentExecutionYear();
+
+        executionYear.getShiftDistribution().delete();
+
         taskLog("Processing %s%n", executionYear.getYear());
         final Map<ExecutionDegree, Set<Integer>> map = executionYear.getShiftDistribution().getShiftDistributionEntriesSet().stream()
                 .collect(Collectors.toMap(e -> e.getExecutionDegree(), e -> toSet(e), (s1, s2) -> merge(s1, s2)));
