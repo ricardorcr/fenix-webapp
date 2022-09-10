@@ -35,6 +35,7 @@ public class CheckShiftDistribution extends WriteCustomTask {
         executionYear.getShiftDistribution().delete();
 
         taskLog("Processing %s%n", executionYear.getYear());
+/*
         final Map<ExecutionDegree, Set<Integer>> map = executionYear.getShiftDistribution().getShiftDistributionEntriesSet().stream()
                 .collect(Collectors.toMap(e -> e.getExecutionDegree(), e -> toSet(e), (s1, s2) -> merge(s1, s2)));
         final Map<ExecutionDegree, Set<Integer>> mapD = executionYear.getShiftDistribution().getShiftDistributionEntriesSet().stream()
@@ -69,6 +70,8 @@ public class CheckShiftDistribution extends WriteCustomTask {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         spreadsheet.exportToXLSSheet(stream);
         output("distribution_check.xlsx", stream.toByteArray());
+        
+ */
     }
 
     private Set<Integer> merge(final Set<Integer> s1, final Set<Integer> s2) {
