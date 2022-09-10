@@ -5,11 +5,12 @@ import org.fenixedu.academic.domain.DegreeCurricularPlan;
 import org.fenixedu.academic.domain.ExecutionDegree;
 import org.fenixedu.academic.domain.ExecutionYear;
 import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
+import org.fenixedu.bennu.scheduler.custom.WriteCustomTask;
 import pt.ist.fenixframework.FenixFramework;
 
 import java.util.stream.Collectors;
 
-public class DebugDgesImport extends ReadCustomTask {
+public class DebugDgesImport extends WriteCustomTask {
     @Override
     public void runTask() throws Exception {
         final ExecutionYear executionYear = ExecutionYear.readCurrentExecutionYear();
