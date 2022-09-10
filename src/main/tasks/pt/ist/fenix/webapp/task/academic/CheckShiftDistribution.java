@@ -28,7 +28,7 @@ public class CheckShiftDistribution extends ReadCustomTask {
     public void runTask() throws Exception {
         final ExecutionYear executionYear = ExecutionYear.readCurrentExecutionYear();
         final Map<ExecutionDegree, Set<Integer>> map = executionYear.getShiftDistribution().getShiftDistributionEntriesSet().stream()
-                .collect(Collectors.toMap(e -> e.getExecutionDegree(), e -> toSet(e), (s1, s2) -> s1));
+                .collect(Collectors.toMap(e -> e.getExecutionDegree(), e -> toSet(e), (s1, s2) -> merge(s1, s2)));
 
         final Spreadsheet spreadsheet = new Spreadsheet("DistributionCheck");
         map.forEach((ed, s) -> {
@@ -55,6 +55,11 @@ public class CheckShiftDistribution extends ReadCustomTask {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         spreadsheet.exportToXLSSheet(stream);
         output("distribution_check.xlsx", stream.toByteArray());
+    }
+
+    private Set<Integer> merge(final Set<Integer> s1, final Set<Integer> s2) {
+        s1.addAll(s2);
+        return s1;
     }
 
     private Set<Integer> toSet(final ShiftDistributionEntry e) {
