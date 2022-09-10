@@ -1,6 +1,9 @@
 package pt.ist.fenix.webapp.task.academic;
 
 import org.fenixedu.academic.domain.Degree;
+import org.fenixedu.academic.domain.DegreeCurricularPlan;
+import org.fenixedu.academic.domain.ExecutionDegree;
+import org.fenixedu.academic.domain.ExecutionYear;
 import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
 import pt.ist.fenixframework.FenixFramework;
 
@@ -9,8 +12,15 @@ import java.util.stream.Collectors;
 public class DebugDgesImport extends ReadCustomTask {
     @Override
     public void runTask() throws Exception {
+        final ExecutionYear executionYear = ExecutionYear.readCurrentExecutionYear();
         final Degree degree = FenixFramework.getDomainObject("2761663971476");
-        taskLog("isTagus: %s%n", isTagus(degree));
+        for (final DegreeCurricularPlan degreeCurricularPlan : degree.getDegreeCurricularPlansSet()) {
+            final ExecutionDegree executionDegree = degreeCurricularPlan.getExecutionDegreeByYear(executionYear);
+            if (executionDegree != null && executionDegree.getCampus() != null) {
+                taskLog("Campus: %s : %s%n", executionDegree.getCampus().getExternalId(), executionDegree.getCampus().getName());
+            }
+            }
+            taskLog("isTagus: %s%n", isTagus(degree));
     }
 
     private static boolean isTagus(final Degree degree) {
