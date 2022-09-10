@@ -1,79 +1,72 @@
 package pt.ist.fenix.webapp;
 
-import com.google.gson.JsonObject;
-import org.fenixedu.academic.domain.Person;
+import java.util.stream.Stream;
+
 import org.fenixedu.admissions.domain.AdmissionProcess;
-import org.fenixedu.admissions.domain.Application;
-import org.fenixedu.admissions.ist.domain.RegistrationProcessState;
-import org.fenixedu.admissions.ist.domain.Survey;
-import org.fenixedu.admissions.ist.domain.UserAccountInfo;
-import org.fenixedu.admissions.ist.domain.Utils;
+import org.fenixedu.admissions.domain.AdmissionProcessTarget;
+import org.fenixedu.admissions.ist.wizard.RemoteReader;
+import org.fenixedu.admissions.template.AdmissionProcessTemplate;
+import org.fenixedu.bennu.core.util.CoreConfiguration;
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
-import org.fenixedu.connect.domain.Identity;
-import pt.ist.fenixedu.integration.domain.SantanderCard;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import kong.unirest.Unirest;
 import pt.ist.fenixframework.FenixFramework;
 
-public class Teste extends CustomTask {
+public class Teste extends CustomTask implements AdmissionProcessTemplate {
 
     @Override
     public void runTask() throws Exception {
-        final Application application = FenixFramework.getDomainObject("571415333968005");
-        final boolean mandatoryActivitiesDone = allMandatoryActivitiesDone(application);
-        taskLog("All activities done: %s%n", mandatoryActivitiesDone);
-
-        checkNeededChangeOutcomeState(application);
+        AdmissionProcess process = FenixFramework.getDomainObject("571432513831074");   
+        process.setOutcomeConfig(appendTerms(string("dgesCnaesOutcome.json").replace("{admissionProcess}", process.getExternalId())));
     }
 
-    public boolean allMandatoryActivitiesDone(final Application application) {
-        final Identity identity = application.getAccount().getIdentity();
-        if (identity != null) {
-            taskLog("identity");
-            if (identity.getUser() != null) {
-                taskLog("user");
-                final Person person = identity.getUser().getPerson();
-                if (person.getInstitutionalEmailAddress() != null) {
-                    taskLog("mail");
-                    final UserAccountInfo userInfo = person.getUser().getUserAccountInfo();
-                    if (userInfo != null && userInfo.isPasswordSet()) {
-                        taskLog("password");
-                        final SantanderCard santanderCard = identity.getUser().getSantanderCard();
-                        if (santanderCard != null && person.getStudent() != null && person.getStudent().getPersonalDataAuthorization() != null) {
-                            taskLog("cedencia dados");
-                            if (!Survey.pendingResponse(application)) {
-                                taskLog("survey");
-                                final JsonObject processAfterOutcomeForm = application.getAdmissionProcessTarget().getAdmissionProcess().getAfterOutcomeFormDataJson();
-                                if (processAfterOutcomeForm != null) {
-                                    final JsonObject dataObject = application.getDataObject();
-                                    if (dataObject.has("outcomeState")) {
-                                        taskLog("outcomeState");
-                                        return !dataObject.get("outcomeState").getAsJsonObject().get("canEditPostOutcomeForm").getAsBoolean();
-                                    }
-                                } else {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return false;
+    private String appendTerms(final String s) {
+        final JsonObject json = new JsonParser().parse(s).getAsJsonObject();
+        final JsonObject forms = json.getAsJsonObject("forms");
+        final JsonObject beforeOutcome = forms.getAsJsonObject("beforeOutcome");
+        final JsonArray pages = beforeOutcome.getAsJsonArray("pages");
+        pages.addAll(object("acceptTermsForm.json").getAsJsonArray("pages"));
+        return json.toString();
     }
 
-    private void checkNeededChangeOutcomeState(final Application application) {
-        final Enum outcomeState = Utils.outcomeStateFor(application);
-        if (outcomeState == RegistrationProcessState.BOARDING) {
-            if (Utils.allMandatoryActivitiesDone(application)) {
-                final AdmissionProcess admissionProcess = application.getAdmissionProcessTarget().getAdmissionProcess();
-                if (Utils.isToChangeOutcomeState(admissionProcess)) {
-                    if (Utils.needsDocumentConfirmation(admissionProcess)) {
-                        taskLog("Should change for REGISTERED");
-                    } else {
-                        taskLog("Should change for CONFIRMED");
-                    }
-                }
-            }
-        }
+    @Override
+    public String baseUrl() {
+        return RemoteReader.BASE_URL;
+    }
+
+    @Override
+    public String string(String filename) {
+        return Unirest.get(baseUrl() + filename).asString().getBody()
+                .replaceAll("https://fenix.tecnico.ulisboa.pt", CoreConfiguration.getConfiguration().applicationUrl());
+    }
+
+
+    @Override
+    public JsonObject processForm() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public JsonObject targetForm(AdmissionProcess process) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Stream<AdmissionProcess> createProcesses(JsonObject data) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Stream<AdmissionProcessTarget> createTargets(AdmissionProcess process, JsonObject data) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }
