@@ -15,12 +15,16 @@ public class DebugDgesImport extends ReadCustomTask {
         final ExecutionYear executionYear = ExecutionYear.readCurrentExecutionYear();
         final Degree degree = FenixFramework.getDomainObject("2761663971476");
         for (final DegreeCurricularPlan degreeCurricularPlan : degree.getDegreeCurricularPlansSet()) {
-            final ExecutionDegree executionDegree = degreeCurricularPlan.getExecutionDegreeByYear(executionYear);
-            if (executionDegree != null && executionDegree.getCampus() != null) {
-                taskLog("Campus: %s : %s%n", executionDegree.getCampus().getExternalId(), executionDegree.getCampus().getName());
+            for (final ExecutionDegree executionDegree : degreeCurricularPlan.getExecutionDegreesSet()) {
+                if (executionDegree != null && executionDegree.getCampus() != null) {
+                    taskLog("%s : Campus: %s : %s%n",
+                            executionDegree.getExecutionYear().getYear(),
+                            executionDegree.getCampus().getExternalId(),
+                            executionDegree.getCampus().getName());
+                }
             }
-            }
-            taskLog("isTagus: %s%n", isTagus(degree));
+        }
+        taskLog("isTagus: %s%n", isTagus(degree));
     }
 
     private static boolean isTagus(final Degree degree) {
