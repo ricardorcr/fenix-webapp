@@ -1,11 +1,13 @@
 package pt.ist.fenix.webapp.task.academic;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.fenixedu.academic.domain.Degree;
 import org.fenixedu.academic.domain.ExecutionDegree;
 import org.fenixedu.academic.domain.ExecutionYear;
 import org.fenixedu.academic.domain.candidacy.degree.ShiftDistributionEntry;
 import org.fenixedu.academic.domain.degreeStructure.CycleType;
+import org.fenixedu.admissions.domain.AdmissionProcess;
 import org.fenixedu.admissions.domain.AdmissionProcessTarget;
 import org.fenixedu.admissions.domain.AdmissionsSystem;
 import org.fenixedu.admissions.domain.Application;
@@ -78,11 +80,18 @@ public class CheckShiftDistribution extends ReadCustomTask {
     private Stream<Application> applicationStream(final ExecutionYear executionYear, final Degree degree) {
         return AdmissionsSystem.getInstance().getAdmissionProcessSet().stream()
                 .filter(admissionProcess -> Utils.isDegreeType(admissionProcess))
+                .filter(admissionProcess -> hasAutoEnrolment(admissionProcess))
                 .flatMap(admissionProcess -> admissionProcess.getAdmissionProcessTargetSet().stream())
                 .filter(target -> executionYear == get(target, "year"))
                 .filter(target -> degree == get(target, "degree"))
                 .filter(target -> CycleType.FIRST_CYCLE == get(target))
                 .flatMap(target -> target.getApplicationSet().stream());
+    }
+
+    private boolean hasAutoEnrolment(final AdmissionProcess admissionProcess) {
+        final JsonObject config = admissionProcess.getOutcomeConfigJson();
+        final JsonElement automaticEnrollment = config.get("automaticEnrollment");
+        return automaticEnrollment != null && automaticEnrollment.getAsBoolean();
     }
 
     private Stream<AdmissionProcessTarget> targetStream(final ExecutionYear executionYear, final Degree degree) {
