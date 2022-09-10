@@ -5,6 +5,7 @@ import org.fenixedu.academic.domain.Degree;
 import org.fenixedu.academic.domain.ExecutionDegree;
 import org.fenixedu.academic.domain.ExecutionYear;
 import org.fenixedu.academic.domain.candidacy.degree.ShiftDistributionEntry;
+import org.fenixedu.academic.domain.degreeStructure.CycleType;
 import org.fenixedu.admissions.domain.AdmissionProcessTarget;
 import org.fenixedu.admissions.domain.AdmissionsSystem;
 import org.fenixedu.admissions.domain.Application;
@@ -29,6 +30,9 @@ public class CheckShiftDistribution extends ReadCustomTask {
         final ExecutionYear executionYear = ExecutionYear.readCurrentExecutionYear();
         final Map<ExecutionDegree, Set<Integer>> map = executionYear.getShiftDistribution().getShiftDistributionEntriesSet().stream()
                 .collect(Collectors.toMap(e -> e.getExecutionDegree(), e -> toSet(e), (s1, s2) -> merge(s1, s2)));
+        final Map<ExecutionDegree, Set<Integer>> mapD = executionYear.getShiftDistribution().getShiftDistributionEntriesSet().stream()
+                .filter(shiftDistributionEntry -> !shiftDistributionEntry.alreadyDistributed())
+                .collect(Collectors.toMap(e -> e.getExecutionDegree(), e -> toSet(e), (s1, s2) -> merge(s1, s2)));
 
         final Spreadsheet spreadsheet = new Spreadsheet("DistributionCheck");
         map.forEach((ed, s) -> {
@@ -43,6 +47,8 @@ public class CheckShiftDistribution extends ReadCustomTask {
                     .filter(application -> Utils.registrationFor(application) != null)
                     .count();
 
+            final int consumed = mapD.containsKey(ed) ? mapD.get(ed).size() : 0;
+
             final Spreadsheet.Row row = spreadsheet.addRow();
             row.setCell("Degree", ed.getDegree().getSigla());
             row.setCell("ShiftDistributionCount", s.size());
@@ -50,6 +56,7 @@ public class CheckShiftDistribution extends ReadCustomTask {
             row.setCell("Vagas CNAES", Long.toString(countCNAES));
             row.setCell("Colocados Outros Concursos", Long.toString(countOthers));
             row.setCell("Já Matriculados", Long.toString(registered));
+            row.setCell("ShiftDistributionCount Já consumidos", consumed);
         });
 
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -74,6 +81,7 @@ public class CheckShiftDistribution extends ReadCustomTask {
                 .flatMap(admissionProcess -> admissionProcess.getAdmissionProcessTargetSet().stream())
                 .filter(target -> executionYear == get(target, "year"))
                 .filter(target -> degree == get(target, "degree"))
+                .filter(target -> CycleType.FIRST_CYCLE == get(target))
                 .flatMap(target -> target.getApplicationSet().stream());
     }
 
@@ -97,6 +105,12 @@ public class CheckShiftDistribution extends ReadCustomTask {
         final JsonObject outcome = target.getOutcomeConfigJson();
         final String id = JsonUtils.get(outcome, key);
         return id == null ? null : FenixFramework.getDomainObject(id);
+    }
+
+    private CycleType get(final AdmissionProcessTarget target) {
+        final JsonObject outcome = target.getOutcomeConfigJson();
+        final String id = JsonUtils.get(outcome, "cycleType");
+        return id == null ? null : CycleType.valueOf(id);
     }
 
 }
