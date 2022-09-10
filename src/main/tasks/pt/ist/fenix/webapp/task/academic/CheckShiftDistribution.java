@@ -30,6 +30,7 @@ public class CheckShiftDistribution extends ReadCustomTask {
     @Override
     public void runTask() throws Exception {
         final ExecutionYear executionYear = ExecutionYear.readCurrentExecutionYear();
+        taskLog("Processing %s%n", executionYear.getYear());
         final Map<ExecutionDegree, Set<Integer>> map = executionYear.getShiftDistribution().getShiftDistributionEntriesSet().stream()
                 .collect(Collectors.toMap(e -> e.getExecutionDegree(), e -> toSet(e), (s1, s2) -> merge(s1, s2)));
         final Map<ExecutionDegree, Set<Integer>> mapD = executionYear.getShiftDistribution().getShiftDistributionEntriesSet().stream()
