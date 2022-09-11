@@ -32,10 +32,10 @@ public class CheckCNAESCreatedAccounts extends ReadCustomTask {
                 .map(application -> application.getAccount())
                 .map(account -> account.getIdentity())
                 .flatMap(identity -> identity.getAccountSet().stream())
-                .filter(account -> account.getEmail().startsWith("dges"))
+                .filter(account -> account.getEmail().startsWith("deges"))
                 .forEach(account -> {
                     taskLog("Hacking account creation date for %s%n", account.getEmail());
-                    account.setCreatedInstant(account.getCreatedInstant().withYear(1972));
+                    //account.setCreatedInstant(account.getCreatedInstant().withYear(1972));
                 });
     }
 
