@@ -11,6 +11,7 @@ public class CheckCNAESCreatedAccounts extends ReadCustomTask {
     @Override
     public void runTask() throws Exception {
         final AdmissionProcess process = FenixFramework.getDomainObject("571432513831074");
+/*
         process.getAdmissionProcessTargetSet().stream()
                 .flatMap(target -> target.getApplicationSet().stream())
                 .map(application -> application.getAccount())
@@ -24,6 +25,17 @@ public class CheckCNAESCreatedAccounts extends ReadCustomTask {
                             .forEach(a -> taskLog("   %s : %s%n",
                                     a.getCreatedInstant().toString("yyyy-MM-dd HH:mm"),
                                     a.getEmail()));
+                });
+ */
+        process.getAdmissionProcessTargetSet().stream()
+                .flatMap(target -> target.getApplicationSet().stream())
+                .map(application -> application.getAccount())
+                .map(account -> account.getIdentity())
+                .flatMap(identity -> identity.getAccountSet().stream())
+                .filter(account -> account.getEmail().startsWith("dges"))
+                .forEach(account -> {
+                    taskLog("Hacking account creation date for %s%n", account.getEmail());
+                    account.setCreatedInstant(account.getCreatedInstant().withYear(1972));
                 });
     }
 
