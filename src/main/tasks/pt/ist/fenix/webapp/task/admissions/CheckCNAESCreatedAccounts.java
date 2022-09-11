@@ -1,12 +1,10 @@
 package pt.ist.fenix.webapp.task.admissions;
 
 import org.fenixedu.admissions.domain.AdmissionProcess;
-import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
+import org.fenixedu.bennu.scheduler.custom.WriteCustomTask;
 import pt.ist.fenixframework.FenixFramework;
 
-import java.util.stream.Collectors;
-
-public class CheckCNAESCreatedAccounts extends ReadCustomTask {
+public class CheckCNAESCreatedAccounts extends WriteCustomTask {
 
     @Override
     public void runTask() throws Exception {
@@ -35,7 +33,7 @@ public class CheckCNAESCreatedAccounts extends ReadCustomTask {
                 .filter(account -> account.getEmail().startsWith("deges"))
                 .forEach(account -> {
                     taskLog("Hacking account creation date for %s%n", account.getEmail());
-                    //account.setCreatedInstant(account.getCreatedInstant().withYear(1972));
+                    account.setCreatedInstant(account.getCreatedInstant().withYear(1972));
                 });
     }
 
