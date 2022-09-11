@@ -17,10 +17,11 @@ public class CheckCNAESCreatedAccounts extends ReadCustomTask {
                 //.filter(account -> !account.getEmail().startsWith("dges"))
                 .filter(account -> account.getIdentity().getAccountSet().size() > 1)
                 .forEach(account -> {
-                    taskLog("%s%n", account.getIdentity().getAccountSet().stream()
+                    taskLog("%s : %s%n", account.getExternalId(), account.getEmail());
+                    account.getIdentity().getAccountSet().stream()
                             .filter(a -> a != account)
                             .map(a -> a.getEmail())
-                            .collect(Collectors.joining(", ")));
+                            .forEach(e -> taskLog("   %s%n", e));
                 });
     }
 
