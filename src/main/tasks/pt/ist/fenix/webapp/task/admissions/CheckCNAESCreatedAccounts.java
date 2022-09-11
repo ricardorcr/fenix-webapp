@@ -4,6 +4,8 @@ import org.fenixedu.admissions.domain.AdmissionProcess;
 import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
 import pt.ist.fenixframework.FenixFramework;
 
+import java.util.stream.Collectors;
+
 public class CheckCNAESCreatedAccounts extends ReadCustomTask {
 
     @Override
@@ -12,8 +14,14 @@ public class CheckCNAESCreatedAccounts extends ReadCustomTask {
         process.getAdmissionProcessTargetSet().stream()
                 .flatMap(target -> target.getApplicationSet().stream())
                 .map(application -> application.getAccount())
-                .filter(account -> !account.getEmail().startsWith("dges"))
-                .forEach(account -> account.getEmail());
+                //.filter(account -> !account.getEmail().startsWith("dges"))
+                .filter(account -> account.getIdentity().getAccountSet().size() > 1)
+                .forEach(account -> {
+                    taskLog("%s%n", account.getIdentity().getAccountSet().stream()
+                            .filter(a -> a != account)
+                            .map(a -> a.getEmail())
+                            .collect(Collectors.joining(", ")));
+                });
     }
 
 }
