@@ -29,7 +29,7 @@ public class CheckAdmissionsOutcomeState extends CustomTask {
 //        checkNeededChangeOutcomeState(application);
 
         AdmissionsSystem.getInstance().getAdmissionProcessSet().stream()
-                .filter(ap -> !Utils.isDges(ap))
+                //.filter(ap -> !Utils.isDges(ap))
                 .flatMap(ap -> ap.getAdmissionProcessTargetSet().stream())
                 .filter(target -> {
                     if (target.getOutcomeConfigJson() != null) {
