@@ -77,7 +77,7 @@ public class SetupULisboaSurveyes extends ReadCustomTask implements RemoteReader
             return false;
         } else {
             config.add("surveyConcludeBoarding", survey);
-            admissionProcessTarget.setOutcomeConfig(config.toString());
+//            admissionProcessTarget.setOutcomeConfig(config.toString());
             return true;
         }
     }
