@@ -31,6 +31,7 @@ public class SetupULisboaSurveyes extends WriteCustomTask implements RemoteReade
                 .filter(application -> application.getLockInstant() != null)
                 .filter(application -> Utils.registrationFor(application) != null)
                 .forEach(application -> {
+                    /*
                     final AdmissionProcessTarget admissionProcessTarget = application.getAdmissionProcessTarget();
                     final JsonObject config = admissionProcessTarget.getOutcomeConfigJson();
                     final CycleType cycleType = cycleTypeFor(config);
@@ -41,6 +42,8 @@ public class SetupULisboaSurveyes extends WriteCustomTask implements RemoteReade
                         taskLog("app = %s%n", application.getAccount().getEmail());
                         add(application, survey);
                     }
+                    
+                     */
                 });
         ;
     }
