@@ -11,10 +11,11 @@ import org.fenixedu.admissions.ist.domain.Utils;
 import org.fenixedu.admissions.util.RemoteReader;
 import org.fenixedu.bennu.core.json.JsonUtils;
 import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
+import org.fenixedu.bennu.scheduler.custom.WriteCustomTask;
 import org.fenixedu.messaging.core.domain.Message;
 import pt.ist.fenixframework.FenixFramework;
 
-public class SetupULisboaSurveyes extends ReadCustomTask implements RemoteReader {
+public class SetupULisboaSurveyes extends WriteCustomTask implements RemoteReader {
 
     final JsonObject surveyCycle1 = object("cycle1.json");
     final JsonObject surveyCycle2 = object("cycle2.json");
