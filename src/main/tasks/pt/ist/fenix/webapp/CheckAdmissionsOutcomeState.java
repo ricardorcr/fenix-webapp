@@ -6,11 +6,14 @@ import org.fenixedu.academic.domain.ExecutionYear;
 import org.fenixedu.admissions.domain.AdmissionProcess;
 import org.fenixedu.admissions.domain.AdmissionsSystem;
 import org.fenixedu.admissions.domain.Application;
+import org.fenixedu.admissions.ist.service.AuthorizePersonalDataAccessService;
 import org.fenixedu.admissions.ist.service.RegistrationService;
 import org.fenixedu.admissions.ist.domain.RegistrationProcessState;
 import org.fenixedu.admissions.ist.domain.Survey;
 import org.fenixedu.admissions.ist.domain.UserAccountInfo;
 import org.fenixedu.admissions.ist.domain.Utils;
+import org.fenixedu.bennu.core.signals.DomainObjectEvent;
+import org.fenixedu.bennu.core.signals.Signal;
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
 import org.fenixedu.connect.domain.Identity;
 import pt.ist.fenixedu.integration.domain.SantanderCard;
@@ -20,12 +23,13 @@ public class CheckAdmissionsOutcomeState extends CustomTask {
 
     @Override
     public void runTask() throws Exception {
-//        final Application application = FenixFramework.getDomainObject("852890310675974"); //571415333968005
+//        final Application application = FenixFramework.getDomainObject("1978790217538900"); //571415333968005
 //        final boolean mandatoryActivitiesDone = allMandatoryActivitiesDone(application);
 //        taskLog("All activities done: %s%n", mandatoryActivitiesDone);
+//        checkNeededChangeOutcomeState(application);
 
         AdmissionsSystem.getInstance().getAdmissionProcessSet().stream()
-                //.filter(ap -> !Utils.isDges(ap))
+                .filter(ap -> !Utils.isDges(ap))
                 .flatMap(ap -> ap.getAdmissionProcessTargetSet().stream())
                 .filter(target -> {
                     if (target.getOutcomeConfigJson() != null) {
@@ -47,13 +51,12 @@ public class CheckAdmissionsOutcomeState extends CustomTask {
             if (identity.getUser() != null) {
                 taskLog("user");
                 final Person person = identity.getUser().getPerson();
-                if (person.getInstitutionalEmailAddress() != null) {
+                if (person.getInstitutionalEmailAddress() != null || true /*ONLY LOCAL*/) {
                     taskLog("mail");
                     final UserAccountInfo userInfo = person.getUser().getUserAccountInfo();
-                    if (userInfo != null && userInfo.isPasswordSet()) {
+                    if (true || (userInfo != null && userInfo.isPasswordSet())) {
                         taskLog("password");
-                        final SantanderCard santanderCard = identity.getUser().getSantanderCard();
-                        if (santanderCard != null && person.getStudent() != null && person.getStudent().getPersonalDataAuthorization() != null) {
+                        if (AuthorizePersonalDataAccessService.hasCompletedAllDataAccessResponses(identity.getUser())) {
                             taskLog("cedencia dados");
                             if (!Survey.pendingResponse(application)) {
                                 taskLog("survey");
@@ -84,10 +87,12 @@ public class CheckAdmissionsOutcomeState extends CustomTask {
                 if (Utils.isToChangeOutcomeState(admissionProcess)) {
                     if (Utils.needsDocumentConfirmation(admissionProcess)) {
                         taskLog("Should change for REGISTERED - %s - %s%n", application.getExternalId(), application.getAdmissionProcessTarget().getAdmissionProcess().getTitle().getContent());
-                        //RegistrationService.setOutcomeState(application, RegistrationProcessState.REGISTERED);
-                        //RegistrationService.addToConfirmationQueueIfNeeded(application);                                                                               
+//                        RegistrationService.setOutcomeState(application, RegistrationProcessState.REGISTERED);
+//                        RegistrationService.addToConfirmationQueueIfNeeded(application);
                     } else {
-                        taskLog("Should change for CONFIRMED - %s%n", application.getExternalId(), application.getAdmissionProcessTarget().getAdmissionProcess().getTitle().getContent());
+                        taskLog("Should change for CONFIRMED - %s - %s%n", application.getExternalId(), application.getAdmissionProcessTarget().getAdmissionProcess().getTitle().getContent());
+//                        RegistrationService.setOutcomeState(application, RegistrationProcessState.CONFIRMED);
+//                        Signal.emit(RegistrationService.REGISTRATION_CONFIRMED, new DomainObjectEvent<>(application));
                     }
                 }
             }
