@@ -15,11 +15,12 @@ import org.fenixedu.admissions.ist.domain.Utils;
 import org.fenixedu.bennu.core.signals.DomainObjectEvent;
 import org.fenixedu.bennu.core.signals.Signal;
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
+import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
 import org.fenixedu.connect.domain.Identity;
 import pt.ist.fenixedu.integration.domain.SantanderCard;
 import pt.ist.fenixframework.FenixFramework;
 
-public class CheckAdmissionsOutcomeState extends CustomTask {
+public class CheckAdmissionsOutcomeState extends ReadCustomTask {
 
     @Override
     public void runTask() throws Exception {
@@ -29,7 +30,7 @@ public class CheckAdmissionsOutcomeState extends CustomTask {
 //        checkNeededChangeOutcomeState(application);
 
         AdmissionsSystem.getInstance().getAdmissionProcessSet().stream()
-                //.filter(ap -> !Utils.isDges(ap))
+                .filter(ap -> !Utils.isDges(ap))
                 .flatMap(ap -> ap.getAdmissionProcessTargetSet().stream())
                 .filter(target -> {
                     if (target.getOutcomeConfigJson() != null) {
@@ -85,15 +86,17 @@ public class CheckAdmissionsOutcomeState extends CustomTask {
             if (Utils.allMandatoryActivitiesDone(application)) {
                 final AdmissionProcess admissionProcess = application.getAdmissionProcessTarget().getAdmissionProcess();
                 if (Utils.isToChangeOutcomeState(admissionProcess)) {
-                    if (Utils.needsDocumentConfirmation(admissionProcess)) {
-                        taskLog("Should change for REGISTERED - %s - %s%n", application.getExternalId(), application.getAdmissionProcessTarget().getAdmissionProcess().getTitle().getContent());
+                    FenixFramework.atomic(() -> {
+                        if (Utils.needsDocumentConfirmation(admissionProcess)) {
+                            taskLog("Should change for REGISTERED - %s - %s%n", application.getExternalId(), application.getAdmissionProcessTarget().getAdmissionProcess().getTitle().getContent());
 //                        RegistrationService.setOutcomeState(application, RegistrationProcessState.REGISTERED);
 //                        RegistrationService.addToConfirmationQueueIfNeeded(application);
-                    } else {
-                        taskLog("Should change for CONFIRMED - %s - %s%n", application.getExternalId(), application.getAdmissionProcessTarget().getAdmissionProcess().getTitle().getContent());
+                        } else {
+                            taskLog("Should change for CONFIRMED - %s - %s%n", application.getExternalId(), application.getAdmissionProcessTarget().getAdmissionProcess().getTitle().getContent());
 //                        RegistrationService.setOutcomeState(application, RegistrationProcessState.CONFIRMED);
 //                        Signal.emit(RegistrationService.REGISTRATION_CONFIRMED, new DomainObjectEvent<>(application));
-                    }
+                        }
+                    });
                 }
             }
         }
