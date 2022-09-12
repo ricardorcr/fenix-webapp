@@ -5,6 +5,8 @@ import org.fenixedu.admissions.domain.AdmissionsSystem;
 import org.fenixedu.admissions.domain.Application;
 import org.fenixedu.admissions.ist.domain.RegistrationProcessState;
 import org.fenixedu.admissions.ist.domain.Utils;
+import org.fenixedu.bennu.core.signals.DomainObjectEvent;
+import org.fenixedu.bennu.core.signals.Signal;
 import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
 import pt.ist.fenixframework.FenixFramework;
 
@@ -30,8 +32,9 @@ public class UpdateApplicationCanEditForm extends ReadCustomTask {
                     final JsonObject outcomeFormData = dataObject.get("outcomeFormData").getAsJsonObject();
                     if (outcomeFormData.has("afterOutcome")) {
                         taskLog("Changed canEdit for: %s %s%n", application.getExternalId(), application.getAdmissionProcessTarget().getAdmissionProcess().getTitle().getContent());
-//                    outcomeState.addProperty("canEditPostOutcomeForm", false);
-//                    application.setData(dataObject.toString());
+                        outcomeState.addProperty("canEditPostOutcomeForm", false);
+                        application.setData(dataObject.toString());
+                        Signal.emit("fenixedu.admissions.application.boarding.concluded", new DomainObjectEvent<>(application));
                     }
                 }
             }
