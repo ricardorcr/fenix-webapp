@@ -49,6 +49,7 @@ public class ReportExtraCurricularCredits extends ReadCustomTask {
                     final double sum = dynamicForm.all()
                             .filter(field -> "activityHours".equals(field.getName()))
                             .map(field -> (DynamicForm.Quantity) field)
+                            .filter(field -> field.value() != null)
                             .mapToDouble(field -> field.value().doubleValue())
                             .sum();
 
