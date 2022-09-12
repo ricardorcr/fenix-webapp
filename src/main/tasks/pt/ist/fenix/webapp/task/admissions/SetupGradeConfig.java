@@ -9,7 +9,7 @@ public class SetupGradeConfig extends WriteCustomTask implements RemoteReader {
 
     @Override
     public void runTask() throws Exception {
-        final AdmissionProcess process = FenixFramework.getDomainObject("571432513831072");
+        final AdmissionProcess process = FenixFramework.getDomainObject("852907490541649");
         process.setGradeConfig(null);
         process.setHasAdmissionGranted(true);
                process.setResultsPublished(true);
