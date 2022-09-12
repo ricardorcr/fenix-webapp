@@ -23,6 +23,7 @@ public class AllocateCampusVisitSlot extends ReadCustomTask {
                                     taskLog("%s : %s%n",
                                             target.getAdmissionProcess().getTitle().getContent(),
                                             application.getAccount().getEmail());
+                                    admissionsQueue.allocateSlotFor(application);
                                 });
                     }
                 });
