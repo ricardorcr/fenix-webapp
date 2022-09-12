@@ -103,9 +103,11 @@ public class CheckAdmissionsOutcomeState extends ReadCustomTask {
                         }
                     }
                 }
-            } catch (DomainException de) {
-                taskLog("#" + de.getMessage());
-                throw de;
+            } catch (RuntimeException re) {
+                if (re.getCause() instanceof DomainException) {
+                    taskLog("#" + re.getCause().getMessage());
+                }
+                throw re;
             }
         });
     }
