@@ -20,18 +20,22 @@ public class AllocateCampusVisitSlot extends ReadCustomTask {
     }
 
     private void process(final Application application) {
-        FenixFramework.atomic(() -> {
-            final AdmissionProcessTarget target = application.getAdmissionProcessTarget();
-            final AdmissionsQueue admissionsQueue = target.getAfterOutcomeQueue();
-            if (admissionsQueue != null && Utils.registrationFor(application) != null &&
-                    UserAccountInfo.getSlotsNotFinished(application.getAccount()).stream()
-                            .noneMatch(slot -> slot.getAttendanceQueue() == admissionsQueue.queue)) {
-                taskLog("%s : %s%n",
-                        target.getAdmissionProcess().getTitle().getContent(),
-                        application.getAccount().getEmail());
-                admissionsQueue.allocateSlotFor(application);
-            }
-        });
+        try {
+            FenixFramework.atomic(() -> {
+                final AdmissionProcessTarget target = application.getAdmissionProcessTarget();
+                final AdmissionsQueue admissionsQueue = target.getAfterOutcomeQueue();
+                if (admissionsQueue != null && Utils.registrationFor(application) != null &&
+                        UserAccountInfo.getSlotsNotFinished(application.getAccount()).stream()
+                                .noneMatch(slot -> slot.getAttendanceQueue() == admissionsQueue.queue)) {
+                    taskLog("%s : %s%n",
+                            target.getAdmissionProcess().getTitle().getContent(),
+                            application.getAccount().getEmail());
+                    admissionsQueue.allocateSlotFor(application);
+                }
+            });
+        } catch (final Throwable t) {
+            taskLog("   failled slot allocation.");
+        }
     }
 
 }
