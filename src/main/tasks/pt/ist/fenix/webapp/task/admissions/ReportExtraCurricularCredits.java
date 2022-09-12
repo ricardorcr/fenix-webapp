@@ -22,6 +22,8 @@ public class ReportExtraCurricularCredits extends ReadCustomTask {
         final AdmissionProcess admissionProcess = FenixFramework.getDomainObject("852907490541629");
         admissionProcess.getAdmissionProcessTargetSet().stream()
                 .flatMap(target -> target.getApplicationSet().stream())
+                .filter(application -> application.getAccount().getIdentity() != null)
+                .filter(application -> application.getAccount().getIdentity().getUser() != null)
                 .forEach(application -> {
                     final Spreadsheet.Row row = spreadsheet.addRow();
                     row.setCell("Target", application.getAdmissionProcessTarget().getName().getContent());
