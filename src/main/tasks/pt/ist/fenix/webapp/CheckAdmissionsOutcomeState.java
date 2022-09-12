@@ -89,10 +89,6 @@ public class CheckAdmissionsOutcomeState extends ReadCustomTask {
                 if (Utils.allMandatoryActivitiesDone(application)) {
                     final AdmissionProcess admissionProcess = application.getAdmissionProcessTarget().getAdmissionProcess();
                     if (Utils.isToChangeOutcomeState(admissionProcess)) {
-                        final Registration registration = Utils.registrationFor(application);
-                        final RegistrationDataByExecutionYear registrationDataByYear =
-                                RegistrationDataByExecutionYear.getOrCreateRegistrationDataByYear(registration, ExecutionYear.readCurrentExecutionYear());
-                        registrationDataByYear.setEventTemplate(registration.getEventTemplate());
                         if (Utils.needsDocumentConfirmation(admissionProcess)) {
                             taskLog("Should change for REGISTERED - %s - %s%n", application.getExternalId(), application.getAdmissionProcessTarget().getAdmissionProcess().getTitle().getContent());
                             RegistrationService.setOutcomeState(application, RegistrationProcessState.REGISTERED);
