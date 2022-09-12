@@ -24,25 +24,25 @@ public class CheckAdmissionsOutcomeState extends ReadCustomTask {
 
     @Override
     public void runTask() throws Exception {
-        final Application application = FenixFramework.getDomainObject("852890310683226"); //571415333968005
-        final boolean mandatoryActivitiesDone = allMandatoryActivitiesDone(application);
-        taskLog("All activities done: %s%n", mandatoryActivitiesDone);
-        checkNeededChangeOutcomeState(application);
+//        final Application application = FenixFramework.getDomainObject("852890310683226"); //571415333968005
+//        final boolean mandatoryActivitiesDone = allMandatoryActivitiesDone(application);
+//        taskLog("All activities done: %s%n", mandatoryActivitiesDone);
+//        checkNeededChangeOutcomeState(application);
 
-//        AdmissionsSystem.getInstance().getAdmissionProcessSet().stream()
+        AdmissionsSystem.getInstance().getAdmissionProcessSet().stream()
 //                .filter(ap -> !Utils.isDges(ap))
-//                .flatMap(ap -> ap.getAdmissionProcessTargetSet().stream())
-//                .filter(target -> {
-//                    if (target.getOutcomeConfigJson() != null) {
-//                        final ExecutionYear executionYear = Utils.yearFor(target);
-//                        return executionYear != null && executionYear.getName().contains("2023");
-//                    } else {
-//                        return false;
-//                    }
-//                })
-//                .flatMap(target -> target.getApplicationSet().stream())
-//                .filter(app -> Utils.registrationFor(app) != null)
-//                .forEach(this::checkNeededChangeOutcomeState);
+                .flatMap(ap -> ap.getAdmissionProcessTargetSet().stream())
+                .filter(target -> {
+                    if (target.getOutcomeConfigJson() != null) {
+                        final ExecutionYear executionYear = Utils.yearFor(target);
+                        return executionYear != null && executionYear.getName().contains("2023");
+                    } else {
+                        return false;
+                    }
+                })
+                .flatMap(target -> target.getApplicationSet().stream())
+                .filter(app -> Utils.registrationFor(app) != null)
+                .forEach(this::checkNeededChangeOutcomeState);
     }
 
     public boolean allMandatoryActivitiesDone(final Application application) {
@@ -81,7 +81,7 @@ public class CheckAdmissionsOutcomeState extends ReadCustomTask {
     }
 
     private void checkNeededChangeOutcomeState(final Application application) {
-        //FenixFramework.atomic(() -> {
+        FenixFramework.atomic(() -> {
             final Enum outcomeState = Utils.outcomeStateFor(application);
             if (outcomeState == RegistrationProcessState.BOARDING) {
                 if (Utils.allMandatoryActivitiesDone(application)) {
@@ -99,7 +99,7 @@ public class CheckAdmissionsOutcomeState extends ReadCustomTask {
                     }
                 }
             }
-        //});
+        });
     }
 
 }
