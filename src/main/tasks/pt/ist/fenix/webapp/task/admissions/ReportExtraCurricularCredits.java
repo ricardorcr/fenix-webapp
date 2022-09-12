@@ -30,6 +30,8 @@ public class ReportExtraCurricularCredits extends ReadCustomTask {
                 .flatMap(target -> target.getApplicationSet().stream())
                 .filter(application -> application.getAccount().getIdentity() != null)
                 .filter(application -> application.getAccount().getIdentity().getUser() != null)
+                .filter(application -> application.getAccount().getIdentity().getUser().getPerson() != null)
+                .filter(application -> application.getAccount().getIdentity().getUser().getPerson().getStudent() != null)
                 .forEach(application -> {
                     final Spreadsheet.Row row = spreadsheet.addRow();
                     row.setCell("Target", application.getAdmissionProcessTarget().getName().getContent());
