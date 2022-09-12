@@ -25,12 +25,13 @@ public class CheckTuitionConfig extends ReadCustomTask {
                     final JsonObject confi = target.getOutcomeConfigJson();
                     final JsonElement eventTemplate =  confi.get("eventTemplate");
                     if (eventTemplate != null && !eventTemplate.isJsonNull()) {
-                        final Degree degree = FenixFramework.getDomainObject(confi.get("degree").getAsString());
+                        final JsonElement degreeE = confi.get("degree");
+                        final Degree degree = degreeE == null || degreeE.isJsonNull() ? null : FenixFramework.getDomainObject(degreeE.getAsString());
                         final EventTemplate eventTemplate1 = FenixFramework.getDomainObject(eventTemplate.getAsString());
 
                         final Spreadsheet.Row row = spreadsheet.addRow();
                         row.setCell("Concurso", target.getAdmissionProcess().getTitle().getContent());
-                        row.setCell("Degree", degree.getSigla());
+                        row.setCell("Degree", degree == null ? "" : degree.getSigla());
                         row.setCell("Plano", eventTemplate1.getCode());
 
                     }
