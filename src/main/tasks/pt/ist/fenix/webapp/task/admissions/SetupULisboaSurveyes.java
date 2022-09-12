@@ -11,6 +11,7 @@ import org.fenixedu.admissions.ist.domain.Utils;
 import org.fenixedu.admissions.util.RemoteReader;
 import org.fenixedu.bennu.core.json.JsonUtils;
 import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
+import org.fenixedu.messaging.core.domain.Message;
 import pt.ist.fenixframework.FenixFramework;
 
 public class SetupULisboaSurveyes extends ReadCustomTask implements RemoteReader {
@@ -48,6 +49,13 @@ public class SetupULisboaSurveyes extends ReadCustomTask implements RemoteReader
             FenixFramework.atomic(() -> {
                 if (Survey.survey(application, survey.get("surveyId").getAsString()) == null) {
                     Survey.addSurvey(application, survey);
+                    Message.fromSystem().singleTos(application.getAccount().getIdentity().getAccountSet().stream()
+                            .map(account -> account.getEmail())
+                            .filter(e -> !e.startsWith("deges")))
+                            .subject("Inquérito ULisboa")
+                            .textBody("Para completar a sua matrícula deverá aceder a https://fenix.tecnico.ulisboa.pt/fenixedu-connect/ " +
+                                    "e responder ao inquérito da Universidade de Lisboa")
+                            .send();
                 }
             });
         } catch (final Throwable t) {
@@ -68,7 +76,7 @@ public class SetupULisboaSurveyes extends ReadCustomTask implements RemoteReader
             return false;
         } else {
             config.add("surveyConcludeBoarding", survey);
-            //admissionProcessTarget.setOutcomeConfig(config.toString());
+            admissionProcessTarget.setOutcomeConfig(config.toString());
             return true;
         }
     }
