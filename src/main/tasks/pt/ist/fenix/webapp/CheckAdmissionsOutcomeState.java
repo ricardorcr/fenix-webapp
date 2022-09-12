@@ -25,7 +25,7 @@ public class CheckAdmissionsOutcomeState extends CustomTask {
 //        taskLog("All activities done: %s%n", mandatoryActivitiesDone);
 
         AdmissionsSystem.getInstance().getAdmissionProcessSet().stream()
-                .filter(ap -> !Utils.isDges(ap))
+                //.filter(ap -> !Utils.isDges(ap))
                 .flatMap(ap -> ap.getAdmissionProcessTargetSet().stream())
                 .filter(target -> {
                     if (target.getOutcomeConfigJson() != null) {
@@ -84,8 +84,8 @@ public class CheckAdmissionsOutcomeState extends CustomTask {
                 if (Utils.isToChangeOutcomeState(admissionProcess)) {
                     if (Utils.needsDocumentConfirmation(admissionProcess)) {
                         taskLog("Should change for REGISTERED - %s - %s%n", application.getExternalId(), application.getAdmissionProcessTarget().getAdmissionProcess().getTitle().getContent());
-                        RegistrationService.setOutcomeState(application, RegistrationProcessState.REGISTERED);
-                        RegistrationService.addToConfirmationQueueIfNeeded(application);                                                                               
+                        //RegistrationService.setOutcomeState(application, RegistrationProcessState.REGISTERED);
+                        //RegistrationService.addToConfirmationQueueIfNeeded(application);                                                                               
                     } else {
                         taskLog("Should change for CONFIRMED - %s%n", application.getExternalId(), application.getAdmissionProcessTarget().getAdmissionProcess().getTitle().getContent());
                     }
