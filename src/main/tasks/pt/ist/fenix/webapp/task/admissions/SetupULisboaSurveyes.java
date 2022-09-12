@@ -15,7 +15,7 @@ import org.fenixedu.bennu.scheduler.custom.WriteCustomTask;
 import org.fenixedu.messaging.core.domain.Message;
 import pt.ist.fenixframework.FenixFramework;
 
-public class SetupULisboaSurveyes extends WriteCustomTask implements RemoteReader {
+public class SetupULisboaSurveyes extends ReadCustomTask implements RemoteReader {
 
     final JsonObject surveyCycle1 = object("cycle1.json");
     final JsonObject surveyCycle2 = object("cycle2.json");
@@ -31,7 +31,6 @@ public class SetupULisboaSurveyes extends WriteCustomTask implements RemoteReade
                 .filter(application -> application.getLockInstant() != null)
                 .filter(application -> Utils.registrationFor(application) != null)
                 .forEach(application -> {
-                    /*
                     final AdmissionProcessTarget admissionProcessTarget = application.getAdmissionProcessTarget();
                     final JsonObject config = admissionProcessTarget.getOutcomeConfigJson();
                     final CycleType cycleType = cycleTypeFor(config);
@@ -42,8 +41,6 @@ public class SetupULisboaSurveyes extends WriteCustomTask implements RemoteReade
                         taskLog("app = %s%n", application.getAccount().getEmail());
                         add(application, survey);
                     }
-                    
-                     */
                 });
         ;
     }
