@@ -32,7 +32,7 @@ public class CheckTuitionConfig extends ReadCustomTask {
                         final Spreadsheet.Row row = spreadsheet.addRow();
                         row.setCell("Concurso", target.getAdmissionProcess().getTitle().getContent());
                         row.setCell("Degree", degree == null ? "" : degree.getSigla());
-                        row.setCell("Plano", eventTemplate1.getCode());
+                        row.setCell("Plano", eventTemplate1 == null ? "" : eventTemplate1.getCode());
 
                     }
                 });
