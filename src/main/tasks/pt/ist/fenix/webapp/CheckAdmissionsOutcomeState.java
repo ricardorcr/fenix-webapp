@@ -3,6 +3,7 @@ package pt.ist.fenix.webapp;
 import com.google.gson.JsonObject;
 import org.fenixedu.academic.domain.Person;
 import org.fenixedu.academic.domain.ExecutionYear;
+import org.fenixedu.academic.domain.exceptions.DomainException;
 import org.fenixedu.academic.domain.student.Registration;
 import org.fenixedu.academic.domain.student.RegistrationDataByExecutionYear;
 import org.fenixedu.admissions.domain.AdmissionProcess;
@@ -84,22 +85,27 @@ public class CheckAdmissionsOutcomeState extends ReadCustomTask {
 
     private void checkNeededChangeOutcomeState(final Application application) {
         FenixFramework.atomic(() -> {
-            final Enum outcomeState = Utils.outcomeStateFor(application);
-            if (outcomeState == RegistrationProcessState.BOARDING) {
-                if (Utils.allMandatoryActivitiesDone(application)) {
-                    final AdmissionProcess admissionProcess = application.getAdmissionProcessTarget().getAdmissionProcess();
-                    if (Utils.isToChangeOutcomeState(admissionProcess)) {
-                        if (Utils.needsDocumentConfirmation(admissionProcess)) {
-                            taskLog("Should change for REGISTERED - %s - %s%n", application.getExternalId(), application.getAdmissionProcessTarget().getAdmissionProcess().getTitle().getContent());
-                            RegistrationService.setOutcomeState(application, RegistrationProcessState.REGISTERED);
-                            RegistrationService.addToConfirmationQueueIfNeeded(application);
-                        } else {
-                            taskLog("Should change for CONFIRMED - %s - %s%n", application.getExternalId(), application.getAdmissionProcessTarget().getAdmissionProcess().getTitle().getContent());
-                            RegistrationService.setOutcomeState(application, RegistrationProcessState.CONFIRMED);
-                            Signal.emit(RegistrationService.REGISTRATION_CONFIRMED, new DomainObjectEvent<>(application));
+            try {
+                final Enum outcomeState = Utils.outcomeStateFor(application);
+                if (outcomeState == RegistrationProcessState.BOARDING) {
+                    if (Utils.allMandatoryActivitiesDone(application)) {
+                        final AdmissionProcess admissionProcess = application.getAdmissionProcessTarget().getAdmissionProcess();
+                        if (Utils.isToChangeOutcomeState(admissionProcess)) {
+                            if (Utils.needsDocumentConfirmation(admissionProcess)) {
+                                taskLog("Should change for REGISTERED - %s - %s%n", application.getExternalId(), application.getAdmissionProcessTarget().getAdmissionProcess().getTitle().getContent());
+                                RegistrationService.setOutcomeState(application, RegistrationProcessState.REGISTERED);
+                                RegistrationService.addToConfirmationQueueIfNeeded(application);
+                            } else {
+                                taskLog("Should change for CONFIRMED - %s - %s%n", application.getExternalId(), application.getAdmissionProcessTarget().getAdmissionProcess().getTitle().getContent());
+                                RegistrationService.setOutcomeState(application, RegistrationProcessState.CONFIRMED);
+                                Signal.emit(RegistrationService.REGISTRATION_CONFIRMED, new DomainObjectEvent<>(application));
+                            }
                         }
                     }
                 }
+            } catch (DomainException de) {
+                taskLog("#" + de.getMessage());
+                throw de;
             }
         });
     }
