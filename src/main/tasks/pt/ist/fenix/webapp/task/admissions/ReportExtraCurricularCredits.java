@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.fenixedu.academic.domain.CompetenceCourse;
 import org.fenixedu.academic.domain.Enrolment;
+import org.fenixedu.academic.domain.ExecutionYear;
 import org.fenixedu.admissions.domain.AdmissionProcess;
 import org.fenixedu.admissions.domain.Application;
 import org.fenixedu.admissions.util.DynamicForm;
@@ -20,6 +21,8 @@ public class ReportExtraCurricularCredits extends ReadCustomTask {
 
     @Override
     public void runTask() throws Exception {
+        final ExecutionYear executionYear = ExecutionYear.readCurrentExecutionYear().getPreviousExecutionYear();
+
         final CompetenceCourse cc1 = FenixFramework.getDomainObject("846654018158907");
         final CompetenceCourse cc2 = FenixFramework.getDomainObject("846654018158908");
 
@@ -69,8 +72,10 @@ public class ReportExtraCurricularCredits extends ReadCustomTask {
                     row.setCell("AEI", e1 == null ? "" : e1.isEnroled() ? "Inscrito" : e1.getGradeValue());
 
                     final Enrolment e2 = enrolment(application, cc2);
-                    row.setCell("AEI", e2 == null ? "" : e2.isEnroled() ? "Inscrito" : e2.getGradeValue());
+                    row.setCell("AE2", e2 == null ? "" : e2.isEnroled() ? "Inscrito" : e2.getGradeValue());
 
+                    row.setCell("AEI Semester", e1 == null ? "" : e1.getExecutionPeriod().getQualifiedName());
+                    row.setCell("AE2 Semester", e2 == null ? "" : e2.getExecutionPeriod().getQualifiedName());
                 });
 
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
