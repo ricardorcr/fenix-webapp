@@ -26,10 +26,13 @@ public class UpdateApplicationCanEditForm extends ReadCustomTask {
             final JsonObject dataObject = application.getDataObject();
             final JsonObject outcomeState = dataObject.get("outcomeState").getAsJsonObject();
             if (outcomeState.get("canEditPostOutcomeForm").getAsBoolean()) {
-                if (dataObject.has("afterOutcome")) {
-                    taskLog("Changed canEdit for: %s %s%n", application.getExternalId(), application.getAdmissionProcessTarget().getAdmissionProcess().getTitle().getContent());
+                if (dataObject.has("outcomeFormData")) {
+                    final JsonObject outcomeFormData = dataObject.get("outcomeFormData").getAsJsonObject();
+                    if (outcomeFormData.has("afterOutcome")) {
+                        taskLog("Changed canEdit for: %s %s%n", application.getExternalId(), application.getAdmissionProcessTarget().getAdmissionProcess().getTitle().getContent());
 //                    outcomeState.addProperty("canEditPostOutcomeForm", false);
 //                    application.setData(dataObject.toString());
+                    }
                 }
             }
         });
