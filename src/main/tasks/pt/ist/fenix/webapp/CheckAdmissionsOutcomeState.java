@@ -3,6 +3,8 @@ package pt.ist.fenix.webapp;
 import com.google.gson.JsonObject;
 import org.fenixedu.academic.domain.Person;
 import org.fenixedu.academic.domain.ExecutionYear;
+import org.fenixedu.academic.domain.student.Registration;
+import org.fenixedu.academic.domain.student.RegistrationDataByExecutionYear;
 import org.fenixedu.admissions.domain.AdmissionProcess;
 import org.fenixedu.admissions.domain.AdmissionsSystem;
 import org.fenixedu.admissions.domain.Application;
@@ -87,15 +89,19 @@ public class CheckAdmissionsOutcomeState extends ReadCustomTask {
                 if (Utils.allMandatoryActivitiesDone(application)) {
                     final AdmissionProcess admissionProcess = application.getAdmissionProcessTarget().getAdmissionProcess();
                     if (Utils.isToChangeOutcomeState(admissionProcess)) {
-                            if (Utils.needsDocumentConfirmation(admissionProcess)) {
-                                taskLog("Should change for REGISTERED - %s - %s%n", application.getExternalId(), application.getAdmissionProcessTarget().getAdmissionProcess().getTitle().getContent());
-    //                        RegistrationService.setOutcomeState(application, RegistrationProcessState.REGISTERED);
-    //                        RegistrationService.addToConfirmationQueueIfNeeded(application);
-                            } else {
-                                taskLog("Should change for CONFIRMED - %s - %s%n", application.getExternalId(), application.getAdmissionProcessTarget().getAdmissionProcess().getTitle().getContent());
-    //                        RegistrationService.setOutcomeState(application, RegistrationProcessState.CONFIRMED);
-    //                        Signal.emit(RegistrationService.REGISTRATION_CONFIRMED, new DomainObjectEvent<>(application));
-                            }
+                        final Registration registration = Utils.registrationFor(application);
+                        final RegistrationDataByExecutionYear registrationDataByYear =
+                                RegistrationDataByExecutionYear.getOrCreateRegistrationDataByYear(registration, ExecutionYear.readCurrentExecutionYear());
+                        registrationDataByYear.setEventTemplate(registration.getEventTemplate());
+                        if (Utils.needsDocumentConfirmation(admissionProcess)) {
+                            taskLog("Should change for REGISTERED - %s - %s%n", application.getExternalId(), application.getAdmissionProcessTarget().getAdmissionProcess().getTitle().getContent());
+                            RegistrationService.setOutcomeState(application, RegistrationProcessState.REGISTERED);
+                            RegistrationService.addToConfirmationQueueIfNeeded(application);
+                        } else {
+                            taskLog("Should change for CONFIRMED - %s - %s%n", application.getExternalId(), application.getAdmissionProcessTarget().getAdmissionProcess().getTitle().getContent());
+                            RegistrationService.setOutcomeState(application, RegistrationProcessState.CONFIRMED);
+                            Signal.emit(RegistrationService.REGISTRATION_CONFIRMED, new DomainObjectEvent<>(application));
+                        }
                     }
                 }
             }
