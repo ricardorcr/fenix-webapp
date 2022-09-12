@@ -5,8 +5,9 @@ import org.fenixedu.admissions.domain.AdmissionsSystem;
 import org.fenixedu.admissions.ist.domain.UserAccountInfo;
 import org.fenixedu.admissions.ist.domain.Utils;
 import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
+import org.fenixedu.bennu.scheduler.custom.WriteCustomTask;
 
-public class AllocateCampusVisitSlot extends ReadCustomTask {
+public class AllocateCampusVisitSlot extends WriteCustomTask {
 
     @Override
     public void runTask() throws Exception {
