@@ -28,6 +28,7 @@ compile:
     - mv target/*.war $CI_PROJECT_DIR/$WAR_NAME
   artifacts:
     paths:  [ $CI_PROJECT_DIR/*.war ]
+    expire_in: 1 week
 
 upload:
   stage: Release
