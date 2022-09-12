@@ -10,6 +10,7 @@ public class DebugCiistAdmin extends ReadCustomTask {
         final CiistAdminUserAPI api = new CiistAdminUserAPI();
         final JsonObject json = api.userInfo("ist1105022");
         taskLog("json= %s%n", json);
+        json.getAsJsonObject("istPersonFenixRoles");
         //return api.canSetEmail();
 
     }
