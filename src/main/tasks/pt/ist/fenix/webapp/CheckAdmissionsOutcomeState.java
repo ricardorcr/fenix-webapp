@@ -81,7 +81,7 @@ public class CheckAdmissionsOutcomeState extends ReadCustomTask {
     }
 
     private void checkNeededChangeOutcomeState(final Application application) {
-        FenixFramework.atomic(() -> {
+        //FenixFramework.atomic(() -> {
             final Enum outcomeState = Utils.outcomeStateFor(application);
             if (outcomeState == RegistrationProcessState.BOARDING) {
                 if (Utils.allMandatoryActivitiesDone(application)) {
@@ -99,7 +99,7 @@ public class CheckAdmissionsOutcomeState extends ReadCustomTask {
                     }
                 }
             }
-        });
+        //});
     }
 
 }
