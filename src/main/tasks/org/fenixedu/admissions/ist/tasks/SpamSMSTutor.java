@@ -27,6 +27,7 @@ public class SpamSMSTutor extends CustomTask {
     int smsCount = 0;
     int mailCount = 0;
     int tutorCount = 0;
+    int notutorCount = 0;
 
     @Override
     public void runTask() throws Exception {
@@ -52,7 +53,9 @@ public class SpamSMSTutor extends CustomTask {
                             taskLog("Multipe Tutors for: %s%n", registration.getPerson().getUsername());
                         }
 
-                        if (tutorship != null) {
+                        if (tutorship == null) {
+                            notutorCount++;
+                        } else {
                             tutorCount++;
                             final String name = StringFormatter.prettyPrint(registration.getPerson().getGivenNames());
                             final Gender gender = registration.getPerson().getGender();
