@@ -96,6 +96,7 @@ public class SpamSMSTutor extends CustomTask {
 
 //        Files.write(file.toPath(), lines.stream().collect(Collectors.joining("\n")).getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 
+        taskLog("notutorCount = %s%n", notutorCount);
         taskLog("tutorCount = %s%n", tutorCount);
         taskLog("smsCount = %s%n", smsCount);
         taskLog("mailCount = %s%n", mailCount);
