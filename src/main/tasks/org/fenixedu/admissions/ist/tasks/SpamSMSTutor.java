@@ -24,6 +24,7 @@ public class SpamSMSTutor extends CustomTask {
 
     private static final String SPAM_FILENAME = "/afs/ist.utl.pt/ciist/fenix/fenix036/tuitionSpam.txt";
 
+    int appCount = 0;
     int smsCount = 0;
     int mailCount = 0;
     int tutorCount = 0;
@@ -45,6 +46,7 @@ public class SpamSMSTutor extends CustomTask {
                 .flatMap(target -> target.getApplicationSet().stream())
                 .filter(application -> !lines.contains(application.getExternalId()))
                 .forEach(application -> {
+                    appCount++;
                     final Registration registration = Utils.registrationFor(application);
                     if (registration != null && registration.getStartExecutionYear().isCurrent() && registration.getDegreeType().isFirstCycle()) {
                         final Tutorship tutorship = registration.getLastStudentCurricularPlan().getTutorshipsSet()
@@ -96,6 +98,7 @@ public class SpamSMSTutor extends CustomTask {
 
 //        Files.write(file.toPath(), lines.stream().collect(Collectors.joining("\n")).getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 
+        taskLog("appCount = %s%n", appCount);
         taskLog("notutorCount = %s%n", notutorCount);
         taskLog("tutorCount = %s%n", tutorCount);
         taskLog("smsCount = %s%n", smsCount);
