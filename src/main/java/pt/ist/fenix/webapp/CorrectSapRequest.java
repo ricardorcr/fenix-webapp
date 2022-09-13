@@ -25,5 +25,4 @@ public class CorrectSapRequest extends CustomTask {
         paymentDocument.addProperty("paymentDate", date);
         sr.setRequest(request.toString());
     }
-
 }

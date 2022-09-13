@@ -14,7 +14,6 @@ import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
 import org.fenixedu.commons.spreadsheet.Spreadsheet;
 import org.fenixedu.commons.spreadsheet.Spreadsheet.Row;
 
-
 public class ReportStudents extends ReadCustomTask {
     @Override
     public void runTask() throws Exception {

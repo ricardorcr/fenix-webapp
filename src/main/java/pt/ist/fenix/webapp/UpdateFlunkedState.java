@@ -29,7 +29,6 @@ public class UpdateFlunkedState extends CustomTask {
     @Override
     public void runTask() throws Exception {
         executionYear = ExecutionYear.readExecutionYearByName("2022/2023");
-
         User user = User.findByUsername("ist24616");
         Authenticate.mock(user, "Script UpdateFlunkedState");
 

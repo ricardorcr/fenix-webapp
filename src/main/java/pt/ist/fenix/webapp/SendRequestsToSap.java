@@ -16,7 +16,6 @@ public class SendRequestsToSap extends SapCustomTask {
     @Override
     protected void runTask(ErrorLogConsumer errorLogConsumer, EventLogger elogger) {
         List<String> documentNumbers = null;
-
 //        try {
 //			documentNumbers = Files.readAllLines(
 //					new File("/afs/ist.utl.pt/ciist/fenix/fenix015/ist/reenvio_documentos_lote2_15_11_2020_NAs.txt").toPath());
