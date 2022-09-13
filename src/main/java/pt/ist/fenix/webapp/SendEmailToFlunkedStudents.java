@@ -14,9 +14,10 @@ import java.util.Set;
 
 public class SendEmailToFlunkedStudents extends CustomTask {
 
-    private static final String[] FLUNKED_STUDENTS = new String[] { "37090","52997","63108","65272","65504","65883","67253","68130","69389","69613","70939","73358","73708","73834","74123",
-    		"74139","74243","76163","76345","76707","77076","78001","78067","78127","78343","78411","78694","78753","78991","79666","80900","80987","81211","81312","81640","81997","82013",
-    		"82244","82541","83983","84770","84777","84974","85115","85338","86357" };
+    private static final String[] FLUNKED_STUDENTS = new String[] { "21975","44598","52327","53311","56072","56586","58727","60109","63990","64663","64722","64728",
+            "65311","65551","65951","65989","66438","66718","67581","68148","68205","69464","70010","70044","71051","72655","75424","76315","76536","77075","77918",
+            "78211","78343","78411","79351","79516","79733","79740","81211","81640","81863","81884","82198","82265","82318","82425","82520","84045","84667","85215",
+            "86371","86380","86444","86644","86874","86920","86930","86931","87552","88020","88215","88225","88643","90952","90953" };
 
     @Override
     public void runTask() throws Exception {
@@ -72,13 +73,11 @@ public class SendEmailToFlunkedStudents extends CustomTask {
         //Mail quando são postos como prescritos
         body.append("Caro Aluno do TÉCNICO,\n");
         body.append("\n");
-        body.append(
-        		"Após a aplicação da Lei nº 38/2020, de 18 de agosto, acerca de “Medidas excecionais e temporárias para salvaguarda dos direitos dos trabalhadores e estudantes do ensino superior público”, analisámos o seu currículo académico, e comprovou-se estar numa das situações previstas para prescrição no Regulamento de Prescrições do IST (disponível em http://guiaacademico.tecnico.ulisboa.pt/1o-e-2o-ciclos-e-ciclos-integrados/regulamentos/regulamento-de-prescricoes/).\n");
-        body.append("\n");
-        body.append("A lista provisória de alunos a prescrever encontra-se afixada, junto dos Serviços Académicos, desde o dia 24 de agosto de 2020.\n");
-        body.append("Na lista definitiva, a publicar no dia 14 de setembro, será atualizada a situação académica do aluno tendo em conta as notas entretanto lançadas. Além disso, de acordo com o Regulamento de prescrições do IST, no ponto 5 prevê-se: \"Atento ainda o princípio da proporcionalidade, consagrado constitucional e legalmente, poderá ainda a aplicação de regras de prescrição ser ajustada a casos em que, invocados e inequivocamente provados pelo aluno, este, por motivos de força maior, se viu impossibilitados de frequentar as actividades lectivas e assim alcançar um nível mínimo de aproveitamento escolar. Tal ajuste será efectuado mediante requerimento dirigido ao presidente do IST e entregue no Núcleo de Graduação — Alameda, ou Núcleo Académico do Taguspark.\", sendo o prazo estabelecido para o efeito, de 31 de agosto a 4 de setembro de 2020.\n\n");
-        body.append("No caso de alteração da situação de prescrição, quer por via de atualização de notas quer no caso de deferimento ao requerimento apresentado, a inscrição em unidades curriculares no 1º semestre do ano letivo 2020/2021 poderá ser efetuada entre 14 e 18 de setembro de 2020.\n\n");
-        body.append("Os alunos sujeitos a prescrição não poderão efetuar a sua inscrição em unidades curriculares no ano letivo 2020/2021.\n");
+        body.append("Após análise do seu currículo académico, verificou-se estar numa das situações previstas para prescrição no Regulamento de Prescrições do IST (disponível em https://tecnico.ulisboa.pt/pt/ensino/estudar-no-tecnico/informacoes-academicas/avaliacao/).\n");
+        body.append("A lista provisória de alunos a prescrever encontra-se afixada, junto dos Serviços Académicos, desde o dia 17 de agosto de 2022.\n");
+        body.append("Na lista definitiva, a publicar no dia 15 de setembro, será atualizada a situação académica do aluno tendo em conta as notas entretanto lançadas. Além disso, de acordo com o Regulamento de prescrições do IST, no ponto 5 prevê-se: \"Atento ainda o princípio da proporcionalidade, consagrado constitucional e legalmente, poderá ainda a aplicação de regras de prescrição ser ajustada a casos em que, invocados e inequivocamente provados pelo aluno, este, por motivos de força maior, se viu impossibilitados de frequentar as atividades letivas e assim alcançar um nível mínimo de aproveitamento escolar. Tal ajuste será efetuado mediante requerimento dirigido ao presidente do IST e entregue na Área de Graduação — Alameda, ou Área de Gestão de Recursos Humanos e Académicos do Taguspark.\", sendo o prazo estabelecido para o efeito, de 17 a 26 de agosto de 2022.\n");
+        body.append("No caso de alteração da situação de prescrição, quer por via de atualização de notas quer no caso de deferimento ao requerimento apresentado, a inscrição em unidades curriculares no 1º semestre do ano letivo 2022/2023 poderá ser efetuada de 15 a 23 de setembro de 2022.\n");
+        body.append("Os alunos sujeitos a prescrição não poderão efetuar a sua inscrição em unidades curriculares no ano letivo 2022/2023.\n");
         body.append("\n");        
         body.append("\n");
         body.append("Com os melhores cumprimentos,\n");
@@ -90,6 +89,6 @@ public class SendEmailToFlunkedStudents extends CustomTask {
     }
 
     private String getSubject() {
-        return "Prescrição para o ano lectivo 2020/2021 – aplicação das “Medidas excecionais e temporárias para salvaguarda dos direitos dos trabalhadores e estudantes do ensino superior público” da Lei nº38/2020 de 18 de agosto";
+        return "Prescrição para o ano lectivo 2022/2023";
     }
 }

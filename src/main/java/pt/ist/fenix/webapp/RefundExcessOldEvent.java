@@ -14,7 +14,7 @@ public class RefundExcessOldEvent extends CustomTask {
         try {
             Event eventToRefund = FenixFramework.getDomainObject("281500746544560");
             Event.canBeRefunded = (event) -> true;
-            eventToRefund.refundExcess(User.findByUsername("ist24616"));
+//            eventToRefund.refundExcess(User.findByUsername("ist24616"));
         } finally {
             Event.canBeRefunded = (event) -> {
                 final DebtInterestCalculator calculator = event.getDebtInterestCalculator(new DateTime());

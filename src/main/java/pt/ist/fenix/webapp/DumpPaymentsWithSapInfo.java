@@ -15,6 +15,7 @@ import org.fenixedu.academic.util.sibs.incomming.SibsIncommingPaymentFileDetailL
 import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
 import org.fenixedu.commons.spreadsheet.Spreadsheet;
 import org.fenixedu.commons.spreadsheet.Spreadsheet.Row;
+import org.joda.time.LocalDate;
 import org.joda.time.YearMonthDay;
 
 import com.google.gson.JsonElement;
@@ -24,6 +25,7 @@ import pt.ist.fenixedu.domain.SapRequest;
 import pt.ist.fenixedu.domain.SapRequestType;
 import pt.ist.fenixedu.domain.SapRoot;
 import pt.ist.fenixedu.giaf.invoices.Utils;
+import pt.ist.payments.domain.SibsPayment;
 
 public class DumpPaymentsWithSapInfo extends ReadCustomTask {
 
@@ -107,10 +109,13 @@ public class DumpPaymentsWithSapInfo extends ReadCustomTask {
         row.setCell("paymentMechanism", paymentMechanism);
         final JsonElement paymentMethodReference = paymentDocument.get("paymentMethodReference");
         row.setCell("paymentMethodReference", paymentMethodReference.isJsonNull() ? "" : paymentMethodReference.getAsString());
-        YearMonthDay sibsFileDate = getSIBSFileDate(request, paymentDocument);
+        LocalDate sibsFileDate = getSIBSFileDate(request, paymentDocument);
         final String sibsDate  = sibsFileDate != null ? sibsFileDate.toString("yyyy-MM-dd") : "";
         row.setCell("sibsFileDate", sibsDate);
-//        row.setCell("settlementType", paymentDocument.get("settlementType").getAsString());
+
+        row.setCell("newSibsMethod",
+                sibsFileDate != null ? request.getPayment().getTransactionDetail() instanceof SibsTransactionDetail ? "false" : "true"
+                : "");
 
         final JsonObject clientData = json.get("clientData").getAsJsonObject();
         row.setCell("accountId", clientData.get("accountId").getAsString());
@@ -167,15 +172,25 @@ public class DumpPaymentsWithSapInfo extends ReadCustomTask {
         return person == null ? " " : person.getUsername();
     }
 
-    private YearMonthDay getSIBSFileDate(final SapRequest request, final JsonObject paymentDocument) {
+    private LocalDate getSIBSFileDate(final SapRequest request, final JsonObject paymentDocument) {
         try {
             if ("SI".equals(paymentDocument.get("paymentMechanism").getAsString())
                     && "N".equals(paymentDocument.get("paymentStatus").getAsString())) {
-                if (request.getPayment() != null && request.getPayment().getTransactionDetail() instanceof SibsTransactionDetail) {
-                    SibsTransactionDetail sibsTransactionDetail = (SibsTransactionDetail) request.getPayment().getTransactionDetail();
-                    SibsIncommingPaymentFileDetailLine sibsLine = sibsTransactionDetail.getSibsLine();
-                    if (sibsLine != null) {
-                        return sibsLine.getHeader().getWhenProcessedBySibs();
+                if (request.getPayment() != null) {
+                    if (request.getPayment().getTransactionDetail() instanceof SibsTransactionDetail) {
+                        SibsTransactionDetail sibsTransactionDetail = (SibsTransactionDetail) request.getPayment().getTransactionDetail();
+                        SibsIncommingPaymentFileDetailLine sibsLine = sibsTransactionDetail.getSibsLine();
+                        if (sibsLine != null) {
+                            return sibsLine.getHeader().getWhenProcessedBySibs().toLocalDate();
+                        }
+                    } else {
+                        final SibsPayment sibsPayment = request.getPayment().getSibsPayment();
+                        if (sibsPayment != null) {
+                            final LocalDate settlementDate = sibsPayment.getSettlementDate();
+                            if (settlementDate != null) {
+                                return settlementDate;
+                            }
+                        }
                     }
                 }
                 return null;

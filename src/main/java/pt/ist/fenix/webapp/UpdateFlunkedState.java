@@ -19,13 +19,16 @@ import org.joda.time.LocalDate;
 
 public class UpdateFlunkedState extends CustomTask {
 
-    private static final String[] FLUNKED_STUDENTS = new String[]{ "37090","52997","63108","65272","65504","65883","67253","68130","69389","69613","70939","73358","73708","73834","74123",
-    		"74139","74243","76163","76345","76707","77076","78001","78067","78127","78343","78411","78694","78753","78991","79666","80900","80987","81211","81312","81640","81997","82013",
-    		"82244","82541","83983","84770","84777","84974","85115","85338","86357" };
+    private static final String[] FLUNKED_STUDENTS = new String[]{ "21975","44598","52327","53311","56072","56586","58727","60109","63990","64663","64722","64728",
+            "65311","65551","65951","65989","66438","66718","67581","68148","68205","69464","70010","70044","71051","72655","75424","76315","76536","77075","77918",
+            "78211","78343","78411","79351","79516","79733","79740","81211","81640","81863","81884","82198","82265","82318","82425","82520","84045","84667","85215",
+            "86371","86380","86444","86644","86874","86920","86930","86931","87552","88020","88215","88225","88643","90952","90953" };
     static int count = 0;
+    private static ExecutionYear executionYear = null;
 
     @Override
     public void runTask() throws Exception {
+        executionYear = ExecutionYear.readExecutionYearByName("2022/2023");
         User user = User.findByUsername("ist24616");
         Authenticate.mock(user, "Script UpdateFlunkedState");
 
@@ -156,9 +159,6 @@ public class UpdateFlunkedState extends CustomTask {
         taskLog("Change to Flunk State Registration -> " + registration.getDegreeCurricularPlanName());
 
         if (registration.getActiveStateType() != RegistrationStateType.FLUNKED) {
-
-            final ExecutionYear executionYear = ExecutionYear.readCurrentExecutionYear().getNextExecutionYear();
-
             LocalDate date = new LocalDate();
             if (!executionYear.containsDate(date)) {
                 date = executionYear.getBeginDateYearMonthDay().toLocalDate();

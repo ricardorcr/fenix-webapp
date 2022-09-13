@@ -230,8 +230,8 @@ public class FixStandalonePostingRulesDatesAndAssociatedEvents extends CustomTas
                 }
                 taskLog("O aluno %s já pagou %s para o evento %s - %s foi feito reembolso%n", oldEvent.getPerson().getUsername(),
                         totalPaidAmount.toString(), oldEvent.getDescription(), oldEvent.getExternalId());
-                oldEvent.refund(USER, EventExemptionJustificationType.CANCELLED,
-                        "Foi criado com a regra propinas errada. Foi criado um novo evento.", totalPaidAmount);
+//                oldEvent.refund(USER, EventExemptionJustificationType.CANCELLED,
+//                        "Foi criado com a regra propinas errada. Foi criado um novo evento.", totalPaidAmount);
 //                }
             } else if (!oldEvent.isClosed()) {
                 taskLog("O evento %s - %s foi cancelado para o aluno %s%n", oldEvent.getExternalId(), oldEvent.getDescription(),

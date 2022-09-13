@@ -38,7 +38,7 @@ public class SendCertifiedDocToDrive extends CustomTask {
         ExecutionSemester.readActualExecutionSemester().getEnrolmentsSet().stream()
                 .map(enrolment -> enrolment.getRegistration())
                 .distinct()
-//                .filter(r -> r.getNumber() == 102633)
+//                .filter(r -> r.getNumber() == 104659)
                 .flatMap(registration -> registration.getRegistrationDeclarationFileSet().stream())
 //                .filter(rd -> rd.getCreationDate().isBefore(yesterday))
                 .filter(registrationDeclarationFile -> registrationDeclarationFile.getExecutionYear().isCurrent())

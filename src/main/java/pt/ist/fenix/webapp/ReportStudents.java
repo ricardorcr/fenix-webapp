@@ -1,7 +1,5 @@
 package pt.ist.fenix.webapp;
 
-import java.io.ByteArrayOutputStream;
-
 import org.fenixedu.academic.domain.Country;
 import org.fenixedu.academic.domain.Degree;
 import org.fenixedu.academic.domain.ExecutionYear;
@@ -15,34 +13,34 @@ import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
 import org.fenixedu.commons.spreadsheet.Spreadsheet;
 import org.fenixedu.commons.spreadsheet.Spreadsheet.Row;
 
-public class ReportStudents extends ReadCustomTask {
+import java.io.ByteArrayOutputStream;
 
+public class ReportStudents extends ReadCustomTask {
     @Override
     public void runTask() throws Exception {
-        final ExecutionYear executionYear = ExecutionYear.readExecutionYearByName("2019/2020");
-        final Spreadsheet spreadsheet = new Spreadsheet("Alunos 2019-2020");
-        
+        final ExecutionYear executionYear = ExecutionYear.readExecutionYearByName("2021/2022");
+        final Spreadsheet spreadsheet = new Spreadsheet("Alunos 2021-2022");
         Bennu.getInstance().getRegistrationsSet().stream()
-            .filter(r -> r.hasAnyActiveState(executionYear))
-            .filter(r -> {
-                if (r.getDegree().isEmpty()) {
-                   return r.hasAnyStandaloneEnrolmentsIn(executionYear); 
-                } else {
-                    return r.hasAnyEnrolmentsIn(executionYear) || r.hasStateType(executionYear, RegistrationStateType.MOBILITY);
-                }
-            })
-            .forEach(r -> report(r, executionYear, spreadsheet));
-        
+                .filter(r -> r.hasAnyActiveState(executionYear))
+                .filter(r ->
+                    {
+                        if (r.getDegree().isEmpty()) {
+                            return r.hasAnyStandaloneEnrolmentsIn(executionYear);
+                        } else {
+                            return r.hasAnyEnrolmentsIn(executionYear) || r.hasStateType(executionYear, RegistrationStateType.MOBILITY);
+                        }
+                    }
+                )
+                .forEach(r -> report(r, executionYear, spreadsheet));
         executionYear.getPhdIndividualProgramProcessesSet().stream()
-            .forEach(p -> report(p, executionYear, spreadsheet));
-        
+                .forEach(p -> report(p, executionYear, spreadsheet));
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         spreadsheet.exportToXLSSheet(baos);
-        output("Alunos_2019_2020.xls", baos.toByteArray());
+        output("Alunos_2021_2022.xls", baos.toByteArray());
     }
 
     private void report(final Registration registration, final ExecutionYear executionYear, final Spreadsheet spreadsheet) {
-        Row row = spreadsheet.addRow();              
+        Row row = spreadsheet.addRow();
         Degree degree = registration.getDegree();
         row.setCell("istID", registration.getPerson().getUsername());
         row.setCell("Nome", registration.getPerson().getName());
@@ -61,14 +59,20 @@ public class ReportStudents extends ReadCustomTask {
         row.setCell("Ciclo", ciclo);
         boolean isAlameda = degree.getCampus(executionYear).stream().anyMatch(c -> c.getName().contains("Alameda"));
         row.setCell("Campus", isAlameda ? "Alameda" : "Tagus");
-        row.setCell("Regime", registration.getRegimeType(executionYear).toString());
+        final double regime = registration.getRegistrationDataByExecutionYearSet().stream()
+                .filter(data -> data.getExecutionYear() == executionYear)
+                .map(data -> data.getMaxCreditsPerYear())
+                .filter(d -> d != null)
+                .findAny().orElse(60d) * 100 / 60;
+        row.setCell("Regime", Double.toString(regime) + " %");
         row.setCell("Em mobilidade", registration.hasStateType(executionYear, RegistrationStateType.MOBILITY) ? "Sim" : "Não");
         row.setCell("Protocolo", registration.getRegistrationProtocol().getDescription().getContent());
         row.setCell("Ingresso", registration.getIngressionType() != null ? registration.getIngressionType().getLocalizedName() : "");
+        row.setCell("Estado Phd", "");
     }
-    
+
     private void report(final PhdIndividualProgramProcess program, final ExecutionYear executionYear, final Spreadsheet spreadsheet) {
-        Row row = spreadsheet.addRow();        
+        Row row = spreadsheet.addRow();
         PhdProgram phdProgram = program.getPhdProgram();
         row.setCell("istID", program.getPerson().getUsername());
         row.setCell("Nome", program.getPerson().getName());
@@ -77,11 +81,13 @@ public class ReportStudents extends ReadCustomTask {
         row.setCell("Nacionalidade", country != null ? country.getName() : "Sem país");
         row.setCell("Curso", phdProgram.getPresentationName(executionYear));
         row.setCell("Ciclo", "3º ciclo");
-        boolean isAlameda = phdProgram.getDegree().getCampus(executionYear).stream().anyMatch(c -> c.getName().contains("Alameda"));
+        boolean isAlameda = phdProgram.getDegree().getCampus(executionYear).stream()
+                .anyMatch(c -> c.getName().contains("Alameda"));
         row.setCell("Campus", isAlameda ? "Alameda" : "Tagus");
         row.setCell("Regime", RegistrationRegimeType.FULL_TIME.toString());
         row.setCell("Em mobilidade", "");
         row.setCell("Protocolo", "");
         row.setCell("Ingresso", "");
+        row.setCell("Estado Phd", program.getActiveState().getLocalizedName());
     }
 }

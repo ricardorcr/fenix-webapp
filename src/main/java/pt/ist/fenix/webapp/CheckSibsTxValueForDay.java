@@ -19,7 +19,7 @@ public class CheckSibsTxValueForDay extends CustomTask {
 
     @Override
     public void runTask() throws Exception {
-        final LocalDate dateToCheck = new LocalDate(2018, 07, 26);
+        final LocalDate dateToCheck = new LocalDate(2021, 8, 26);
 //        Money amountTxForSibsDate =
         Bennu.getInstance().getAccountingTransactionDetailsSet().stream()
                 .filter(atd -> atd instanceof SibsTransactionDetail)

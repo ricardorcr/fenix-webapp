@@ -788,9 +788,10 @@ public class CreateAndInitializeExecutionCourses extends CustomTask {
 
     protected ExecutionCourse createExecutionCourse(final String name, final String acronym) {
         final String code = findUniqueCode(acronym);
-        ExecutionCourse executionCourse = new ExecutionCourse(name, code, destinationExecutionSemester, null);
-        executionCourse.createEvaluationMethod(evaluationMethod);
-        return executionCourse;
+//        ExecutionCourse executionCourse = new ExecutionCourse(name, code, destinationExecutionSemester, null);
+//        executionCourse.createEvaluationMethod(evaluationMethod);
+//        return executionCourse;
+        return null;
     }
 
     private final Map<String, int[]> codeMap = new HashMap<String, int[]>();
