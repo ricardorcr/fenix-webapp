@@ -97,8 +97,8 @@ public class CheckAdmissionsOutcomeState extends ReadCustomTask {
                                 RegistrationService.addToConfirmationQueueIfNeeded(application);
                             } else {
                                 taskLog("Should change for CONFIRMED - %s - %s%n", application.getExternalId(), application.getAdmissionProcessTarget().getAdmissionProcess().getTitle().getContent());
-                                RegistrationService.setOutcomeState(application, RegistrationProcessState.CONFIRMED);
-                                Signal.emit(RegistrationService.REGISTRATION_CONFIRMED, new DomainObjectEvent<>(application));
+                                //RegistrationService.setOutcomeState(application, RegistrationProcessState.CONFIRMED);
+                                //Signal.emit(RegistrationService.REGISTRATION_CONFIRMED, new DomainObjectEvent<>(application));
                             }
                         }
                     }
