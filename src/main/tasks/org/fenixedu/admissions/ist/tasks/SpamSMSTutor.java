@@ -10,6 +10,7 @@ import org.fenixedu.admissions.domain.AdmissionsSystem;
 import org.fenixedu.admissions.ist.domain.Utils;
 import org.fenixedu.bennu.scheduler.custom.WriteCustomTask;
 import org.fenixedu.messaging.core.domain.Message;
+import org.fenixedu.messaging.smsdispatch.SMSMessage;
 import pt.ist.fenixedu.tutorship.domain.Tutorship;
 import pt.ist.fenixframework.FenixFramework;
 
@@ -81,17 +82,17 @@ public class SpamSMSTutor extends WriteCustomTask {
                                     taskLog("No mobile for: %s%n", application.getAccount().getEmail());
                                 } else {
                                     mailCount++;
-                                    sendEmail(name, tutorship.getTeacher().getPerson().getUser().getProfile().getDisplayName(), email, gender, tgender);
+//                                    sendEmail(name, tutorship.getTeacher().getPerson().getUser().getProfile().getDisplayName(), email, gender, tgender);
                                 }
                             } else {
                                 smsCount++;
-                                //final String message = message(name, tutorship.getTeacher().getPerson().getUser().getProfile().getDisplayName(), gender, tgender);
-                                //if (SMSMessage.getInstance().sendSMS(mobile, message)) {
-                                //    taskLog("%s = %s%n", message.length(), message);
-                                //} else {
-                                //    taskLog("Failed SMS to: %s%n", email);
-                                //    sendEmail(name, tutorship.getTeacher().getPerson().getUser().getProfile().getDisplayName(), email, gender, tgender);
-                                //}
+                                final String message = message(name, tutorship.getTeacher().getPerson().getUser().getProfile().getDisplayName(), gender, tgender);
+                                if (SMSMessage.getInstance().sendSMS(mobile, message)) {
+                                    taskLog("%s = %s%n", message.length(), message);
+                                } else {
+                                    taskLog("Failed SMS to: %s%n", email);
+                                    sendEmail(name, tutorship.getTeacher().getPerson().getUser().getProfile().getDisplayName(), email, gender, tgender);
+                                }
                             }
                         }
 
