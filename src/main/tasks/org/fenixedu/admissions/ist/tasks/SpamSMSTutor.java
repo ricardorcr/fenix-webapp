@@ -36,8 +36,7 @@ public class SpamSMSTutor extends WriteCustomTask {
         final File file = new File(SPAM_FILENAME);
         final List<String> lines;
         if (file.exists()) {
-            //lines = Files.readAllLines(file.toPath());
-            lines = new ArrayList<>();
+            lines = Files.readAllLines(file.toPath());
         } else {
             lines = new ArrayList<>();
         }
@@ -82,7 +81,7 @@ public class SpamSMSTutor extends WriteCustomTask {
                                     taskLog("No mobile for: %s%n", application.getAccount().getEmail());
                                 } else {
                                     mailCount++;
-//                                    sendEmail(name, tutorship.getTeacher().getPerson().getUser().getProfile().getDisplayName(), email, gender, tgender);
+                                    sendEmail(name, tutorship.getTeacher().getPerson().getUser().getProfile().getDisplayName(), email, gender, tgender);
                                 }
                             } else {
                                 smsCount++;
