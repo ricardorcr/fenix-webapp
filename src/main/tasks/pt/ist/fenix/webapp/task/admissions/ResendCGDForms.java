@@ -29,9 +29,8 @@ public class ResendCGDForms extends ReadCustomTask {
                 .filter(card -> card.getSuccessfulSentData().getMonthOfYear() == 9)
                 .peek(card -> taskLog("Processing: %s%n", card.getUser().getUsername()))
                 .forEach(cgdCard -> {
-                    CgdRunnable cgdRunnable = new CgdRunnable(cgdCard);
-                    Thread thread = new Thread(cgdRunnable);
-                    thread.start();
+                    final CgdRunnable cgdRunnable = new CgdRunnable(cgdCard);
+                    cgdRunnable.run();
                 });
     }
 
@@ -50,7 +49,7 @@ public class ResendCGDForms extends ReadCustomTask {
         @Atomic(mode = Atomic.TxMode.READ)
         public void run() {
             if (this.card == null) {
-                System.out.println("CGD: Não existe cartão para este pedido.");
+                taskLog("CGD: Não existe cartão para este pedido.");
                 return;
             }
             final Person person = this.card.getUser().getPerson();
@@ -65,29 +64,29 @@ public class ResendCGDForms extends ReadCustomTask {
                                 boolean form = sender.sendForm43For(registration);
                                 boolean attachment = sender.uploadFormAttachment(registration, registrationDeclarationForBanksService
                                         .getRegistrationDeclarationFileForBanks(registration));
-                                System.out.println(String.format("Sent Form43 ({}) and registration declaration file ({}) for registration {}",
-                                        form, attachment, registration.getExternalId() ));
+                                taskLog("Sent Form43 ({}) and registration declaration file ({}) for registration {}",
+                                        form, attachment, registration.getExternalId() );
                                 if (form && attachment) {
                                     FenixFramework.atomic(() -> card.setSuccessfulSentData(new DateTime()));
-                                    System.out.println((String.format("CGD: Comunicação efectuada à CGD com sucesso para o utilizador %s", username)));
+                                    taskLog(String.format("CGD: Comunicação efectuada à CGD com sucesso para o utilizador %s", username));
                                     return;
                                 } else {
-                                    System.out.println((String.format("CGD: Comunicação falhou para o utilizador %s. Contactar a CGD.", username)));
+                                    taskLog(String.format("CGD: Comunicação falhou para o utilizador %s. Contactar a CGD.", username));
                                     return;
                                 }
                             }
                         }
-                        System.out.println((String.format("CGD: Não existe uma matrícula activa para o aluno %s", username)));
+                        taskLog(String.format("CGD: Não existe uma matrícula activa para o aluno %s", username));
                         return;
                     }
-                    System.out.println((String.format("CGD: Utilizador %s não é aluno", username)));
+                    taskLog(String.format("CGD: Utilizador %s não é aluno", username));
                     return;
                 } else {
-                    System.out.println((String.format("CGD: Utilizador %s não tem pessoa activa", username)));
+                    taskLog(String.format("CGD: Utilizador %s não tem pessoa activa", username));
                     return;
                 }
             }
-            System.out.println((String.format("CGD: %s - É necessário autorização a cedência de dados à CGD para efeitos de abertura de conta", username)));
+            taskLog(String.format("CGD: %s - É necessário autorização a cedência de dados à CGD para efeitos de abertura de conta", username));
         }
     }
 
