@@ -25,6 +25,7 @@ public class ResendCGDForms extends ReadCustomTask {
         Bennu.getInstance().getCgdCardCounterSet().stream()
                 .filter(counter -> counter.getYear() == 2022)
                 .flatMap(counter -> counter.getCgdCardSet().stream())
+                .filter(card -> card.getSuccessfulSentData() != null)
                 .filter(card -> card.getSuccessfulSentData().getMonthOfYear() == 9)
                 .forEach(cgdCard -> {
                     CgdRunnable cgdRunnable = new CgdRunnable(cgdCard);
