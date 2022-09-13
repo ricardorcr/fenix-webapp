@@ -42,13 +42,14 @@ public class SpamSMSTutor extends CustomTask {
 
         AdmissionsSystem.getInstance().getAdmissionProcessSet().stream()
                 .filter(admissionProcess -> admissionProcess.getTitle().getContent().indexOf("2023") > 0)
+                .filter(admissionProcess -> Utils.hasTutorDistribution(admissionProcess))
                 .flatMap(admissionProcess -> admissionProcess.getAdmissionProcessTargetSet().stream())
                 .flatMap(target -> target.getApplicationSet().stream())
                 .filter(application -> !lines.contains(application.getExternalId()))
                 .forEach(application -> {
                     appCount++;
                     final Registration registration = Utils.registrationFor(application);
-                    if (registration != null && registration.getStartExecutionYear().isCurrent() && registration.getDegreeType().isFirstCycle()) {
+                    if (registration != null) {
                         final Tutorship tutorship = registration.getLastStudentCurricularPlan().getTutorshipsSet()
                                 .stream().findAny().orElse(null);
                         if (registration.getLastStudentCurricularPlan().getTutorshipsSet().size() > 1) {
