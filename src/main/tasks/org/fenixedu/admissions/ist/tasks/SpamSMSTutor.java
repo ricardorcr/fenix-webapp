@@ -92,6 +92,10 @@ public class SpamSMSTutor extends CustomTask {
                 });
 
 //        Files.write(file.toPath(), lines.stream().collect(Collectors.joining("\n")).getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+
+        taskLog("tutorCount = %s%n", tutorCount);
+        taskLog("smsCount = %s%n", smsCount);
+        taskLog("mailCount = %s%n", mailCount);
     }
 
     private void sendEmail(final String name, final String tutor, final String email, final Gender gender, final Gender tgender) {
