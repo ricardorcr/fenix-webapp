@@ -8,7 +8,7 @@ import org.fenixedu.academic.util.StringFormatter;
 import org.fenixedu.admissions.domain.AdmissionProcessTarget;
 import org.fenixedu.admissions.domain.AdmissionsSystem;
 import org.fenixedu.admissions.ist.domain.Utils;
-import org.fenixedu.bennu.scheduler.custom.CustomTask;
+import org.fenixedu.bennu.scheduler.custom.WriteCustomTask;
 import org.fenixedu.messaging.core.domain.Message;
 import pt.ist.fenixedu.tutorship.domain.Tutorship;
 import pt.ist.fenixframework.FenixFramework;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SpamSMSTutor extends CustomTask {
+public class SpamSMSTutor extends WriteCustomTask {
 
     private static final String SPAM_FILENAME = "/afs/ist.utl.pt/ciist/fenix/fenix036/tuitionSpam.txt";
 
@@ -35,7 +35,8 @@ public class SpamSMSTutor extends CustomTask {
         final File file = new File(SPAM_FILENAME);
         final List<String> lines;
         if (file.exists()) {
-            lines = Files.readAllLines(file.toPath());
+            //lines = Files.readAllLines(file.toPath());
+            lines = new ArrayList<>();
         } else {
             lines = new ArrayList<>();
         }
@@ -84,7 +85,7 @@ public class SpamSMSTutor extends CustomTask {
                                 }
                             } else {
                                 smsCount++;
-                                final String message = message(name, tutorship.getTeacher().getPerson().getUser().getProfile().getDisplayName(), gender, tgender);
+                                //final String message = message(name, tutorship.getTeacher().getPerson().getUser().getProfile().getDisplayName(), gender, tgender);
                                 //if (SMSMessage.getInstance().sendSMS(mobile, message)) {
                                 //    taskLog("%s = %s%n", message.length(), message);
                                 //} else {
