@@ -80,11 +80,11 @@ public class SpamSMSTutor extends CustomTask {
                                     taskLog("No mobile for: %s%n", application.getAccount().getEmail());
                                 } else {
                                     mailCount++;
-//                                    sendEmail(name, tutorship.getTeacher().getPerson().getUser().getProfile().getDisplayName(), email, gender, tgender);
+                                    sendEmail(name, tutorship.getTeacher().getPerson().getUser().getProfile().getDisplayName(), email, gender, tgender);
                                 }
                             } else {
                                 smsCount++;
-//                                final String message = message(name, tutorship.getTeacher().getPerson().getUser().getProfile().getDisplayName(), gender, tgender);
+                                final String message = message(name, tutorship.getTeacher().getPerson().getUser().getProfile().getDisplayName(), gender, tgender);
                                 //if (SMSMessage.getInstance().sendSMS(mobile, message)) {
                                 //    taskLog("%s = %s%n", message.length(), message);
                                 //} else {
@@ -97,7 +97,7 @@ public class SpamSMSTutor extends CustomTask {
                     }
                 });
 
-//        Files.write(file.toPath(), lines.stream().collect(Collectors.joining("\n")).getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+        Files.write(file.toPath(), lines.stream().collect(Collectors.joining("\n")).getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 
         taskLog("appCount = %s%n", appCount);
         taskLog("notutorCount = %s%n", notutorCount);
