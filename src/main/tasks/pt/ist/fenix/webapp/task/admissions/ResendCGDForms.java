@@ -27,6 +27,7 @@ public class ResendCGDForms extends ReadCustomTask {
                 .flatMap(counter -> counter.getCgdCardSet().stream())
                 .filter(card -> card.getSuccessfulSentData() != null)
                 .filter(card -> card.getSuccessfulSentData().getMonthOfYear() == 9)
+                .peek(card -> taskLog("Processing: %s%n", card.getUser().getUsername()))
                 .forEach(cgdCard -> {
                     CgdRunnable cgdRunnable = new CgdRunnable(cgdCard);
                     Thread thread = new Thread(cgdRunnable);
