@@ -38,7 +38,7 @@ public class GenerateDeclarationsForAllStudentsTask extends CustomTask {
 
     @Override
     public void runTask() throws Exception {
-        firstGeneration = new LocalDate(2021, 9, 17);
+        firstGeneration = new LocalDate(2022, 9, 14);
         ptDeclaration = getTemplateFor("declaracao-matricula", PT);
         enDeclaration = getTemplateFor("declaracao-matricula", EN);
         executionYearName = ExecutionYear.readCurrentExecutionYear().getName().replaceAll("/", "-");
@@ -52,7 +52,8 @@ public class GenerateDeclarationsForAllStudentsTask extends CustomTask {
 
     protected void generateForAllStudents() {
 //        long c =
-        ExecutionSemester.readActualExecutionSemester().getEnrolmentsSet().stream().map(CurriculumModule::getRegistration)
+        ExecutionSemester.readActualExecutionSemester().getEnrolmentsSet().stream()
+                .map(CurriculumModule::getRegistration)
                 .distinct()
                 .filter(r -> r.getDegreeType().isBolonhaDegree() || r.getDegreeType().isBolonhaMasterDegree() ||
                         r.getDegreeType().isIntegratedMasterDegree())

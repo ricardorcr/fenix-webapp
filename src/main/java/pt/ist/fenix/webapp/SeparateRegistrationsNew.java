@@ -42,6 +42,7 @@ import org.fenixedu.academic.domain.degreeStructure.OptionalCurricularCourse;
 import org.fenixedu.academic.domain.exceptions.DomainException;
 import org.fenixedu.academic.domain.student.Registration;
 import org.fenixedu.academic.domain.student.Student;
+import org.fenixedu.academic.domain.Person;
 import org.fenixedu.academic.domain.student.curriculum.ConclusionProcess;
 import org.fenixedu.academic.domain.student.registrationStates.RegistrationState;
 import org.fenixedu.academic.domain.student.registrationStates.RegistrationStateType;
@@ -61,14 +62,20 @@ import org.fenixedu.academic.domain.studentCurriculum.TemporarySubstitution;
 import org.fenixedu.academic.util.predicates.AndPredicate;
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
 import org.fenixedu.commons.i18n.I18N;
+import org.fenixedu.bennu.core.groups.Group;
+import org.fenixedu.messaging.core.domain.Message;
 
 import org.joda.time.LocalDate;
 import org.joda.time.YearMonthDay;
+import pt.ist.fenix.webapp.service.EventTemplateService;
 import pt.ist.fenixframework.Atomic;
 import pt.ist.fenixframework.Atomic.TxMode;
 import pt.ist.fenixframework.FenixFramework;
 
-public class SeparateRegistrations extends CustomTask {
+public class SeparateRegistrationsNew extends CustomTask {
+
+    private static ExecutionSemester currentSemester = null;
+    private static ExecutionYear currentYear = null;
 
     @Override
     public TxMode getTxMode() {
@@ -77,26 +84,46 @@ public class SeparateRegistrations extends CustomTask {
 
     @Override
     public void runTask() {
+        currentSemester = ExecutionSemester.readActualExecutionSemester();
+        currentYear = ExecutionYear.readCurrentExecutionYear();
         I18N.setLocale(new Locale("pt", "PT"));
         for (final DegreeCurricularPlan degreeCurricularPlan : getDegreeCurricularPlans()) {
             taskLog("Processing DCP: %s%n", degreeCurricularPlan.getName());
 
-            for (final StudentCurricularPlan studentCurricularPlan : degreeCurricularPlan.getStudentCurricularPlansSet()) {
+            for (final StudentCurricularPlan scp : degreeCurricularPlan.getStudentCurricularPlansSet()) {
 
-                if (canSeparate(studentCurricularPlan)) {
-                    taskLog("Separating Student: %s%n", studentCurricularPlan.getRegistration().getStudent().getNumber());
-
+//                if (scp.getRegistration().getNumber() == 96532 || scp.getRegistration().getNumber() == 96758) {
+//                    taskLog("BUH!");
+                if (canSeparate(scp)) {
+                    taskLog("Separating Student: %s %s%n", scp.getRegistration().getStudent().getNumber(), scp.getRegistration().getExternalId());
                     try {
-                        separateStudentProcedure(studentCurricularPlan);
+                        separateStudentProcedure(scp);
+
+                        final Person person = scp.getPerson();
+                        final boolean female = person.isFemale();
+                        final String message = "Car" + (female ? "a" : "o") + " " + person.getName() +
+                                "\n\nFoi agora criada a matrícula no curso de mestrado por ter aberto o ciclo externo durante a licenciatura " +
+                                "que entretando foi dada como concluída. Pode agora proceder às respetivas inscrições." +
+                                "\n\n" +
+                                "Os melhores cumprimentos," +
+                                "\nA Equipa FenixEdu";
+//                    taskLog("%s%n", message);
+
+                        Message.fromSystem()
+                                .to(Group.users(person.getUser()))
+                                .subject("Matrícula 2022/2023 - Separação Segundo ciclo")
+                                .textBody(message)
+                                .send();
                     } catch (Exception e) { //abort transaction and continue
                         taskLog("Separating students with rules %s %s%n",
-                                studentCurricularPlan.getRegistration().getStudent().getNumber(), e);
+                                scp.getRegistration().getStudent().getNumber(), e);
                         ByteArrayOutputStream errorOut = new ByteArrayOutputStream();
                         PrintStream error = new PrintStream(errorOut);
                         e.printStackTrace(error);
                         taskLog(new String(errorOut.toByteArray()));
                     }
                 }
+//                }
             }
         }
     }
@@ -130,7 +157,7 @@ public class SeparateRegistrations extends CustomTask {
         }
 
         newRegistration.updateEnrolmentDate(newRegistrationSemester.getExecutionYear());
-//        EventTemplateSer
+        EventTemplateService.initEventTemplate(newRegistration, newRegistrationSemester.getExecutionYear());
         return newRegistration;
     }
 
@@ -187,24 +214,13 @@ public class SeparateRegistrations extends CustomTask {
             return registration;
         }
 
-        final ExecutionYear newRegistrationYear = conclusionSemester.getNextExecutionPeriod().getExecutionYear();
+        final ExecutionSemester periodAfterConclusion = conclusionSemester.getNextExecutionPeriod();
+        final ExecutionYear newRegistrationYear = periodAfterConclusion.getExecutionYear();
         Degree degree = oldSecondCycle.getDegreeCurricularPlanOfDegreeModule().getDegree();
         registration = new Registration(student.getPerson(), student.getNumber(), degree);
-        //RAIDES info has changed
-//        registration.setStudentCandidacy(studentCandidacy);
-//        PersonalIngressionData personalIngressionData =
-//                student.getPersonalIngressionDataByExecutionYear(registration.getRegistrationYear());
-//        if (personalIngressionData == null) {
-//            new PersonalIngressionData(student, registration.getRegistrationYear(),
-//                    studentCandidacy.getPrecedentDegreeInformation());
-//        } else {
-//            personalIngressionData.addPrecedentDegreesInformations(studentCandidacy.getPrecedentDegreeInformation());
-//        }
-//        registration.addPrecedentDegreesInformations(studentCandidacy.getPrecedentDegreeInformation());
-
-        registration.setStartDate(conclusionSemester.getBeginDateYearMonthDay());
+        registration.setStartDate(periodAfterConclusion.getBeginDateYearMonthDay());
         RegistrationState activeState = registration.getActiveState();
-        activeState.setStateDate(conclusionSemester.getBeginDateYearMonthDay());
+        activeState.setStateDate(periodAfterConclusion.getBeginDateYearMonthDay());
         activeState.setResponsiblePerson(null);
         registration.setSourceRegistration(sourceStudentCurricularPlan.getRegistration());
         registration.setRegistrationProtocol(sourceStudentCurricularPlan.getRegistration().getRegistrationProtocol());
@@ -217,7 +233,7 @@ public class SeparateRegistrations extends CustomTask {
         return firstCycle.getApprovedCurriculumLines().stream()
                 .map(cl -> cl.getExecutionPeriod())
                 .max(ExecutionSemester.COMPARATOR_BY_BEGIN_DATE)
-                .get();
+                .orElseGet(() -> null);
     }
 
     private YearMonthDay getBeginDate(final StudentCurricularPlan sourceStudentCurricularPlan,
@@ -267,7 +283,7 @@ public class SeparateRegistrations extends CustomTask {
     private void copyCurriculumGroupsInformation(final CurriculumGroup source, final CurriculumGroup parent, final ExecutionSemester executionSemester) {
         final CurriculumGroup destination;
         //test if source group still exists as part of destination DCP
-        if (!groupIsStillValid(source)) {
+        if (!groupIsStillValid(source, executionSemester)) {
             return;
         }
         if (source.getName().getContent().equals("Minor")) {
@@ -289,12 +305,11 @@ public class SeparateRegistrations extends CustomTask {
         }
     }
 
-    private boolean groupIsStillValid(CurriculumGroup source) {
-        ExecutionYear nowadays = ExecutionYear.readCurrentExecutionYear();
-        if (source.getDegreeModule().getValidChildContexts(nowadays).size() > 0) {
+    private boolean groupIsStillValid(final CurriculumGroup source, final ExecutionSemester executionSemester) {
+        if (source.getDegreeModule().getValidChildContexts(executionSemester).size() > 0) {
             return true;
         }
-        return source.getChildCurriculumGroups().stream().anyMatch(this::groupIsStillValid);
+        return source.getChildCurriculumGroups().stream().anyMatch(source1 -> groupIsStillValid(source1, executionSemester));
     }
 
     private void copyCurriculumLineInformation(final CurriculumLine curriculumLine, final CurriculumGroup parent, final ExecutionSemester executionSemester) {
@@ -302,7 +317,8 @@ public class SeparateRegistrations extends CustomTask {
             final Enrolment enrolment = (Enrolment) curriculumLine;
             if (enrolment.isApproved()) {
                 createSubstitutionForEnrolment((Enrolment) curriculumLine, parent, executionSemester);
-            } else if (enrolment.getExecutionPeriod().isCurrent() && enrolment.isActive()) {
+            } else if ((enrolment.getExecutionPeriod() == currentSemester || enrolment.getExecutionPeriod() == currentSemester.getNextExecutionPeriod())
+                    && enrolment.isActive()) { //they can enroll for both semester in the year
                 moveEnrolment((Enrolment) curriculumLine, parent);
             }
         } else if (curriculumLine.isDismissal()) {
@@ -504,18 +520,37 @@ public class SeparateRegistrations extends CustomTask {
     }
 
     private boolean canSeparate(final StudentCurricularPlan scp) {
-        if (scp.getRegistration().getLastState().isActive()) {
+        final RegistrationState lastState = scp.getRegistration().getLastState();
+        if (lastState.isActive() || lastState.getStateType() == RegistrationStateType.CONCLUDED) {
             CycleCurriculumGroup firstCycle = scp.getFirstCycle();
             ConclusionProcess conclusionProcess = firstCycle != null ? firstCycle.getConclusionProcess() : null;
 
-            final ExecutionSemester conclusionSemester = getConclusionSemester(firstCycle);
-            final ExecutionYear newRegistrationYear = conclusionSemester.getNextExecutionPeriod().getExecutionYear();
-
-            return hasFirstCycleConcluded(firstCycle) && hasValidExternalSecondCycle(scp, newRegistrationYear)
-                    && !studentAlreadyHasNewRegistration(scp)
-                    && (scp.isActive() || (conclusionProcess != null && conclusionProcess.isActive()));
+//            taskLog("Ciclo concluido: %s%n", hasFirstCycleConcluded(firstCycle));
+            if (hasFirstCycleConcluded(firstCycle)) {
+                final ExecutionSemester conclusionSemester = getConclusionSemester(firstCycle);
+                if (conclusionSemester != null) {
+//                taskLog("Semestre conclusão: %s%n", conclusionSemester.getQualifiedName());
+                    final ExecutionYear conclusionYear = conclusionSemester.getExecutionYear();
+                    final ExecutionYear newRegistrationYear = conclusionSemester.getNextExecutionPeriod().getExecutionYear();
+                    if (conclusionYear.isCurrent() || currentYear.getPreviousExecutionYear() == conclusionYear) {
+//                    taskLog("valid scp: %s%n", hasValidExternalSecondCycle(scp, newRegistrationYear));
+//                    taskLog("does not already has: %s%n", !studentAlreadyHasNewRegistration(scp));
+//                    taskLog("does not have another 2nd cycle: %s%n", !studentHasOtherSecondCyleRegistration(scp));
+//                    taskLog("last one: %s%n", (scp.isActive() || (conclusionProcess != null && conclusionProcess.isActive())));
+                        return hasValidExternalSecondCycle(scp, newRegistrationYear)
+                                && !studentAlreadyHasNewRegistration(scp)
+                                && !studentHasOtherSecondCyleRegistration(scp)
+                                && (scp.isActive() || (conclusionProcess != null && conclusionProcess.isActive()));
+                    }
+                }
+            }
         }
         return false;
+    }
+
+    private boolean studentHasOtherSecondCyleRegistration(final StudentCurricularPlan scp) {
+        return scp.getRegistration().getStudent().getRegistrationsSet().stream()
+                .anyMatch(r -> r.isActive() && r.getDegree().isSecondCycle());
     }
 
     private boolean hasFirstCycleConcluded(final CycleCurriculumGroup firstCycle) {
@@ -526,8 +561,8 @@ public class SeparateRegistrations extends CustomTask {
         final CycleCurriculumGroup secondCycle = studentCurricularPlan.getSecondCycle();
         return secondCycle != null && secondCycle.isExternal()
                 //TODO test without checking enrolments!!
-                && (secondCycle.hasEnrolment(ExecutionSemester.readActualExecutionSemester())
-                    || hasDismissal(ExecutionSemester.readActualExecutionSemester(), secondCycle))
+//                && (secondCycle.hasEnrolment(ExecutionSemester.readActualExecutionSemester())
+//                    || hasDismissal(ExecutionSemester.readActualExecutionSemester(), secondCycle))
                 && hasActiveExecutionDegree(secondCycle, newRegistrationYear);
     }
 

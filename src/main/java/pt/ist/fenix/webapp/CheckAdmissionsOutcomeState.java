@@ -1,33 +1,29 @@
 package pt.ist.fenix.webapp;
 
 import com.google.gson.JsonObject;
-import org.fenixedu.academic.domain.Person;
 import org.fenixedu.academic.domain.ExecutionYear;
+import org.fenixedu.academic.domain.Person;
 import org.fenixedu.academic.domain.exceptions.DomainException;
-import org.fenixedu.academic.domain.student.Registration;
-import org.fenixedu.academic.domain.student.RegistrationDataByExecutionYear;
 import org.fenixedu.admissions.domain.AdmissionProcess;
 import org.fenixedu.admissions.domain.AdmissionsSystem;
 import org.fenixedu.admissions.domain.Application;
-import org.fenixedu.admissions.ist.service.AuthorizePersonalDataAccessService;
-import org.fenixedu.admissions.ist.service.RegistrationService;
 import org.fenixedu.admissions.ist.domain.RegistrationProcessState;
 import org.fenixedu.admissions.ist.domain.Survey;
 import org.fenixedu.admissions.ist.domain.UserAccountInfo;
 import org.fenixedu.admissions.ist.domain.Utils;
+import org.fenixedu.admissions.ist.service.AuthorizePersonalDataAccessService;
+import org.fenixedu.admissions.ist.service.RegistrationService;
 import org.fenixedu.bennu.core.signals.DomainObjectEvent;
 import org.fenixedu.bennu.core.signals.Signal;
-import org.fenixedu.bennu.scheduler.custom.CustomTask;
 import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
 import org.fenixedu.connect.domain.Identity;
-import pt.ist.fenixedu.integration.domain.SantanderCard;
 import pt.ist.fenixframework.FenixFramework;
 
 public class CheckAdmissionsOutcomeState extends ReadCustomTask {
 
     @Override
     public void runTask() throws Exception {
-//        final Application application = FenixFramework.getDomainObject("852890310676747"); //571415333968005
+//        final Application application = FenixFramework.getDomainObject("852890310683303"); //571415333968005
 //        final boolean mandatoryActivitiesDone = allMandatoryActivitiesDone(application);
 //        taskLog("All activities done: %s%n", mandatoryActivitiesDone);
 //        checkNeededChangeOutcomeState(application);
