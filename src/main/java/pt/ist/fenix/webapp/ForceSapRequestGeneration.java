@@ -67,7 +67,7 @@ public class ForceSapRequestGeneration extends SapCustomTask {
 
             final EventWrapper eventWrapper = new EventWrapper(event, errorLog, true);
 
-            sapEvent.updateInvoiceWithNewClientData();
+            sapEvent.updateInvoiceWithNewClientData(errorLog);
 
             final Money debtFenix = eventWrapper.debt;
             final Money invoiceSap = sapEvent.getInvoiceAmount();

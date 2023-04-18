@@ -385,7 +385,7 @@ public class CreateUserAccounts extends CronTask {
             // Edit
             personalInformation = account.getPersonalInformation() != null ? account.getPersonalInformation() : account.getIdentity().getPersonalInformation();
             personalInformation.update(givenName, familyName, displayName, gender, dateOfBirth,
-                    nationalityCountryCode, tin, addressData, identificationDocument, photoContent, photoContentType, account);
+                    nationalityCountryCode, tin, addressData, identificationDocument, null,photoContent, photoContentType, account);
         }
         AccountNameIndex.updateAccountNameIndex(account);
         return personalInformation;

@@ -74,8 +74,8 @@ import pt.ist.fenixframework.FenixFramework;
 
 public class SeparateRegistrationsNew extends CustomTask {
 
-    private static ExecutionSemester currentSemester = null;
-    private static ExecutionYear currentYear = null;
+    private ExecutionSemester currentSemester = null;
+    private ExecutionYear currentYear = null;
 
     @Override
     public TxMode getTxMode() {

@@ -256,7 +256,7 @@ public class RecalculateMissingSapPayments extends SapCustomTask {
             if (!sapEvent.hasPendingDocumentCancelations()) {
                 if (EventWrapper.needsProcessingSap(event)) {
                     EventWrapper eventWrapper = new EventWrapper(event, errorLog, true);
-                    sapEvent.updateInvoiceWithNewClientData();
+                    sapEvent.updateInvoiceWithNewClientData(errorLog);
                     Money debtFenix = eventWrapper.debt;
                     Money invoiceSap = sapEvent.getInvoiceAmount();
                     if (debtFenix.isPositive()) {
@@ -342,7 +342,7 @@ public class RecalculateMissingSapPayments extends SapCustomTask {
     }
 
     public static boolean shouldProcess(ErrorLogConsumer consumer, Event event) {
-        return allAdvancementFromRefundSapIntegration(event) && (EventWrapper.needsProcessingSap(event) || EventWrapper.needsToProcessPayments(event)) && Utils.validate(consumer, event);
+        return allAdvancementFromRefundSapIntegration(event) && (EventWrapper.needsProcessingSap(event) || EventWrapper.needsToProcessPayments(event)) && Utils.validateNonClientData(consumer, event);
     }
 
     private static boolean allAdvancementFromRefundSapIntegration(Event event) {

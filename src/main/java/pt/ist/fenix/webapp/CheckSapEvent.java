@@ -39,7 +39,7 @@ public class CheckSapEvent extends SapCustomTask {
         return event.getWhenOccured().getYear() <= yearToComunicate
                 && event.getSapRequestSet().stream().allMatch(r -> r.getIntegrated())
                 && (EventWrapper.needsProcessingSap(event) || needsToProcessPayments(event))
-                && Utils.validate(consumer, event);
+                && Utils.validateNonClientData(consumer, event);
     }
 
     public boolean needsToProcessPayments(Event event) {
@@ -79,7 +79,7 @@ public class CheckSapEvent extends SapCustomTask {
 
             final EventWrapper eventWrapper = new EventWrapper(event, errorLog, true);
 
-            sapEvent.updateInvoiceWithNewClientData();
+            sapEvent.updateInvoiceWithNewClientData(errorLog);
 
             final Money debtFenix = eventWrapper.debt;
             final Money invoiceSap = sapEvent.getInvoiceAmount();

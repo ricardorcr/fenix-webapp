@@ -35,7 +35,7 @@ import java.util.stream.Stream;
 
 public class ReportOpenEvents extends CustomTask {
 
-    private final DateTime instant = new DateTime(2022, 01, 01, 0, 0, 0, 0);
+    private final DateTime instant = new DateTime(2023, 01, 01, 0, 0, 0, 0);
     private final LocalDate instantDate = instant.toLocalDate();
     private final DateTime now = new DateTime();
 
@@ -65,8 +65,8 @@ public class ReportOpenEvents extends CustomTask {
             row.setCell("Exempt", (BigDecimal) o[8]);
             row.setCell("Payed", (BigDecimal) o[9]);
             row.setCell("Payed Interest", (BigDecimal) o[10]);
-            row.setCell("user", (String) o[11]);
-            row.setCell("name", (String) o[12]);
+            row.setCell("User", (String) o[11]);
+            row.setCell("Name", (String) o[12]);
             row.setCell("Event Description", (String) o[13]);
             row.setCell("Academic Year", academicYear);
             row.setCell("Is Canceled", (String) o[15]);

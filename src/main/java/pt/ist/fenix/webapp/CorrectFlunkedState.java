@@ -32,52 +32,30 @@ import pt.ist.fenixframework.FenixFramework;
 
 public class CorrectFlunkedState extends CustomTask {
 
+    //TODO check hack at the end!
+
     static int count = 0;
     private final String[] FLUNKED_STUDENTS_TO_CORRECT = new String[]{
-            "45077", "53750", "56631", "58727", "63404", "69653", "74104",
-            "74243", "76128", "76707", "78067", "78664", "78694", "80900",
-            "82453", "84809", "84939", "85207", "88020"
+            "21975","63990","76315","79351","79516","81211","81884","82425",
+            "86874","86930","88020","90952","78343","78411","81640"
     };
 
-    private final String SUBJECT = "Levantamento de prescrição para o ano letivo 2019/2020";
+    private final String SUBJECT = "Levantamento de prescrição para o ano letivo 2022/2023";
     private final String BODY = "Caro aluno do TÉCNICO,\n" +
-            "Após a apreciação do recurso apresentado, e por deferimento do mesmo, o \n" +
-            "seu nome foi excluído da lista final de prescritos para 2019/2020.\n" +
-            "Assim, poderá inscrever-se em unidades curriculares do 1º semestre do ano lectivo 2019/2020, \n" +
-            "entre 9 e 13 de setembro de 2019.\n" +
-            "\n" +
-            "De qualquer forma, o seu rendimento académico tem sido claramente abaixo \n" +
-            "do esperado. Sabemos que vários são os motivos que podem ter \n" +
-            "condicionado o seu desempenho académico ao longo dos últimos anos. \n" +
-            "Provavelmente já terá tentado inverter esta situação, o Núcleo de \n" +
-            "Desenvolvimento Académico (NDA/GATu) disponibiliza-se a traçar consigo \n" +
-            "um plano específico e individualizado para melhorar o seu rendimento \n" +
-            "académico.\n" +
-            "\n" +
-            "Por forma a evitar a sua prescrição nos próximos anos é aconselhado a:\n" +
-            "\n" +
-            "   > contactar o NDA/GATu para:\n" +
-            "\n" +
-            "   - perceber as vantagens ou esclarecer dúvidas caso pretenda alterar a sua \n" +
-            "inscrição em 2019/2020 para o regime de “tempo parcial”. Para mais \n" +
-            "informações sobre o Regime de Tempo Parcial consulte o Guia Académico em \n" +
-            "http://guiaacademico.tecnico.ulisboa.pt/1o-e-2o-ciclos-e-ciclos-integrados/regulamentos/regulamento-de-matriculas-e-inscricoes/\n" +
-            "\n" +
-            "   - esclarecer qualquer questão que tenha relativa à Lei das Prescrições e \n" +
-            "às condições de exceção que evitaram a sua prescrição. Para mais \n" +
-            "informações sobre a Lei das Prescrições consulte o regulamento de prescrições em \n" +
-            "http://guiaacademico.tecnico.ulisboa.pt/1o-e-2o-ciclos-e-ciclos-integrados/regulamentos/regulamento-de-prescricoes/\n" +
-            "\n" +
-            "   > frequentar o Workshop “Para Prescrever a Prescrição”. Poderá inscrever-se ou consultar o Programa do Workshop em\n " +
-            "https://nda.tecnico.ulisboa.pt/estudantes/atendimentoscoaching/monitorizacao-do-desempenho-academico/brac/." +
+            "Após a atualização da sua informação académica e/ou pelo deferimento do recurso apresentado, o seu nome foi excluído da lista final de prescritos para 2022/2023.\n" +
+            "Assim, poderá inscrever-se em unidades curriculares do 1º semestre do ano letivo 2022/2023, de 15 a 23 de setembro de 2022.\n" +
+            "Apesar de já não constar da lista de prescrições em 2022/2023, salienta-se que o seu rendimento académico tem sido claramente abaixo do esperado. " +
+            "Sabemos que vários são os motivos que podem ter condicionado o seu desempenho académico ao longo dos últimos anos. " +
+            "Provavelmente já terá tentado inverter esta situação, o Núcleo de Desenvolvimento Académico (NDA) disponibiliza-se a traçar consigo um plano" +
+            " específico e individualizado para melhorar o seu rendimento académico.\n" +
+            "Por forma a evitar a sua prescrição nos próximos anos é aconselhado a contactar o NDA para:\n" +
+            "1.    perceber as vantagens ou esclarecer dúvidas caso pretenda alterar a sua inscrição em 2022/2023 para o regime de “tempo parcial”.\n" +
+            "2.    esclarecer qualquer questão que tenha relativa à Lei das Prescrições e às condições de exceção que evitaram a sua prescrição.\n" +
             "\n" +
             "\n" +
-            "Com os melhores cumprimentos e votos de um bom ano escolar de 2019/2020,\n" +
-            "\n" +
-            "Professora Fátima Montemor\n" +
-            "\n" +
-            "Vice Presidente para os Assuntos Académicos,\n" +
-            "\n" +
+            "Com os melhores cumprimentos e votos de um bom ano escolar de 2022/2023,\n" +
+            "Prof. Alexandre Francisco\n" +
+            "Vice-Presidente para os Assuntos Académicos\n" +
             "Conselho de Gestão do Instituto Superior Técnico";
 
     @Override
@@ -140,7 +118,12 @@ public class CorrectFlunkedState extends CustomTask {
                     result = registration;
                 } else {
                     taskLog("Student " + student.getNumber() + " has more than one flunked registrations");
-                    throw new RuntimeException();
+                    if (student.getNumber() == 78343 || student.getNumber() == 78411 || student.getNumber() == 81640) {
+                        //HACK check it each time!!! Remove condition after no longer needed
+                        result = registration.getStartDate().isAfter(result.getStartDate()) ? result : registration;
+                    } else {
+                        throw new RuntimeException();
+                    }
                 }
             }
         }

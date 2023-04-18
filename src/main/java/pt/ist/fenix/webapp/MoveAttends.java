@@ -4,13 +4,14 @@ import org.fenixedu.academic.domain.ExecutionSemester;
 import org.fenixedu.academic.domain.degreeStructure.CycleType;
 import org.fenixedu.academic.domain.student.Registration;
 import org.fenixedu.academic.domain.student.Student;
+import org.fenixedu.academic.domain.student.registrationStates.RegistrationStateType;
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
 
 public class MoveAttends extends CustomTask {
 
     @Override
     public void runTask() throws Exception {
-        final Integer[] numbers = new Integer[] {90710};
+        final Integer[] numbers = new Integer[] {96397};
         for (Integer studentNumber : numbers) {
             Student student = Student.readStudentByNumber(studentNumber);
             ExecutionSemester currentPeriod = ExecutionSemester.readActualExecutionSemester();
@@ -22,7 +23,7 @@ public class MoveAttends extends CustomTask {
 
             Registration secondCycleRegistration = student.getRegistrationsSet().stream()
                     .filter(r -> r.getDegree().getCycleTypes().contains(CycleType.SECOND_CYCLE))
-                    .filter(r -> r.getLastState().getStateType().canHaveCurriculumLinesOnCreation())
+                    .filter(r -> r.getLastState().getStateType() == RegistrationStateType.REGISTERED)
                     .findAny().get();
 
             firstCycleRegistration.getAttendsForExecutionPeriod(currentPeriod).stream()

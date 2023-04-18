@@ -10,9 +10,9 @@ public class UpdateSapRequestJson extends CustomTask {
     @Override
     public void runTask() throws Exception {
 
-        SapRequest sapRequest = FenixFramework.getDomainObject("1978558289525893");
+        SapRequest sapRequest = FenixFramework.getDomainObject("852658382911901");
         String request = sapRequest.getRequest();
-        request = request.replace("2021-07-30", "2022-07-21");
+        request = request.replace("2022-05-07", "2022-09-01");
         sapRequest.setRequest(request);
 //        
 //        Map<String, String> pairs = new HashMap<String, String>();

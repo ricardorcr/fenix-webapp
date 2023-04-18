@@ -4,14 +4,11 @@ import com.google.common.io.ByteStreams;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.pdf.BarcodeQRCode;
-import com.itextpdf.text.pdf.PdfAnnotation;
-import com.itextpdf.text.pdf.PdfFormField;
-import com.itextpdf.text.pdf.PdfName;
-import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.PdfStamper;
-import com.itextpdf.text.pdf.PdfString;
+import com.itextpdf.forms.PdfAcroForm;
+import com.itextpdf.forms.fields.PdfSignatureFormField;
+import com.itextpdf.kernel.geom.Rectangle;
+import com.itextpdf.kernel.pdf.*;
+import com.itextpdf.kernel.pdf.annot.PdfAnnotation;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.fenixedu.academic.domain.Degree;
@@ -30,6 +27,7 @@ import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.core.rest.JsonBodyReaderWriter;
 import org.fenixedu.bennu.core.util.CoreConfiguration;
 import org.fenixedu.bennu.papyrus.domain.SignatureFieldSettings;
+import org.fenixedu.bennu.papyrus.service.ITextQRCodeGenerator;
 import org.fenixedu.bennu.scheduler.CronTask;
 import org.fenixedu.bennu.scheduler.annotation.Task;
 import org.fenixedu.commons.i18n.LocalizedString;
@@ -52,29 +50,16 @@ import pt.ist.registration.process.handler.CandidacySignalHandler;
 import pt.ist.standards.geographic.Country;
 import pt.ist.standards.geographic.Planet;
 
-import javax.imageio.ImageIO;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
-import java.util.Base64;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Properties;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Task(englishTitle = "Auto Generate Declarations for International Students", readOnly = true)
 public class GenerateAdmissionsDocumentForSigning extends CronTask implements Configuration {
@@ -261,6 +246,12 @@ public class GenerateAdmissionsDocumentForSigning extends CronTask implements Co
         result.addProperty("protocolEN", protocol == null ? "-" : protocol.getDescription().getContent(EN));
         result.addProperty("ingressionTypePT", ingressionType == null ? "-" : ingressionType.getLocalizedName(PT));
         result.addProperty("ingressionTypeEN", ingressionType == null ? "-" : ingressionType.getLocalizedName(EN));
+        result.addProperty("ingressionTypeEN", ingressionType == null ? "-" : ingressionType.getLocalizedName(EN));
+        result.addProperty("executionYear", executionYear == null ? "" : executionYear.getYear());
+        result.addProperty("executionYearStartDate", executionYear == null || executionYear.getBeginDateYearMonthDay() == null
+                ? "" : executionYear.getBeginDateYearMonthDay().toString("yyyy-MM-dd"));
+        result.addProperty("executionYearEndtDate", executionYear == null || executionYear.getEndDateYearMonthDay() == null
+                ? "" : executionYear.getEndDateYearMonthDay().toString("yyyy-MM-dd"));
 
         final DynamicForm form = new DynamicForm(application.getAdmissionProcessTarget().getAdmissionProcess().getFormDataJson());
         form.withData(application.getDataObject().getAsJsonObject("formData"));
@@ -331,17 +322,7 @@ public class GenerateAdmissionsDocumentForSigning extends CronTask implements Co
     }
 
     private byte[] generateQRCode(final String identifier, final int width, final int height) {
-        try (final ByteArrayOutputStream bytes = new ByteArrayOutputStream()) {
-            final BarcodeQRCode qrcode = new BarcodeQRCode("https://certifier.tecnico.ulisboa.pt/" + identifier, width, height, null);
-            final Image awtImage = qrcode.createAwtImage(Color.BLACK, Color.WHITE);
-            final BufferedImage buffer =
-                    new BufferedImage(awtImage.getWidth(null), awtImage.getHeight(null), BufferedImage.TYPE_INT_RGB);
-            buffer.getGraphics().drawImage(awtImage, 0, 0, null);
-            ImageIO.write(buffer, "png", bytes);
-            return bytes.toByteArray();
-        } catch (final IOException e) {
-            throw new NullPointerException("Error while generating qr code for identifier " + identifier);
-        }
+        return new ITextQRCodeGenerator().generate("https://certifier.tecnico.ulisboa.pt/" + identifier, width, height);
     }
 
     private JsonObject toJson(final AdmissionProcessTarget target, final Locale locale) {
@@ -372,7 +353,7 @@ public class GenerateAdmissionsDocumentForSigning extends CronTask implements Co
     }
 
     private byte[] generate(final String templateID, final JsonObject data, final Locale locale) {
-        final PapyrusClient papyrusClient = createPapyrusClien();
+        final PapyrusClient papyrusClient = new PapyrusClient();
         final InputStream inputStream = papyrusClient.render(templateID, locale, data);
         try {
             final byte[] document = ByteStreams.toByteArray(inputStream);
@@ -387,29 +368,24 @@ public class GenerateAdmissionsDocumentForSigning extends CronTask implements Co
         if (fileStream == null) {
             return null;
         }
-        try {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            PdfReader original = new PdfReader(fileStream);
-            PdfStamper stp = new PdfStamper(original, bos);
-            PdfFormField sig = PdfFormField.createSignature(stp.getWriter());
-            sig.setWidget(new com.itextpdf.text.Rectangle(settings.getLlx(), settings.getLly(), settings.getUrx(), settings.getUry()), null);
-            sig.setFlags(PdfAnnotation.FLAGS_PRINT);
-            sig.put(PdfName.DA, new PdfString("/Helv 0 Tf 0 g"));
-            sig.setFieldName(settings.getName());
-            sig.setPage(settings.getPage());
-            stp.addAnnotation(sig, settings.getPage());
+        final Rectangle rectangle = new Rectangle(settings.getLlx(), settings.getLly(), settings.getUrx(), settings.getUry());
+        final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        try (final PdfWriter writer = new PdfWriter(bos);
+             final PdfReader original = new PdfReader(fileStream);
+             final PdfDocument pdfDoc = new PdfDocument(original, writer)) {
+            final PdfAcroForm pdfAcroForm = PdfAcroForm.getAcroForm(pdfDoc, true);
 
-            stp.getOverContent(settings.getPage());
-            stp.close();
+            final PdfSignatureFormField field = com.itextpdf.forms.fields.PdfFormField.createSignature(pdfDoc, rectangle);
+            field.setFieldName(settings.getName());
+            field.setPage(settings.getPage());
+            field.setFieldFlag(PdfAnnotation.PRINT);
+            field.put(PdfName.DA, new PdfString("/Helv 0 Tf 0 g"));
+            pdfAcroForm.addField(field, pdfDoc.getPage(settings.getPage()));
+
             return bos.toByteArray();
-        } catch (IOException | DocumentException e) {
+        } catch (final IOException e) {
             throw new Error(e);
         }
-    }
-
-    private PapyrusClient createPapyrusClien() {
-        final Properties properties = loadProperties();
-        return new PapyrusClient(properties.getProperty("papyrus.url"), properties.getProperty("papyrus.token"));
     }
 
     public void sendDocumentToBeSigned(final String queue, final String title, final String description,

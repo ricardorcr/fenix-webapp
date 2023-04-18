@@ -11,7 +11,8 @@ public class SendSingleSapRequestSAP extends SapCustomTask {
 
     @Override
     protected void runTask(final ErrorLogConsumer errorLogConsumer, final EventLogger elogger) {
-        final SapRequest sapRequest = FenixFramework.getDomainObject("571183405761855");
+        final SapRequest sapRequest = FenixFramework.getDomainObject("1134133360167004");
+        sapRequest.setIntegrated(false);
         final SapEvent sapEvent = new SapEvent(sapRequest.getEvent());
         sendSapRequest(sapEvent, sapRequest, errorLogConsumer, elogger);
     }
@@ -20,7 +21,7 @@ public class SendSingleSapRequestSAP extends SapCustomTask {
         try {
             return FenixFramework.atomic(() -> sapEvent.processPendingRequests(sapRequest, errorLogConsumer, elogger));
         } catch (Exception e) {
-            taskLog("Exeption for: %s %s%n", sapRequest.getEvent().getExternalId(), sapRequest.getDocumentNumber());
+            taskLog("Exception for: %s %s%n", sapRequest.getEvent().getExternalId(), sapRequest.getDocumentNumber());
             return false;
         }
     }

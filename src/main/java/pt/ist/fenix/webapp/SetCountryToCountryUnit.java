@@ -9,8 +9,8 @@ public class SetCountryToCountryUnit extends CustomTask {
  
     @Override
     public void runTask() throws Exception {
-        CountryUnit malawiUnit = FenixFramework.getDomainObject("579821008183");
-        Country malawi = FenixFramework.getDomainObject("712964571352");
-        malawiUnit.setCountry(malawi);
+        CountryUnit iraqUnit = FenixFramework.getDomainObject("579821008282");
+        Country iraq = FenixFramework.getDomainObject("712964571187");
+        iraqUnit.setCountry(iraq);
     }
 }

@@ -14,28 +14,28 @@ public class MoveEnrolments extends CustomTask {
 		// Student student = Student.readStudentByNumber(83394);
 		ExecutionSemester currentPeriod = ExecutionSemester.readActualExecutionSemester();
 
-		Registration firstCycleRegistration = FenixFramework.getDomainObject("846684082932098");
+		final Registration firstCycleRegistration = FenixFramework.getDomainObject("1409634036427477");
 		// student.getRegistrationsSet().stream().filter(r -> r.getCurrentCycleType() ==
 		// CycleType.FIRST_CYCLE).findAny().get();
-		Registration secondCycleRegistration = FenixFramework.getDomainObject("1691109013090641");
+		final Registration secondCycleRegistration = FenixFramework.getDomainObject("1128159059691043");
 		// student.getRegistrationsSet().stream().filter(r ->
 		// r.getDegree().getCycleTypes().contains(CycleType.SECOND_CYCLE)).findAny().get();
 
-		StudentCurricularPlan secondCycleRegistrationSCP = secondCycleRegistration.getStudentCurricularPlan(currentPeriod.getExecutionYear());		
-		firstCycleRegistration.getEnrolments(currentPeriod).stream()
+		StudentCurricularPlan firstCycleRegistrationSCP = firstCycleRegistration.getStudentCurricularPlan(currentPeriod.getExecutionYear());
+		secondCycleRegistration.getEnrolments(currentPeriod).stream()
 				.peek(e -> taskLog("Enrolment: %s Antes tinha o scp: %s e vou passar a ter: %s%n", e.getExternalId(),
-						e.getStudentCurricularPlan().getExternalId(), secondCycleRegistrationSCP.getExternalId()))
+						e.getStudentCurricularPlan().getExternalId(), firstCycleRegistrationSCP.getExternalId()))
 				.forEach(e -> {
-					CurriculumGroup curriculumGroup = 
-						secondCycleRegistrationSCP.getRoot().getAllCurriculumGroups().stream()
+					CurriculumGroup curriculumGroup =
+							firstCycleRegistrationSCP.getRoot().getAllCurriculumGroups().stream()
 							.filter(cg -> cg.getDegreeModule() != null)
 							.filter(cg -> cg.getDegreeModule() == e.getCurriculumGroup().getDegreeModule())
 							.findAny().get();
 					e.setCurriculumGroup(curriculumGroup);
-					e.setStudentCurricularPlan(secondCycleRegistrationSCP);
+					e.setStudentCurricularPlan(firstCycleRegistrationSCP);
 				});
 
-		firstCycleRegistration.getAttendsForExecutionPeriod(currentPeriod).forEach(at -> at.setRegistration(secondCycleRegistration));
+		secondCycleRegistration.getAttendsForExecutionPeriod(currentPeriod).forEach(at -> at.setRegistration(firstCycleRegistration));
 		
 		//remove StudentInquiryRegistration for first cycle, it no longer makes sense
 //		StudentInquiryRegistry registry = FenixFramework.getDomainObject("850343395141094");

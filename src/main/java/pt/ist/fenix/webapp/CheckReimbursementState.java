@@ -2,6 +2,7 @@ package pt.ist.fenix.webapp;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import org.fenixedu.academic.domain.accounting.Refund;
 import org.fenixedu.academic.domain.accounting.RefundState;
 import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
@@ -22,11 +23,12 @@ public class CheckReimbursementState extends CustomTask {
 //        JsonObject result = SapFinantialClient.getReimbursementState("sem sentido", SapEvent.IST_VAT_NUMBER, SapEvent.PROCESS_ID);
 //        taskLog("%s %s\n", sr.getExternalId(), result.toString());
 
-//        SapRequest sr = FenixFramework.getDomainObject("1415608335880669");
-//        taskLog("%s %s %s ", sr.getRequestType() == SapRequestType.REIMBURSEMENT, !sr.isInitialization(), RefundState.CONCLUDED != sr.getRefundState());
+        SapRequest sr = FenixFramework.getDomainObject("289708429216185");
+        taskLog("%s %s %s ", sr.getRequestType() == SapRequestType.REIMBURSEMENT, !sr.isInitialization(), RefundState.CONCLUDED != sr.getRefundState());
 
 
 //        Bennu.getInstance().getSapRoot().getSapRequestSet().stream().parallel().forEach(sr -> process(sr));
+        process(sr);
     }
 
     private void process(final SapRequest sr) {
@@ -52,4 +54,30 @@ public class CheckReimbursementState extends CustomTask {
             }
         });
     }
+
+//    private void syncRefundState(final SapRequest sr) {
+//        if (!sr.isInitialization() && !sr.getIgnore() && sr.getRequestType() == SapRequestType.REIMBURSEMENT && RefundState.CONCLUDED != sr.getRefundState()) {
+//            String documentNumber = sr.getDocumentNumberForType("NA");
+//            if (documentNumber == null) { //refund of excess only
+//                documentNumber = sr.getAdvancementRequest().getDocumentNumberForType("NA");
+//            }
+//            JsonObject result = SapFinantialClient.getReimbursementState(documentNumber, SapEvent.IST_VAT_NUMBER, SapEvent.PROCESS_ID);
+//            taskLog("%s %s %s\n", sr.getExternalId(), sr.getDocumentNumber(), result);
+//            final String statusCode = result.get("statusCode").getAsString();
+//            if (!statusCode.equals("E")) {
+//                RefundState refundState = RefundState.valueOf(statusCode);
+//                String stateDateStr = result.get("statusDate").getAsString();
+//                LocalDate stateDate = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(stateDateStr);
+//
+//                sr.setRefundState(refundState);
+//                sr.setRefundStateDate(stateDate);
+//
+//                Refund refund = sr.getRefund();
+//                if (isRefundComplete(refund)) {
+//                    refund.setState(refundState);
+//                    refund.setStateDate(stateDate);
+//                }
+//            }
+//        }
+//    }
 }

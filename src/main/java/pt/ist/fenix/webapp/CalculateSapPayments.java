@@ -37,7 +37,7 @@ public class CalculateSapPayments extends SapCustomTask {
                 && event.getSapRequestSet().stream().allMatch(SapRequest::getIntegrated)
                 && EventWrapper.needsProcessingSap(event)
                 && needsToProcessPayments(calculator)
-                && Utils.validate(consumer, event);
+                && Utils.validateNonClientData(consumer, event);
     }
 
     private boolean needsToProcessPayments(final DebtInterestCalculator calculator) {

@@ -19,7 +19,7 @@ public class UpdateAdmissionProcessFormData extends CustomTask {
 
     @Override
     public void runTask() throws Exception {
-        AdmissionProcess admissionProcess = FenixFramework.getDomainObject("1978807397384194");
+        AdmissionProcess admissionProcess = FenixFramework.getDomainObject("1978807397384213");
         setFormData(admissionProcess);
     }
 

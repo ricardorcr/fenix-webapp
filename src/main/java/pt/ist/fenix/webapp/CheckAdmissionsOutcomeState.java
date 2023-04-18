@@ -23,7 +23,7 @@ public class CheckAdmissionsOutcomeState extends ReadCustomTask {
 
     @Override
     public void runTask() throws Exception {
-//        final Application application = FenixFramework.getDomainObject("852890310683303"); //571415333968005
+//        final Application application = FenixFramework.getDomainObject("571415333974801"); //571415333968005
 //        final boolean mandatoryActivitiesDone = allMandatoryActivitiesDone(application);
 //        taskLog("All activities done: %s%n", mandatoryActivitiesDone);
 //        checkNeededChangeOutcomeState(application);
@@ -64,7 +64,7 @@ public class CheckAdmissionsOutcomeState extends ReadCustomTask {
                                 if (processAfterOutcomeForm != null) {
                                     final JsonObject dataObject = application.getDataObject();
                                     if (dataObject.has("outcomeState")) {
-                                        taskLog("outcomeState");
+                                        taskLog("outcomeState %s%n", !dataObject.get("outcomeState").getAsJsonObject().get("canEditPostOutcomeForm").getAsBoolean());
                                         return !dataObject.get("outcomeState").getAsJsonObject().get("canEditPostOutcomeForm").getAsBoolean();
                                     }
                                 } else {
@@ -80,6 +80,10 @@ public class CheckAdmissionsOutcomeState extends ReadCustomTask {
     }
 
     private void checkNeededChangeOutcomeState(final Application application) {
+//        //TODO TEMPORARY!!!
+//        if (application.getExternalId().equals("571415333962685")) {
+//            return;
+//        }
         try {
             FenixFramework.atomic(() -> {
                 final Enum outcomeState = Utils.outcomeStateFor(application);

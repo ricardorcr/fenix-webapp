@@ -85,13 +85,13 @@ public class ProcessEvent extends CustomTask {
     private void process(String eventOID, ErrorLogConsumer errorLogConsumer, EventLogger elogger) {
         Event event = FenixFramework.getDomainObject(eventOID);
 
-        if (Utils.validate(errorLogConsumer, event)) {
+        if (Utils.validateNonClientData(errorLogConsumer, event)) {
             EventProcessor.syncEventWithSap(errorLogConsumer, elogger, event);
         }
     }
 
     private void process(Event event, ErrorLogConsumer errorLogConsumer, EventLogger elogger) {
-        if (Utils.validate(errorLogConsumer, event)) {
+        if (Utils.validateNonClientData(errorLogConsumer, event)) {
             EventProcessor.syncEventWithSap(errorLogConsumer, elogger, event);
         }
     }

@@ -65,7 +65,7 @@ public class CalculateNewSapInvoices extends SapCustomTask {
                 && (EventWrapper.needsProcessingSap(event)
                         || event.getAccountingTransactionsSet().stream()
                                 .anyMatch(tx -> tx.getWhenRegistered().getYear() == currentYear))
-                && Utils.validate(consumer, event)
+                && Utils.validateNonClientData(consumer, event)
                 && hasValidCountryCode(consumer, logger, event);
     }
 
@@ -98,7 +98,7 @@ public class CalculateNewSapInvoices extends SapCustomTask {
 
                 final EventWrapper eventWrapper = new EventWrapper(event, errorLog, true);
 
-                sapEvent.updateInvoiceWithNewClientData();
+                sapEvent.updateInvoiceWithNewClientData(errorLog);
 
                 final Money debtFenix = eventWrapper.debt;
                 final Money invoiceSap = sapEvent.getInvoiceAmount();
