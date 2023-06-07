@@ -13,6 +13,7 @@ import org.joda.time.DateTime;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
+import org.joda.time.LocalDate;
 import pt.ist.fenixframework.FenixFramework;
 import pt.ist.payments.domain.SibsPayment;
 import pt.ist.payments.util.Encryptor;
@@ -22,7 +23,7 @@ import pt.ist.payments.util.Encryptor.Cryptogram;
 public class MockSibsWebhookResponse extends CustomTask {
 
     // the external ID of the SibsPayment you want to create a webhook response for
-    private static String sibsPaymentExternalId = "290271069732878";
+    private static String sibsPaymentExternalId = "290271069732867";
 
     // the result code to send with this mock payload
     // check https://sibs.docs.onlinepayments.pt/reference/resultCodes for more info
@@ -30,7 +31,8 @@ public class MockSibsWebhookResponse extends CustomTask {
 
     @Override
     public void runTask() throws Exception {
-        SibsPayment payment = FenixFramework.getDomainObject(sibsPaymentExternalId);
+        final SibsPayment payment = FenixFramework.getDomainObject(sibsPaymentExternalId);
+        payment.setSettlement(",,,,,,,,,,,,," + new LocalDate().toString("yyyyMMdd"));
 
         JsonObject payloadObj = new JsonObject();
         payloadObj.add("merchantTransactionId", new JsonPrimitive(payment.getApiId()));
