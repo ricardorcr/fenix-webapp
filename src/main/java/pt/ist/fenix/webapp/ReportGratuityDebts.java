@@ -81,7 +81,8 @@ public class ReportGratuityDebts extends ReadCustomTask {
         row.setCell("Ciclo", ciclo);
         boolean isAlameda = degree.getCampus(executionYear).stream().anyMatch(c -> c.getName().contains("Alameda"));
         row.setCell("Campus", isAlameda ? "Alameda" : "Tagus");
-        row.setCell("Regime", event.getStudentCurricularPlan().getRegistration().getRegimeType(executionYear).toString());
+        final boolean isPartialRegime = event.getStudentCurricularPlan().getRegistration().isPartialRegime(executionYear);
+        row.setCell("Regime", isPartialRegime ? RegistrationRegimeType.PARTIAL_TIME.getLocalizedName() : RegistrationRegimeType.FULL_TIME.getLocalizedName());
         row.setCell("istID", event.getPerson().getUsername());
         row.setCell("Nome", event.getPerson().getName());
         row.setCell("NIF", event.getPerson().getSocialSecurityNumber());

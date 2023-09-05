@@ -1,19 +1,24 @@
 package pt.ist.fenix.webapp;
 
-import org.fenixedu.academic.domain.accounting.ServiceAgreementTemplate;
-import org.fenixedu.academic.domain.phd.debts.PhdGratuityPR;
-import org.fenixedu.academic.util.Money;
+import org.fenixedu.academic.domain.ExecutionCourse;
+import org.fenixedu.academic.domain.ExecutionDegree;
+import org.fenixedu.academic.domain.OccupationPeriod;
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
-import org.joda.time.DateTime;
+import org.joda.time.YearMonthDay;
 import pt.ist.fenixframework.FenixFramework;
 
-public class CreatePhdGratuityPR extends CustomTask {
+public class Teste extends CustomTask {
 
     @Override
     public void runTask() throws Exception {
-        ServiceAgreementTemplate agreementTemplate = FenixFramework.getDomainObject("1975019236229123");
-        PhdGratuityPR gratuityPR = new PhdGratuityPR(new DateTime(2022,9,1,0,0),
-                null, agreementTemplate, new Money(2750), 0.01);
-    }
+        final ExecutionDegree executionDegree = FenixFramework.getDomainObject("1126758900301977");
+        final ExecutionCourse executionCourse = FenixFramework.getDomainObject("283085589465983");
+        final OccupationPeriod periodLessons = executionDegree.getPeriodLessons(executionCourse.getExecutionPeriod());
+        taskLog("Como é possível?? %s%n", periodLessons != null);
 
+        final OccupationPeriod occupationPeriodForLesson = OccupationPeriod.createOccupationPeriodForLesson(executionCourse,
+                new YearMonthDay(2023, 9, 11),
+                new YearMonthDay(2024, 01, 05));
+        taskLog("Mau!");
+    }
 }

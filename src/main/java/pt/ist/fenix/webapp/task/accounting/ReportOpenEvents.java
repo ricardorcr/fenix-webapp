@@ -1,4 +1,4 @@
-package pt.ist.fenix.webapp.task.accounting.report;
+package pt.ist.fenix.webapp.task.accounting;
 
 import org.fenixedu.academic.domain.Country;
 import org.fenixedu.academic.domain.Person;
@@ -11,6 +11,7 @@ import org.fenixedu.academic.domain.organizationalStructure.Party;
 import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
+import org.fenixedu.bennu.scheduler.custom.ReadCustomTask;
 import org.fenixedu.commons.spreadsheet.Spreadsheet;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -33,9 +34,9 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class ReportOpenEvents extends CustomTask {
+public class ReportOpenEvents extends ReadCustomTask {
 
-    private final DateTime instant = new DateTime(2023, 01, 21, 0, 0, 0, 0);
+    private final DateTime instant = new DateTime(2023, 7, 1, 0, 0, 0, 0);
     private final LocalDate instantDate = instant.toLocalDate();
     private final DateTime now = new DateTime();
 
@@ -72,6 +73,7 @@ public class ReportOpenEvents extends CustomTask {
             row.setCell("Is Canceled", (String) o[15]);
             row.setCell("Error", (String) o[16]);
             row.setCell("Nationality", (String) o[17]);
+            row.setCell("Customized Plan", (String) o[18]);
 
             byProductCode.putIfAbsent(product, BigDecimal.ZERO);
             final BigDecimal productValue = byProductCode.get(product);
@@ -204,7 +206,11 @@ public class ReportOpenEvents extends CustomTask {
                     final BigDecimal dueInterest = instantCalculator.getInterestAmount().add(instantCalculator.getFineAmount())
                             .subtract(interest);
 
-//                    calculator.get
+                    final BigDecimal customPaymentPlanAmount = calculator.getCustomPaymentPlanAmount();
+                    String customizedPlan = "Não";
+                    if (customPaymentPlanAmount.compareTo(BigDecimal.ZERO) != 0) {
+                        customizedPlan = "Sim";
+                    }
                     if (dueAmount.signum() > 0) {
                         final String description = event.getDescription().toString();
                         final LocalDate dueDate = new LocalDate(Utils.getDueDate(event));
@@ -228,7 +234,8 @@ public class ReportOpenEvents extends CustomTask {
                                 Utils.executionYearOf(event).getYear(),
                                 Boolean.toString(event.isCancelled()),
                                 " ",
-                                nationalityFor(event.getParty())
+                                nationalityFor(event.getParty()),
+                                customizedPlan
                         };
                     }
                 }
@@ -254,6 +261,7 @@ public class ReportOpenEvents extends CustomTask {
                     " ",
                     " ",
                     e.getMessage() + " " + e.getClass().getSimpleName(),
+                    " ",
                     " "
             };
         }

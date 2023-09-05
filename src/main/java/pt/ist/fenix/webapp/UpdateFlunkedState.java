@@ -19,16 +19,15 @@ import org.joda.time.LocalDate;
 
 public class UpdateFlunkedState extends CustomTask {
 
-    private static final String[] FLUNKED_STUDENTS = new String[]{ "21975","44598","52327","53311","56072","56586","58727","60109","63990","64663","64722","64728",
-            "65311","65551","65951","65989","66438","66718","67581","68148","68205","69464","70010","70044","71051","72655","75424","76315","76536","77075","77918",
-            "78211","78343","78411","79351","79516","79733","79740","81211","81640","81863","81884","82198","82265","82318","82425","82520","84045","84667","85215",
-            "86371","86380","86444","86644","86874","86920","86930","86931","87552","88020","88215","88225","88643","90952","90953" };
+    private static final String[] FLUNKED_STUDENTS = new String[]{"67861", "68354", "74265", "76163", "76537", "76782", "77076", "78072", "78343", "79838",
+            "80939", "81060", "81183", "81400", "81495", "81884", "82425", "82605", "83659", "83953", "85326", "86289", "86422", "86844", "87238", "87676", "87685",
+            "88020", "89192", "90079", "90952", "90953", "91162", "91188", "94243", "94325"};
     static int count = 0;
     private static ExecutionYear executionYear = null;
 
     @Override
     public void runTask() throws Exception {
-        executionYear = ExecutionYear.readExecutionYearByName("2022/2023");
+        executionYear = ExecutionYear.readExecutionYearByName("2023/2024");
         User user = User.findByUsername("ist24616");
         Authenticate.mock(user, "Script UpdateFlunkedState");
 
@@ -60,7 +59,8 @@ public class UpdateFlunkedState extends CustomTask {
             taskLog("Student: " + student.getNumber() + " has more than one active registration in degree admin office, it has "
                     + activeRegistrations.size());
             throw new RuntimeException();
-        } 
+        }
+
         // the student may have enrolments but they can be NA, this list is given bye NEP so we should just set and that's it
         // if they made a mistake the student can complain and the state can be reverted
 //        else {

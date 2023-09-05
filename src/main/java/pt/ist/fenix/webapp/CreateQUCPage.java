@@ -1,13 +1,10 @@
 package pt.ist.fenix.webapp;
 
-import static org.fenixedu.bennu.core.i18n.BundleUtil.getLocalizedString;
-
-import java.util.List;
-import java.util.stream.Collectors;
 import org.fenixedu.academic.domain.ExecutionCourse;
 import org.fenixedu.academic.domain.ExecutionSemester;
 import org.fenixedu.bennu.core.domain.Bennu;
-import org.fenixedu.bennu.scheduler.custom.CustomTask;
+import org.fenixedu.bennu.scheduler.CronTask;
+import org.fenixedu.bennu.scheduler.annotation.Task;
 import org.fenixedu.cms.domain.CMSTemplate;
 import org.fenixedu.cms.domain.CMSTheme;
 import org.fenixedu.cms.domain.Menu;
@@ -28,10 +25,8 @@ import java.util.stream.Collectors;
 
 import static org.fenixedu.bennu.core.i18n.BundleUtil.getLocalizedString;
 
-/**
- * Created by diutsu on 16/09/16.
- */
-public class CreateQUCPage extends CustomTask {
+@Task(englishTitle = "Create QUC page results", readOnly = true)
+public class CreateQUCPage extends CronTask {
 
     public static final String BUNDLE = "resources.FenixEduQucResources";
 
@@ -44,26 +39,32 @@ public class CreateQUCPage extends CustomTask {
 
     @Override
     public void runTask() throws Exception {
-        ExecutionSemester oldQucExecutionSemester = ExecutionSemester.readBySemesterAndExecutionYear(1, "2021/2022");
+        final ExecutionSemester previousSemester = ExecutionSemester.readActualExecutionSemester().getPreviousExecutionPeriod();
 
+        if (!isToCreate(previousSemester)) {
+            return;
+        }
         Bennu.getInstance().getCMSThemesSet().forEach(t -> taskLog(t.getType()));
         CMSTemplate quc_template =
                 CMSTheme.forType("fenixedu-learning-theme").getTemplatesSet().stream().filter(p -> p.getType().contains("QUC"))
                         .findAny().get();
 
         List<Site> missingQUC =
-                Bennu.getInstance().getExecutionCoursesSet().stream().filter(ec -> ec.getExecutionPeriod() != null)
-                        .filter(ec -> ec.getExecutionPeriod().isAfter(oldQucExecutionSemester)).filter(ec -> ec.getSite() != null)
-                        .filter(this::hasQUQResults).filter(
-                        ec -> ec.getSite().getPagesSet().stream().filter(p -> p.getTemplate() != null)
-                                .noneMatch(p -> p.getTemplate().getType().contains("QUC"))).map(ec -> ec.getSite())
+                previousSemester.getAssociatedExecutionCoursesSet().stream()
+                        .filter(ec -> ec.getSite() != null)
+                        .filter(ec -> !ec.getInquiryResultsSet().isEmpty())
+                        .map(ExecutionCourse::getSite)
+                        .filter(site -> site.getPagesSet().stream()
+                                        .filter(p -> p.getTemplate() != null)
+                                        .noneMatch(p -> p.getTemplate().getType().contains("QUC")))
                         .collect(Collectors.toList());
 
         taskLog("before: " + missingQUC.size());
 
         FenixFramework.atomic(
                 () -> missingQUC.stream().forEach(site -> {
-                    Page page = site.getPagesSet().stream().filter(p -> p.getName().equals(QUC_TITLE)).findAny()
+                    Page page = site.getPagesSet().stream()
+                            .filter(p -> p.getName().equals(QUC_TITLE)).findAny()
                             .orElseGet(() -> new Page(site, QUC_TITLE));
 
                     if (page.getTemplate() != quc_template) {
@@ -73,7 +74,7 @@ public class CreateQUCPage extends CustomTask {
                     addQUCComponent(page);
                     page.setPublished(true);
 
-                    Menu menu = site.getMenusSet().stream().filter(m -> m.getPrivileged()).findAny().get();
+                    Menu menu = site.getMenusSet().stream().filter(Menu::getPrivileged).findAny().get();
 
                     if (menu.getItemsSet().stream().noneMatch(item -> item.getPage() == page)) {
                         MenuItem menuItem = new MenuItem(menu);
@@ -85,11 +86,19 @@ public class CreateQUCPage extends CustomTask {
                     }
                 }));
 
-        taskLog("after: " + Bennu.getInstance().getExecutionCoursesSet().stream().filter(ec -> ec.getExecutionPeriod() != null)
-                .filter(ec -> ec.getExecutionPeriod().isAfter(oldQucExecutionSemester))
-                .filter(ec -> ec.getSite() != null).filter(this::hasQUQResults).filter(
-                        ec -> ec.getSite().getPagesSet().stream().filter(p -> p.getTemplate() != null)
-                                .noneMatch(p -> p.getTemplate().getType().contains("QUC"))).map(ec -> ec.getSite()).count());
+        taskLog("after: " + previousSemester.getAssociatedExecutionCoursesSet().stream()
+                .filter(ec -> ec.getExecutionPeriod() != null)
+                .filter(ec -> !ec.getInquiryResultsSet().isEmpty())
+                .filter(ec -> ec.getSite().getPagesSet().stream()
+                                .filter(p -> p.getTemplate() != null)
+                                .noneMatch(p -> p.getTemplate().getType().contains("QUC")))
+                                .map(ExecutionCourse::getSite)
+                                .count());
+    }
+
+    private boolean isToCreate(final ExecutionSemester executionSemester) {
+        TeacherInquiryTemplate teacherInquiryTemplate = TeacherInquiryTemplate.getTemplateByExecutionPeriod(executionSemester);
+        return teacherInquiryTemplate != null && teacherInquiryTemplate.getResponsePeriodBegin().plusDays(7).isAfter(DateTime.now());
     }
 
     private void addQUCComponent(Page page) {
@@ -106,12 +115,4 @@ public class CreateQUCPage extends CustomTask {
             }
         }
     }
-
-    private boolean hasQUQResults(ExecutionCourse ec) {
-        TeacherInquiryTemplate teacherInquiryTemplate =
-                TeacherInquiryTemplate.getTemplateByExecutionPeriod(ec.getExecutionPeriod());
-        return !(teacherInquiryTemplate == null || teacherInquiryTemplate.getResponsePeriodBegin().plusDays(7)
-                .isAfter(DateTime.now()) || ec.getInquiryResultsSet().isEmpty());
-    }
-
 }

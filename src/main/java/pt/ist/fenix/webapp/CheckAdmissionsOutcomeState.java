@@ -87,22 +87,23 @@ public class CheckAdmissionsOutcomeState extends ReadCustomTask {
         try {
             FenixFramework.atomic(() -> {
                 final Enum outcomeState = Utils.outcomeStateFor(application);
-                if (outcomeState == RegistrationProcessState.BOARDING) {
-                    if (Utils.allMandatoryActivitiesDone(application)) {
-                        final AdmissionProcess admissionProcess = application.getAdmissionProcessTarget().getAdmissionProcess();
-                        if (Utils.isToChangeOutcomeState(admissionProcess)) {
-                            if (Utils.needsDocumentConfirmation(admissionProcess)) {
-                                taskLog("Should change for REGISTERED - %s - %s%n", application.getExternalId(), application.getAdmissionProcessTarget().getAdmissionProcess().getTitle().getContent());
-                                RegistrationService.setOutcomeState(application, RegistrationProcessState.REGISTERED);
-                                RegistrationService.addToConfirmationQueueIfNeeded(application);
-                            } else {
-                                taskLog("Should change for CONFIRMED - %s - %s%n", application.getExternalId(), application.getAdmissionProcessTarget().getAdmissionProcess().getTitle().getContent());
-                                RegistrationService.setOutcomeState(application, RegistrationProcessState.CONFIRMED);
-                                Signal.emit(RegistrationService.REGISTRATION_CONFIRMED, new DomainObjectEvent<>(application));
-                            }
-                        }
-                    }
-                }
+                //new way of doing things
+//                if (outcomeState == RegistrationProcessState.BOARDING) {
+//                    if (Utils.allMandatoryActivitiesDone(application)) {
+//                        final AdmissionProcess admissionProcess = application.getAdmissionProcessTarget().getAdmissionProcess();
+//                        if (Utils.isToChangeOutcomeState(admissionProcess)) {
+//                            if (Utils.needsDocumentConfirmation(admissionProcess)) {
+//                                taskLog("Should change for REGISTERED - %s - %s%n", application.getExternalId(), application.getAdmissionProcessTarget().getAdmissionProcess().getTitle().getContent());
+//                                RegistrationService.setOutcomeState(application, RegistrationProcessState.REGISTERED);
+//                                RegistrationService.addToConfirmationQueueIfNeeded(application);
+//                            } else {
+//                                taskLog("Should change for CONFIRMED - %s - %s%n", application.getExternalId(), application.getAdmissionProcessTarget().getAdmissionProcess().getTitle().getContent());
+//                                RegistrationService.setOutcomeState(application, RegistrationProcessState.CONFIRMED);
+//                                Signal.emit(RegistrationService.REGISTRATION_CONFIRMED, new DomainObjectEvent<>(application));
+//                            }
+//                        }
+//                    }
+//                }
             });
         } catch (Throwable re) {
             if (re.getCause() instanceof DomainException) {

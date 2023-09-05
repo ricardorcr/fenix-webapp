@@ -43,6 +43,15 @@ public class CheckMbWayPayments extends ReadCustomTask {
         row.setCell("EventID", sr.getEvent().getExternalId());
         row.setCell("SapRequest", sr.getDocumentNumber());
         row.setCell("Valor", sr.getValue().add(sr.getAdvancement()).getAmountAsString());
-        row.setCell("TransactionID", sr.getPayment().getSibsPayment().getTransactionReference());
+        row.setCell("TransactionID", getTransactionReference(sr));
+    }
+
+    public String getTransactionReference(final SapRequest sapRequest) {
+        final String settlement = sapRequest.getPayment().getSibsPayment().getSettlement();
+        if (settlement != null) {
+            final String[] parts = settlement.split(",");
+            return parts[48];
+        }
+        return null;
     }
 }

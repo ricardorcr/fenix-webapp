@@ -12,12 +12,12 @@ public class Fill3rdCycleDegreesForQUC extends CustomTask {
     @Override
     public void runTask() throws Exception {
         String[] degrees =
-                new String[] { "CEEST", "CELSSBB", "Darq", "Dbioeng", "DBiotec", "POSI", "DEC", "DEEC", "DEFT", "DEGest",
-                        "DEQuim", "DFAERM", "DMat", "DQuim", "DSSE" };
+                new String[] { "DEBiom","DEC","DEEC","DEGest","DEIC","DEQuim","DETPT","DMat","DQuim","DSSE" };
 
         InquiriesRoot.getInstance().getDegreesAvailableForInquiriesSet().clear();
         Set<Degree> degreesAvailableForInquiriesSet = InquiriesRoot.getInstance().getDegreesAvailableForInquiriesSet();
         for (String sigla : degrees) {
+            taskLog("Setting %s%n", sigla);
             degreesAvailableForInquiriesSet.add(Degree.readBySigla(sigla));
         }
     }

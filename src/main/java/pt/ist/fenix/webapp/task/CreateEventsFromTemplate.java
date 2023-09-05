@@ -5,10 +5,11 @@ import org.fenixedu.academic.domain.accounting.EventTemplate;
 import org.fenixedu.academic.domain.student.RegistrationDataByExecutionYear;
 import org.fenixedu.bennu.scheduler.CronTask;
 import org.fenixedu.bennu.scheduler.annotation.Task;
+import org.fenixedu.bennu.scheduler.custom.CustomTask;
 import pt.ist.fenixframework.FenixFramework;
 
 @Task(englishTitle = "Create events from templates", readOnly = true)
-public class CreateEventsFromTemplate extends CronTask {
+public class CreateEventsFromTemplate extends CustomTask {
 
     @Override
     public void runTask() throws Exception {
