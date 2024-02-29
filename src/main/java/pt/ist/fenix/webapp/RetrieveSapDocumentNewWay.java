@@ -18,7 +18,7 @@ public class RetrieveSapDocumentNewWay extends CustomTask {
     @Override
     public void runTask() throws Exception {
         Map<String, String> sapDocNumberMap = new HashMap<>();
-        sapDocNumberMap.put("NA290011","3230003998/2019");
+        sapDocNumberMap.put("NP1014960","2210080603/2022");
         sapDocNumberMap.forEach((k, v) -> {
             final String sapDocumentNumber = v;
             final SapRequest sapRequest = getSapRequest(k);
@@ -35,9 +35,8 @@ public class RetrieveSapDocumentNewWay extends CustomTask {
     }
 
     private SapRequest getSapRequest(String documentNumber) {
-        final SapRequest sapRequest = SapRoot.getInstance().getSapRequestSet().stream()
+        return SapRoot.getInstance().getSapRequestSet().stream()
                 .filter(sr -> sr.getDocumentNumber().equals(documentNumber))
                 .findAny().get();
-        return sapRequest;
     }
 }

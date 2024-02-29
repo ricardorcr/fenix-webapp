@@ -16,7 +16,7 @@ public class DeleteUnusedShiftDistributionEntries extends CustomTask {
                 taskLog("Delete entry with name " + shiftDistributionEntry.getShift().getNome());
                 shiftDistributionEntry.delete();
             } else {
-                taskLog("Já está distribuido %s%n", shiftDistributionEntry.getShift().getNome());
+//                taskLog("Já está distribuido %s%n", shiftDistributionEntry.getShift().getNome());
             }
         }
     }

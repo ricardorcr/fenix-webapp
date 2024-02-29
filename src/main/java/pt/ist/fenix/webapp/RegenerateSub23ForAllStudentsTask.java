@@ -56,7 +56,7 @@ public class RegenerateSub23ForAllStudentsTask extends CustomTask {
         renewalGrant = FenixFramework.getDomainObject("1696928693747716");
         withGrant = FenixFramework.getDomainObject("1696928693747717");
         bean = BennuSpringContextHelper.getBean(CandidacySignalHandler.class);
-        executorService = Executors.newFixedThreadPool(6);
+        executorService = Executors.newFixedThreadPool(36);
         generateForAllStudents();
     }
 
@@ -74,7 +74,7 @@ public class RegenerateSub23ForAllStudentsTask extends CustomTask {
                 .filter(r -> r.getPerson().getIdDocumentType() != null)
                 .filter(r -> r.getPerson().getDocumentIdNumber() != null)
                 .filter(r -> isSubWayClient(r.getPerson().getDateOfBirthYearMonthDay(), today))
-                .filter(this::isToRegenerate)
+//                .filter(this::isToRegenerate)
                 .peek(r -> taskLog("%s%n", r.getPerson().getUsername()))
                 .forEach(this::send);
 
@@ -112,10 +112,6 @@ public class RegenerateSub23ForAllStudentsTask extends CustomTask {
             return false;
         }
 //        return users.contains(registration.getPerson().getUsername());
-    }
-
-    private boolean doesNotHaveAnySub23Declaration(Registration r) {
-        return r.getRegistrationDeclarationFileSet().stream().noneMatch(f -> f.getExecutionYear().isCurrent() && f.getFilename().contains("sub23"));
     }
 
     private boolean isSubWayClient(final YearMonthDay ymd, final LocalDate today) {

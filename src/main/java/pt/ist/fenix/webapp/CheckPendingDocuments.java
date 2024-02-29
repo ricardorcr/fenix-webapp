@@ -11,7 +11,7 @@ public class CheckPendingDocuments extends CustomTask {
                 .filter(sr -> !sr.getSent())
                 .filter(sr -> !sr.getIntegrated())
                 .filter(sr -> !sr.isInitialization())
-                .filter(sr -> sr.getWhenCreated().getYear() < 2023)
+                .filter(sr -> sr.getDocumentDate().getYear() < 2024)
                 .forEach(sr -> taskLog("Must be checked: %s\t%s%n", sr.getDocumentNumber(), sr.getEvent().getExternalId()));
     }
 }

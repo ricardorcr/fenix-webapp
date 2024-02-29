@@ -21,14 +21,15 @@ public class CreateDebtRequest extends CustomTask {
     @Override
     public void runTask() throws Exception {
 
-        final Event event = FenixFramework.getDomainObject("853032044595772");
+        final Event event = FenixFramework.getDomainObject("565260645826671");
         SapEvent sapEvent = new SapEvent(event);
         Method method = null;
         try {
             method = SapEvent.class.getDeclaredMethod("registerDebt", new Class[] {Money.class, Event.class, boolean.class});
             method.setAccessible(true);
-            SapRequest sapRequest = (SapRequest) method.invoke(sapEvent, new Object[] {new Money(412.5), event, true});
-            sapRequest.setRequest(sapRequest.getRequest().replace("2022-02-08", "2021-12-31"));
+            SapRequest sapRequest = (SapRequest) method.invoke(sapEvent, new Object[] {new Money(124.36), event, false});
+            sapRequest.setRequest(sapRequest.getRequest().replace("2022-05-27", "2023-09-17"));
+            sapRequest.setRequest(sapRequest.getRequest().replace("2022-09-14", "2023-12-31"));
         } catch (NoSuchMethodException e1) {
             e1.printStackTrace();
         } catch (IllegalAccessException e1) {
@@ -36,39 +37,5 @@ public class CreateDebtRequest extends CustomTask {
         } catch (InvocationTargetException e1) {
             e1.printStackTrace();
         }
-    }
-
-    private CreditEntry getCreditEntry(final Money creditAmount) {
-        return new CreditEntry("", new DateTime(), new LocalDate(), "", creditAmount.getAmount()) {
-            @Override
-            public BigDecimal getUsedAmountInDebts() {
-                return getAmount();
-            }
-
-            @Override
-            public boolean isToApplyInterest() {
-                return false;
-            }
-
-            @Override
-            public boolean isToApplyFine() {
-                return false;
-            }
-
-            @Override
-            public boolean isForInterest() {
-                return false;
-            }
-
-            @Override
-            public boolean isForFine() {
-                return false;
-            }
-
-            @Override
-            public boolean isForDebt() {
-                return false;
-            }
-        };
     }
 }

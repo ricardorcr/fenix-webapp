@@ -1,7 +1,6 @@
 package pt.ist.fenix.webapp;
 
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
-
 import pt.ist.fenixedu.domain.SapRequest;
 import pt.ist.fenixframework.FenixFramework;
 
@@ -10,10 +9,11 @@ public class UpdateSapRequestJson extends CustomTask {
     @Override
     public void runTask() throws Exception {
 
-        SapRequest sapRequest = FenixFramework.getDomainObject("852658382911901");
+        SapRequest sapRequest = FenixFramework.getDomainObject("3104458196130064");
         String request = sapRequest.getRequest();
-        request = request.replace("2022-05-07", "2022-09-01");
+        request = request.replace("2024-01-05", "2023-12-31");
         sapRequest.setRequest(request);
+
 //        
 //        Map<String, String> pairs = new HashMap<String, String>();
 ////        pairs.put("NA431412", "NP431414");
