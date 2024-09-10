@@ -17,8 +17,8 @@ public class RecoverMissingSIBSTransactions extends CronTask {
     public void runTask() throws Exception {
         SibsPaymentSystem.getInstance().getSibsPaymentSet().stream()
                 .filter(sibsPayment -> sibsPayment.getSettlement() != null)
-                .filter(sibsPayment -> sibsPayment.getAccountingTransaction() == null)
-                .filter(sibsPayment -> sibsPayment.getEvent() != null)
+//                .filter(sibsPayment -> sibsPayment.getAccountingTransaction() == null)
+//                .filter(sibsPayment -> sibsPayment.getEvent() != null)
                 .forEach(this::fix);
     }
 

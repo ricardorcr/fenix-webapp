@@ -25,18 +25,18 @@
     </scm>
 
     <properties>
-        <version.org.fenixedu.academic>DEV-SNAPSHOT</version.org.fenixedu.academic>
-        <version.pt.ist.fenixedu.ist>20.5.15</version.pt.ist.fenixedu.ist>
+        <version.org.fenixedu.academic>36.33.0</version.org.fenixedu.academic>
+        <version.pt.ist.fenixedu.ist>20.7.1</version.pt.ist.fenixedu.ist>
         <version.pt.ist.renates-integration>3.1.0</version.pt.ist.renates-integration>
         <version.ch.qos.logback.logback.classic>1.1.8</version.ch.qos.logback.logback.classic>
         <version.org.fenixedu.a3es>3.0.0</version.org.fenixedu.a3es>
-        <version.org.fenixedu.academic.thesis>7.0.1</version.org.fenixedu.academic.thesis>
+        <version.org.fenixedu.academic.thesis>7.1.0</version.org.fenixedu.academic.thesis>
         <version.org.fenixedu.ashes.theme>3.0.0</version.org.fenixedu.ashes.theme>
-        <version.org.fenixedu.bennu.renderers>7.0.0</version.org.fenixedu.bennu.renderers>
-        <version.org.fenixedu.bennu>7.5.3</version.org.fenixedu.bennu>
+        <version.org.fenixedu.bennu.renderers>7.1.1</version.org.fenixedu.bennu.renderers>
+        <version.org.fenixedu.bennu>7.8.1</version.org.fenixedu.bennu>
         <version.org.fenixedu.cms>5.0.0</version.org.fenixedu.cms>
-        <version.org.fenixedu.commons>5.3.0</version.org.fenixedu.commons>
-        <version.org.fenixedu.learning>5.1.0</version.org.fenixedu.learning>
+        <version.org.fenixedu.commons>6.1.0</version.org.fenixedu.commons>
+        <version.org.fenixedu.learning>5.1.1</version.org.fenixedu.learning>
         <version.org.fenixedu.messaging>6.0.1</version.org.fenixedu.messaging>
         <version.org.fenixedu.spaces>4.0.2</version.org.fenixedu.spaces>
         <version.pt.ist.a3es-ist>5.0.0</version.pt.ist.a3es-ist>
@@ -44,19 +44,19 @@
         <version.pt.ist.fenixedu-ist-sas-integration>2.0.4-java17</version.pt.ist.fenixedu-ist-sas-integration>
         <version.org.apache.poi>3.17</version.org.apache.poi>
         <version.pt.ist.fenixedu-ulisboa-cgdIntegration>4.1.0</version.pt.ist.fenixedu-ulisboa-cgdIntegration>
-        <version.pt.ist.fenixedu.idcards>6.1.0</version.pt.ist.fenixedu.idcards>
+        <version.pt.ist.fenixedu.idcards>6.1.1</version.pt.ist.fenixedu.idcards>
         <version.pt.ist.fenixedu.onlinetests>7.1.1</version.pt.ist.fenixedu.onlinetests>
         <version.org.fenixedu.comm-hub>2.0.0</version.org.fenixedu.comm-hub>
         <version.org.fenixedu.fenixedu-academic-transitions>2.1.0</version.org.fenixedu.fenixedu-academic-transitions>
-        <version.pt.ist.sap-sdk-java>6.0.0</version.pt.ist.sap-sdk-java>
+        <version.pt.ist.sap-sdk-java>6.1.0</version.pt.ist.sap-sdk-java>
         <version.pt.ist.sap-group-integration>4.1.0</version.pt.ist.sap-group-integration>
         <version.fenixedu-collaboration-integrations>2.2.1</version.fenixedu-collaboration-integrations>
         <version.org.fenixedu.profile>2.0.0</version.org.fenixedu.profile>
-        <version.org.fenixedu.JWTTools>2.1.1</version.org.fenixedu.JWTTools>
+        <version.org.fenixedu.JWTTools>2.1.2</version.org.fenixedu.JWTTools>
         <version.org.fenixedu.postCodeTools>2.0.0</version.org.fenixedu.postCodeTools>
-        <version.pt.ist.standards>4.0.0</version.pt.ist.standards>
-        <version.org.fenixedu.fenixedu-admissions>7.24.0</version.org.fenixedu.fenixedu-admissions>
-        <version.org.fenixedu.fenixedu-connect>2.4.1</version.org.fenixedu.fenixedu-connect>
+        <version.pt.ist.standards>4.0.1</version.pt.ist.standards>
+        <version.org.fenixedu.fenixedu-admissions>8.4.1</version.org.fenixedu.fenixedu-admissions>
+        <version.org.fenixedu.fenixedu-connect>2.6.2</version.org.fenixedu.fenixedu-connect>
         <version.org.fenixedu.fenixedu-queueing>3.2.0</version.org.fenixedu.fenixedu-queueing>
         <version.org.fenixedu.fenixedu-external-teachers>2.0.0</version.org.fenixedu.fenixedu-external-teachers>
         <version.pt.ist.fenix-sibs-payments>2.1.0</version.pt.ist.fenix-sibs-payments>
@@ -65,11 +65,12 @@
         <version.git-repo-wrapper>1.0.0</version.git-repo-wrapper>
         <version.pt.ist.papyrus.client>5.0.0</version.pt.ist.papyrus.client>
         <version.org.fenixedu.bennu.papyrus>6.2.0</version.org.fenixedu.bennu.papyrus>
-        <version.org.fenixedu.fenixedu-paper-pusher>DEV-SNAPSHOT</version.org.fenixedu.fenixedu-paper-pusher>
-        <version.pt.ist.tecnico-api>2.0.0-beta.14</version.pt.ist.tecnico-api>
+        <version.org.fenixedu.fenixedu-dynamic-forms>0.1.2</version.org.fenixedu.fenixedu-dynamic-forms>
+        <version.org.fenixedu.fenixedu-paper-pusher>2.68.0</version.org.fenixedu.fenixedu-paper-pusher>
+        <version.pt.ist.tecnico-api>2.0.0-beta.18</version.pt.ist.tecnico-api>
         <version.mysql.connector>5.1.49</version.mysql.connector>
         <version.com.fasterxml.jackson.core.jackson.databind>2.12.3</version.com.fasterxml.jackson.core.jackson.databind>
-	<version.pt.ist.sicabe-sdk-java>1.0.7</version.pt.ist.sicabe-sdk-java>
+        <version.pt.ist.sicabe-sdk-java>1.0.7</version.pt.ist.sicabe-sdk-java>
     </properties>
 
 
@@ -119,21 +120,21 @@
     </build>
 
     <dependencies>
-	<dependency>
-	    <groupId>commons-dbcp</groupId>
-	    <artifactId>commons-dbcp</artifactId>
-	    <version>1.4</version>
-	</dependency>
+        <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.4</version>
+        </dependency>
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20220924</version>
         </dependency>
         <dependency>
-                <groupId>org.fenixedu</groupId>
-                <artifactId>fenixedu-commons</artifactId>
-                <version>${version.org.fenixedu.commons}</version>
-            </dependency>
+            <groupId>org.fenixedu</groupId>
+            <artifactId>fenixedu-commons</artifactId>
+            <version>${version.org.fenixedu.commons}</version>
+        </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15on</artifactId>
@@ -201,12 +202,12 @@
                     <artifactId>javax.mail</artifactId>
                 </exclusion>
                 <exclusion>
-                        <groupId>bouncycastle</groupId>
-                        <artifactId>bcprov-jdk14</artifactId>
+                    <groupId>bouncycastle</groupId>
+                    <artifactId>bcprov-jdk14</artifactId>
                 </exclusion>
                 <exclusion>
-                        <groupId>bouncycastle</groupId>
-                        <artifactId>bcmail-jdk14</artifactId>
+                    <groupId>bouncycastle</groupId>
+                    <artifactId>bcmail-jdk14</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -273,7 +274,7 @@
         </dependency>
         <dependency>
             <groupId>org.fenixedu</groupId>
-	    <artifactId>bennu-papyrus</artifactId>
+            <artifactId>bennu-papyrus</artifactId>
             <version>${version.org.fenixedu.bennu.papyrus}</version>
         </dependency>
         <dependency>
@@ -470,8 +471,8 @@
             <version>${version.pt.ist.fenix-sibs-payments}</version>
             <exclusions>
                 <exclusion>
-	            <groupId>org.bouncycastle</groupId>
-        	    <artifactId>bcprov-jdk15to18</artifactId>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bcprov-jdk15to18</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -494,6 +495,11 @@
             <groupId>org.fenixedu</groupId>
             <artifactId>fenixedu-smart-forms</artifactId>
             <version>${version.org.fenixedu.fenixedu-paper-pusher}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fenixedu</groupId>
+            <artifactId>fenixedu-dynamic-forms</artifactId>
+            <version>${version.org.fenixedu.fenixedu-dynamic-forms}</version>
         </dependency>
         <dependency>
             <groupId>org.fenixedu</groupId>
@@ -543,7 +549,7 @@
         <dependency>
             <groupId>com.sun.xml.ws</groupId>
             <artifactId>policy</artifactId>
-            <version>2.7.2</version>
+            <version>3.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.sun.xml.ws</groupId>
@@ -625,7 +631,7 @@
     <repositories>
         <repository>
             <id>dsi-maven-artifacts</id>
-            <url>https://fenix-ashes.ist.utl.pt/nexus/repository/dsi-private-repo</url>
+            <url>https://fenix-ashes.tecnico.ulisboa.pt/nexus/repository/dsi-private-repo</url>
         </repository>
         <repository>
             <id>fenixedu-maven-repository</id>

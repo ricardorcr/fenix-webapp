@@ -139,7 +139,7 @@ public class CorrectCandidacyDebtValue extends CustomTask {
 //        }
 
         SapEvent sapEvent = new SapEvent(event);
-        SapRequest invoice = sapEvent.registerInvoice(new Money(100), event, false, true);
+        SapRequest invoice = sapEvent.registerInvoice(new Money(100), event, false, true, null);
         registerAdvancementInPayment(event, FenixFramework.getDomainObject("289708429178690"), invoice.getDocumentNumber());
 
         taskLog("Evento %s corrigido para aluno %s%n", event.getExternalId(), event.getPerson().getUsername());

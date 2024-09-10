@@ -19,15 +19,16 @@ import org.joda.time.LocalDate;
 
 public class UpdateFlunkedState extends CustomTask {
 
-    private static final String[] FLUNKED_STUDENTS = new String[]{"67861", "68354", "74265", "76163", "76537", "76782", "77076", "78072", "78343", "79838",
-            "80939", "81060", "81183", "81400", "81495", "81884", "82425", "82605", "83659", "83953", "85326", "86289", "86422", "86844", "87238", "87676", "87685",
-            "88020", "89192", "90079", "90952", "90953", "91162", "91188", "94243", "94325"};
+    private static final String[] FLUNKED_STUDENTS = new String[]{"37090","44637","50368","51410","52997","55314","63544","63916","65652","67377","68252","74328",
+            "78072","78781","79728","81211","81400","81941","86844","86930","87532","87725","88042","89312","89481","90473","90750","90920","90957",
+            "92516","92758","92973","94133","96307","97469","98945","98961","99419","99845","100667","100750","101214","102360","102420","103130","103230","103448",
+            "103628","103663","103707","103855","104007","104053","104087","104094","104096","104100","104107","104143","104144","104618"};
     static int count = 0;
     private static ExecutionYear executionYear = null;
 
     @Override
     public void runTask() throws Exception {
-        executionYear = ExecutionYear.readExecutionYearByName("2023/2024");
+        executionYear = ExecutionYear.readExecutionYearByName("2024/2025");
         User user = User.findByUsername("ist24616");
         Authenticate.mock(user, "Script UpdateFlunkedState");
 
@@ -47,16 +48,11 @@ public class UpdateFlunkedState extends CustomTask {
     private void processStudent(final Student student) {
         taskLog("Process Student -> " + student.getNumber());
 
-//        final List<Registration> transitionRegistrations = student.getTransitionRegistrations();
-//        if (!transitionRegistrations.isEmpty()) {
-//            for (Registration registration : transitionRegistrations) {
-//                deleteRegistration(registration);
-//            }
-//        }
-
+        //TODO the registration may not be active it can be in abandon, or there could be more than 1 active
+        // it is necessary to specify which registration it is to flunk
         final Set<Registration> activeRegistrations = getActiveRegistrations(student);
         if (activeRegistrations.size() != 1) {
-            taskLog("Student: " + student.getNumber() + " has more than one active registration in degree admin office, it has "
+            taskLog("Student: " + student.getNumber() + " has zero or more than one active registration, it has "
                     + activeRegistrations.size());
             throw new RuntimeException();
         }
@@ -83,76 +79,6 @@ public class UpdateFlunkedState extends CustomTask {
             }
         }
         return result;
-    }
-
-    private void deleteRegistration(Registration registration) {
-        taskLog("Delete Transitions Registration For " + registration.getDegree().getName());
-        if (registration == null || !registration.isTransition()) {
-            throw new RuntimeException("error.trying.to.delete.invalid.registration");
-        }
-
-        for (; registration.getStudentCurricularPlansSet().size() != 0; ) {
-            final StudentCurricularPlan studentCurricularPlan = registration.getStudentCurricularPlansSet().iterator().next();
-            if (!studentCurricularPlan.isBolonhaDegree()) {
-                throw new RuntimeException("What?");
-            }
-
-            deleteCurriculumModules(studentCurricularPlan.getRoot());
-            removeEmptyGroups(studentCurricularPlan.getRoot());
-
-            final ExtraCurriculumGroup extraCurriculumGroup = studentCurricularPlan.getExtraCurriculumGroup();
-            if (extraCurriculumGroup != null) {
-                extraCurriculumGroup.deleteRecursive();
-            }
-            if (studentCurricularPlan.getRoot() != null) {
-                studentCurricularPlan.getRoot().delete();
-            }
-            studentCurricularPlan.delete();
-        }
-
-        registration.delete();
-    }
-
-    protected void deleteCurriculumModules(final CurriculumModule curriculumModule) {
-        if (curriculumModule == null) {
-            return;
-        }
-
-        if (!curriculumModule.isLeaf()) {
-            final CurriculumGroup curriculumGroup = (CurriculumGroup) curriculumModule;
-            for (final CurriculumModule each : curriculumGroup.getCurriculumModulesSet()) {
-                deleteCurriculumModules(each);
-            }
-        } else if (curriculumModule.isDismissal()) {
-            curriculumModule.delete();
-        } else {
-            throw new RuntimeException("error.in.transition.state.can.only.remove.groups.and.dismissals");
-        }
-    }
-
-    protected void removeEmptyGroups(final CurriculumGroup curriculumGroup) {
-        if (curriculumGroup == null) {
-            return;
-        }
-
-        for (final CurriculumModule curriculumModule : curriculumGroup.getCurriculumModulesSet()) {
-            if (!curriculumModule.isLeaf()) {
-                removeEmptyChildGroups((CurriculumGroup) curriculumModule);
-            }
-        }
-    }
-
-    private void removeEmptyChildGroups(final CurriculumGroup curriculumGroup) {
-        for (final CurriculumModule curriculumModule : curriculumGroup.getCurriculumModulesSet()) {
-            if (!curriculumModule.isLeaf()) {
-                removeEmptyChildGroups((CurriculumGroup) curriculumModule);
-            }
-        }
-
-        if (curriculumGroup.getCurriculumModulesSet().size() == 0 && !curriculumGroup.isRoot()
-                && !curriculumGroup.isExtraCurriculum()) {
-            curriculumGroup.deleteRecursive();
-        }
     }
 
     private void changeToFlunkedState(final Registration registration) {

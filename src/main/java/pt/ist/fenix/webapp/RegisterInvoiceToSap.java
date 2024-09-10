@@ -123,7 +123,7 @@ public class RegisterInvoiceToSap extends CustomTask{
 
         if (debtFenix.isPositive()) {
             if (invoiceSap.isZero()) {
-                sapEvent.registerInvoice(debtFenix, event, eventWrapper.isGratuity(), false);
+                sapEvent.registerInvoice(debtFenix, event, eventWrapper.isGratuity(), false, null);
             } else if (invoiceSap.isNegative()) {
                 logError(event, errorLogConsumer, elogger, "A dívida no SAP é negativa");
             } else if (!debtFenix.equals(invoiceSap)) {

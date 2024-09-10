@@ -21,7 +21,6 @@ import org.fenixedu.admissions.domain.AdmissionProcessTarget;
 import org.fenixedu.admissions.domain.AdmissionsSystem;
 import org.fenixedu.admissions.domain.Application;
 import org.fenixedu.admissions.ist.domain.Utils;
-import org.fenixedu.admissions.util.DynamicForm;
 import org.fenixedu.bennu.RegistrationProcessConfiguration;
 import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.core.rest.JsonBodyReaderWriter;

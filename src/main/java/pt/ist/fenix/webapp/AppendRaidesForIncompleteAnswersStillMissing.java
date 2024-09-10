@@ -4,10 +4,8 @@ import com.google.gson.JsonObject;
 import org.fenixedu.admissions.domain.AdmissionProcess;
 import org.fenixedu.admissions.domain.Application;
 import org.fenixedu.admissions.ist.wizard.RemoteReader;
-import org.fenixedu.admissions.util.DynamicForm;
-import org.fenixedu.bennu.AdmissionsISTConfiguration;
-import org.fenixedu.bennu.core.i18n.BundleUtil;
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
+import org.fenixedu.dynamicForms.DynamicForm;
 import pt.ist.fenixframework.FenixFramework;
 
 public class AppendRaidesForIncompleteAnswersStillMissing extends CustomTask implements RemoteReader {

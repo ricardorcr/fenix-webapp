@@ -61,7 +61,7 @@ public class CreateInvoiceAdvancementAndUseIt extends CustomTask {
 
         SapEvent sapEvent = new SapEvent(event);
         SapRequest advancement = registerAdvancementOnly(invoice, payment);
-        SapRequest newInvoice = sapEvent.registerInvoice(invoice.getValue(), event, false, true);
+        SapRequest newInvoice = sapEvent.registerInvoice(invoice.getValue(), event, false, true, null);
         registerAdvancementInPayment(event, advancement, newInvoice.getDocumentNumber());
         payment.delete();
 

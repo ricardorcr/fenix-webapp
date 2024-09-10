@@ -1,8 +1,5 @@
 package pt.ist.fenix.webapp;
 
-import java.util.Arrays;
-import java.util.List;
-
 import pt.ist.fenixedu.domain.SapRequest;
 import pt.ist.fenixedu.domain.SapRequestType;
 import pt.ist.fenixedu.domain.SapRoot;
@@ -12,6 +9,9 @@ import pt.ist.fenixedu.giaf.invoices.SapEvent;
 import pt.ist.fenixedu.giaf.invoices.task.SapCustomTask;
 import pt.ist.fenixframework.Atomic;
 import pt.ist.fenixframework.FenixFramework;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class ResendSapDocuments extends SapCustomTask {
 
@@ -27,7 +27,7 @@ public class ResendSapDocuments extends SapCustomTask {
 //		try {
 //			documentNumbers = Files.readAllLines(
 //					new File("/afs/ist.utl.pt/ciist/fenix/fenix015/ist/reenvio_documentos_lote2_15_11_2020_NAs.txt").toPath());
-        documentNumbers = Arrays.asList("NJ879776","NJ861226","NJ862276","NJ867352","NJ877937");
+        documentNumbers = Arrays.asList("NP1222584","ND1214162");
 
 //		} catch (IOException e) {
 //			throw new Error("Erro a ler o ficheiro.");
@@ -62,12 +62,14 @@ public class ResendSapDocuments extends SapCustomTask {
                 .filter(sr -> sr.getDocumentNumber().equals(documentNumber))
                 .peek(sr -> {
                     if (sr.getAnulledRequest() != null || sr.getOriginalRequest() != null) {
-                        throw new Error("Document " + documentNumber + " is annulled for event " + sr.getEvent().getExternalId());
+                        taskLog("Document " + documentNumber + " is annulled for event " + sr.getEvent().getExternalId());
+//                        throw new Error("Document " + documentNumber + " is annulled for event " + sr.getEvent().getExternalId());
                     }
                 })
                 .peek(sr -> {
                     if (sr.getIgnore() && sr.getAnulledRequest() == null && sr.getOriginalRequest() == null) {
-                        throw new Error("Este documento não devia estar a ser enviado: " + sr.getDocumentNumber() + " Evento: " + sr.getEvent().getExternalId());
+                        taskLog("Este documento não devia estar a ser enviado: " + sr.getDocumentNumber() + " Evento: " + sr.getEvent().getExternalId());
+//                        throw new Error("Este documento não devia estar a ser enviado: " + sr.getDocumentNumber() + " Evento: " + sr.getEvent().getExternalId());
                     }
                 })
                 .peek(sr -> {
@@ -75,7 +77,8 @@ public class ResendSapDocuments extends SapCustomTask {
                             .filter(osr -> osr.getIntegrated())
                             .filter(osr -> osr.getRequestType() != SapRequestType.REIMBURSEMENT)
                             .anyMatch(osr -> osr.refersToDocument(documentNumber))) {
-                        throw new Error("Document " + documentNumber + " is refered by other integrated documents");
+                        taskLog("Document " + documentNumber + " is refered by other integrated documents");
+//                        throw new Error("Document " + documentNumber + " is refered by other integrated documents");
                     }
                 }).findAny().orElseThrow(() -> new Error("Document " + documentNumber + " not found."));
 

@@ -25,6 +25,7 @@ import org.fenixedu.bennu.io.domain.DriveAPIStorage;
 import org.fenixedu.bennu.io.domain.FileSupport;
 import org.fenixedu.bennu.scheduler.CronTask;
 import org.fenixedu.bennu.scheduler.annotation.Task;
+import org.fenixedu.bennu.scheduler.custom.CustomTask;
 import org.fenixedu.commons.spreadsheet.Spreadsheet;
 import org.fenixedu.connect.domain.ConnectSystem;
 import org.fenixedu.connect.domain.identification.IdentificationDocument;
@@ -45,7 +46,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 @Task(englishTitle = "Script for dumping raw data to drive directory", readOnly = true)
-public class DumpRawData extends CronTask {
+public class DumpRawData extends CustomTask {
 
     private static final String REPO_NODE_ID = "1414452990237579";
 

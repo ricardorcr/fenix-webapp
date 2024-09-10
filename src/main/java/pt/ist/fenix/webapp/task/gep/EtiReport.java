@@ -35,7 +35,7 @@ public class EtiReport extends ReadCustomTask {
         Set<EvaluationSeason> seasons = EvaluationConfiguration.getInstance().getEvaluationSeasonSet();
         //TODO Parameters used below, change accordingly!!
         DegreeType degreeType = DegreeType.matching(type -> type.hasExactlyOneCycleType() && type.isFirstCycle()).get();
-        ExecutionYear executionYear = ExecutionYear.readCurrentExecutionYear();
+        ExecutionYear executionYear = ExecutionYear.readExecutionYearByName("2023/2024");
 
         spreadsheet.setHeader("IstID");
         spreadsheet.setHeader("número aluno");

@@ -38,7 +38,7 @@ public class GenerateDeclarationsForAllStudentsTask extends CustomTask {
 
     @Override
     public void runTask() throws Exception {
-        firstGeneration = new LocalDate(2022, 9, 14);
+        firstGeneration = new LocalDate(2024, 9, 2);
         ptDeclaration = getTemplateFor("declaracao-matricula", PT);
         enDeclaration = getTemplateFor("declaracao-matricula", EN);
         executionYearName = ExecutionYear.readCurrentExecutionYear().getName().replaceAll("/", "-");

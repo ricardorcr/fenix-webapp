@@ -8,16 +8,19 @@ import org.fenixedu.academic.domain.candidacy.IngressionType;
 import org.fenixedu.academic.domain.degreeStructure.CurricularStage;
 import org.fenixedu.academic.domain.degreeStructure.CycleType;
 import org.fenixedu.academic.domain.phd.PhdIndividualProgramProcess;
+import org.fenixedu.academic.domain.phd.PhdIndividualProgramProcessState;
 import org.fenixedu.academic.domain.phd.PhdProgram;
 import org.fenixedu.academic.domain.phd.serviceRequests.documentRequests.PhdRegistryDiplomaRequest;
 import org.fenixedu.academic.domain.student.Registration;
 import org.fenixedu.academic.domain.student.RegistrationProtocol;
 import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
+import org.fenixedu.commons.spreadsheet.Spreadsheet;
 import org.fenixedu.spaces.domain.Space;
 import org.joda.time.LocalDate;
 import pt.ist.fenixframework.FenixFramework;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,27 +29,35 @@ public class CreateRegistrationsForPhdProcesses extends CustomTask {
 
     @Override
     public void runTask() throws Exception {
-        final int[] count = new int[]{0, 0, 0, 0, 0, 0};
         final Space alamedaCampus = FenixFramework.getDomainObject("2448131360897"); //Alameda
+        final Spreadsheet spreadsheet = new Spreadsheet("Validar");
+        final Spreadsheet reconnectedRegistrations = spreadsheet.addSpreadsheet("Matrículas ligadas");
+        final Spreadsheet createdRegistrations = reconnectedRegistrations.addSpreadsheet("Matrículas criadas");
 
         Bennu.getInstance().getPartysSet().stream()
                 .filter(Person.class::isInstance)
                 .map(Person.class::cast)
                 .flatMap(p -> p.getPhdIndividualProgramProcessesSet().stream())
                 .filter(phd -> phd.getRegistration() == null)
-                .filter(this::hasCertificateOfRegistration)
+                .filter(phd -> phd.getActiveState() != PhdIndividualProgramProcessState.CANDIDACY
+                        && phd.getActiveState() != PhdIndividualProgramProcessState.NOT_ADMITTED
+                        && phd.getActiveState() != PhdIndividualProgramProcessState.CANCELLED)
                 .forEach(phd -> {
-                    final LocalDate date = phd.getWhenStartedStudies();//StartedStudies();
-                    if (phd.getPerson().getStudent() != null) {
+                    final LocalDate date = phd.getWhenStartedStudies();
+                    if (phd.getPerson().getStudent() != null && phd.getPhdProgram() != null) {
                         phd.getPerson().getStudent().getRegistrationsSet().stream()
                                 .filter(r -> r.getDegree() == phd.getPhdProgram().getDegree())
-                                .forEach(phd::setRegistration);
-                    }
-                    if (phd.getPerson().getStudent() != null && phd.getPerson().getStudent().getRegistrationsSet().stream()
-                            .filter(r -> r.getDegree() == phd.getPhdProgram().getDegree())
-//                            .peek(r -> taskLog("%s\t%s%n", r.getNumber(), r.getLastStateType().getName()))
-                            .findAny().isPresent()) {
-                        count[5] = count[5] + 1;
+                                .forEach(r -> {
+                                    phd.setRegistration(r);
+                                    final Spreadsheet.Row row = reconnectedRegistrations.addRow();
+                                    row.setCell("OID", r.getExternalId());
+                                    row.setCell("Matrícula", r.getDegreeCurricularPlanName());
+                                    row.setCell("Estado Matrícula", r.getActiveState().getStateType().getName());
+                                    row.setCell("Phd", phd.getProcessNumber());
+                                    row.setCell("Estado Phd", phd.getActiveState().getName());
+                                    row.setCell("Aluno", r.getPerson().getUsername());
+                                    row.setCell("Nome", r.getPerson().getName());
+                                });
                     }
                     if (phd.getRegistration() == null) {
                         if (date != null) {
@@ -57,7 +68,6 @@ public class CreateRegistrationsForPhdProcesses extends CustomTask {
                                 if (degree != null) {
                                     List<DegreeCurricularPlan> dcps = degree.getDegreeCurricularPlansForYear(executionYear);
                                     if (dcps.isEmpty()) {
-                                        count[1] = count[1] + 1;
                                         final Set<DegreeCurricularPlan> curricularPlans = degree.getDegreeCurricularPlansSet().stream()
                                                 .filter(dcp -> dcp.getCurricularStage() == CurricularStage.APPROVED)
                                                 .collect(Collectors.toSet());
@@ -79,25 +89,47 @@ public class CreateRegistrationsForPhdProcesses extends CustomTask {
                                     registration.setStudiesStartDate(phd.getCandidacyProcess().getWhenStartedStudies());
                                     registration.setIngressionType(IngressionType.findByPredicate(IngressionType::isInternal3rdCycleAccess).orElse(null));
                                     registration.setPhdIndividualProgramProcess(phd);
-                                    taskLog("Humm: %s%n", phd.getProcessNumber());
-                                    count[0] = count[0] + 1;
+                                    final Spreadsheet.Row row = createdRegistrations.addRow();
+                                    row.setCell("OID", registration.getExternalId());
+                                    row.setCell("Matrícula", registration.getDegreeCurricularPlanName());
+                                    row.setCell("Estado Matrícula", registration.getActiveState().getStateType().getName());
+                                    row.setCell("Phd", phd.getProcessNumber());
+                                    row.setCell("Estado Phd", phd.getActiveState().getName());
+                                    row.setCell("Aluno", registration.getPerson().getUsername());
+                                    row.setCell("Nome", registration.getPerson().getName());
                                 } else {
-                                    count[2] = count[2] + 1;
+                                    final Spreadsheet.Row row = spreadsheet.addRow();
+                                    row.setCell("OID", phd.getExternalId());
+                                    row.setCell("Phd", phd.getProcessNumber());
+                                    row.setCell("Estado Phd", phd.getActiveState().getName());
+                                    row.setCell("Programa", phd.getPhdProgram().getName().getContent());
+                                    row.setCell("Aluno", phd.getPerson().getName());
+                                    row.setCell("Problema", "Sem Curso");
                                 }
                             } else {
-                                count[3] = count[3] + 1;
+                                final Spreadsheet.Row row = spreadsheet.addRow();
+                                row.setCell("OID", phd.getExternalId());
+                                row.setCell("Phd", phd.getProcessNumber());
+                                row.setCell("Estado Phd", phd.getActiveState().getName());
+                                row.setCell("Programa", "");
+                                row.setCell("Aluno", phd.getPerson().getName());
+                                row.setCell("Problema", "Sem Programa");
                             }
                         } else {
-                            count[4] = count[4] + 1;
+                            final Spreadsheet.Row row = spreadsheet.addRow();
+                            row.setCell("OID", phd.getExternalId());
+                            row.setCell("Phd", phd.getProcessNumber());
+                            row.setCell("Estado Phd", phd.getActiveState().getName());
+                            row.setCell("Programa", phd.getPhdProgram() != null ? phd.getPhdProgram().getName().getContent() : "Sem Programa!");
+                            row.setCell("Aluno", phd.getPerson().getName());
+                            row.setCell("Problema", "Sem Data Estudos");
                         }
                     }
                 });
-        taskLog("Criadas %s%n", count[0]);
-        taskLog("Sem DCP %s%n", count[1]);
-        taskLog("Sem curso %s%n", count[2]);
-        taskLog("Sem PhdProgram %s%n", count[3]);
-        taskLog("Sem ano %s%n", count[4]);
-        taskLog("Com registration não ligada: %s%n", count[5]);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        spreadsheet.exportToXLSSheet(baos);
+        output("matriculas_phd.xlsx", baos.toByteArray());
     }
 
     private boolean hasCertificateOfRegistration(final PhdIndividualProgramProcess phdIndividualProgramProcess) {

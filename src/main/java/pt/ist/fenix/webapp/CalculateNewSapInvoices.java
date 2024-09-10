@@ -44,19 +44,19 @@ public class CalculateNewSapInvoices extends SapCustomTask {
 
     @Override
     protected void runTask(ErrorLogConsumer consumer, EventLogger logger) {
-        if (EventWrapper.SAP_THRESHOLD == null) {
-            throw new Error();
-        }
-        try {
-            final Set<String> eventIds = Files.readAllLines(new File(FILENAME).toPath()).stream().map(l -> l.split("\t")[0])
-                    .collect(Collectors.toSet());
-            Bennu.getInstance().getAccountingEventsSet().stream()
-                .parallel()
-                .filter(e -> !eventIds.contains(e.getExternalId()))
-                .forEach(e -> processSapTx(consumer, logger, e));
-        } catch (final IOException e) {
-            throw new Error(e);
-        }
+//        if (EventWrapper.SAP_THRESHOLD == null) {
+//            throw new Error();
+//        }
+//        try {
+//            final Set<String> eventIds = Files.readAllLines(new File(FILENAME).toPath()).stream().map(l -> l.split("\t")[0])
+//                    .collect(Collectors.toSet());
+//            Bennu.getInstance().getAccountingEventsSet().stream()
+//                .parallel()
+//                .filter(e -> !eventIds.contains(e.getExternalId()))
+//                .forEach(e -> processSapTx(consumer, logger, e));
+//        } catch (final IOException e) {
+//            throw new Error(e);
+//        }
     }
 
     public boolean shouldProcess(final ErrorLogConsumer consumer, final EventLogger logger, final Event event) {
@@ -105,7 +105,7 @@ public class CalculateNewSapInvoices extends SapCustomTask {
 
                 if (debtFenix.isPositive()) {
                     if (invoiceSap.isZero()) {
-                        sapEvent.registerInvoice(debtFenix, event, eventWrapper.isGratuity(), false);
+                        sapEvent.registerInvoice(debtFenix, event, eventWrapper.isGratuity(), false, null);
                     } else if (invoiceSap.isNegative()) {
                         logError(event, errorLog, elogger, "A dívida no SAP é negativa");
                     } else if (!debtFenix.equals(invoiceSap)) {
@@ -116,7 +116,7 @@ public class CalculateNewSapInvoices extends SapCustomTask {
                             // passar data actual (o valor do evento mudou, não dá para saber quando, vamos assumir que mudou quando foi detectada essa diferença)
                             logError(event, errorLog, elogger, "A dívida no Fénix é superior à dívida registada no SAP");
                             sapEvent.registerInvoice(debtFenix.subtract(invoiceSap), eventWrapper.event,
-                                    eventWrapper.isGratuity(), true);
+                                    eventWrapper.isGratuity(), true, null);
                         } else {
                             // diminuir divida no sap e registar credit note da diferença na última factura existente
                             logError(event, errorLog, elogger, "A dívida no SAP é superior à dívida registada no Fénix");

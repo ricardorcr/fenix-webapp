@@ -108,7 +108,7 @@ public class CalculateSapInvoicesAndPaymentsAndCreditNotes extends SapCustomTask
 
             if (debtFenix.isPositive()) {
                 if (invoiceSap.isZero()) {
-                    sapEvent.registerInvoice(debtFenix, event, eventWrapper.isGratuity(), false);
+                    sapEvent.registerInvoice(debtFenix, event, eventWrapper.isGratuity(), false, null);
                 } else if (invoiceSap.isNegative()) {
                     logError(event, errorLog, elogger, "A dívida no SAP é negativa");
                     return;

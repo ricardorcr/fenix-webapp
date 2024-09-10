@@ -2,6 +2,7 @@ package pt.ist.fenix.webapp.task.quc;
 
 import org.fenixedu.academic.domain.Professorship;
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
+import pt.ist.fenixedu.quc.domain.InquiryResult;
 import pt.ist.fenixedu.quc.domain.QuestionAnswer;
 import pt.ist.fenixframework.FenixFramework;
 import pt.ist.fenixframework.backend.jvstmojb.pstm.AbstractDomainObject;
@@ -13,7 +14,7 @@ public class DeleteProfessorshipAnswers extends CustomTask {
 
     @Override
     public void runTask() throws Exception {
-        final Professorship professorship = FenixFramework.getDomainObject("1409569611844916");
+        final Professorship professorship = FenixFramework.getDomainObject("283669705004987"); //ist13948
         professorship.getInquiryStudentTeacherAnswersSet()
                 .forEach(answer -> {
                     answer.setProfessorship(null);
@@ -29,5 +30,6 @@ public class DeleteProfessorshipAnswers extends CustomTask {
                         throw new RuntimeException(e);
                     }
                 });
+        professorship.getInquiryResultsSet().forEach(InquiryResult::delete);
     }
 }

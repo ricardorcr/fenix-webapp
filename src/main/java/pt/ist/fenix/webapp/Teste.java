@@ -1,13 +1,14 @@
 package pt.ist.fenix.webapp;
 
-import org.fenixedu.academic.domain.degree.DegreeType;
+import org.fenixedu.academic.domain.accounting.EventTemplate;
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
+import pt.ist.fenixframework.FenixFramework;
 
 public class Teste extends CustomTask {
 
     @Override
     public void runTask() throws Exception {
-        DegreeType.all().filter(type -> type.hasExactlyOneCycleType() && type.isFirstCycle())
-                .forEach(type -> taskLog(type.getName().getContent()));
+        final EventTemplate eventTemplate = FenixFramework.getDomainObject("290361264046082");
+        eventTemplate.setCode(eventTemplate.getCode().trim());
     }
 }

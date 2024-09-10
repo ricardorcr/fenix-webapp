@@ -5,11 +5,11 @@ import org.fenixedu.academic.domain.Person;
 import org.fenixedu.admissions.domain.AdmissionProcess;
 import org.fenixedu.admissions.domain.Application;
 import org.fenixedu.admissions.ist.wizard.RemoteReader;
-import org.fenixedu.admissions.util.DynamicForm;
 import org.fenixedu.bennu.AdmissionsISTConfiguration;
 import org.fenixedu.bennu.core.groups.Group;
 import org.fenixedu.bennu.core.i18n.BundleUtil;
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
+import org.fenixedu.dynamicForms.DynamicForm;
 import org.fenixedu.messaging.core.domain.Message;
 import pt.ist.fenixframework.FenixFramework;
 

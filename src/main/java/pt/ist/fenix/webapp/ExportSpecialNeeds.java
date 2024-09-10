@@ -5,9 +5,9 @@ import org.fenixedu.academic.domain.student.Registration;
 import org.fenixedu.admissions.domain.AdmissionProcess;
 import org.fenixedu.admissions.domain.AdmissionsSystem;
 import org.fenixedu.admissions.domain.Application;
-import org.fenixedu.admissions.util.DynamicForm;
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
 import org.fenixedu.commons.spreadsheet.Spreadsheet;
+import org.fenixedu.dynamicForms.DynamicForm;
 import pt.ist.fenixframework.FenixFramework;
 
 import java.io.ByteArrayOutputStream;

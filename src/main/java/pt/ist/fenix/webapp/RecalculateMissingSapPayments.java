@@ -261,7 +261,7 @@ public class RecalculateMissingSapPayments extends SapCustomTask {
                     Money invoiceSap = sapEvent.getInvoiceAmount();
                     if (debtFenix.isPositive()) {
                         if (invoiceSap.isZero()) {
-                            sapEvent.registerInvoice(debtFenix, event, eventWrapper.isGratuity(), false);
+                            sapEvent.registerInvoice(debtFenix, event, eventWrapper.isGratuity(), false, null);
                         } else if (invoiceSap.isNegative()) {
                             taskLog("A dívida no SAP é negativa");
                         }
