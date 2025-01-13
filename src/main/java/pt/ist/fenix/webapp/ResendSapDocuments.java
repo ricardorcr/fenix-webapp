@@ -27,7 +27,7 @@ public class ResendSapDocuments extends SapCustomTask {
 //		try {
 //			documentNumbers = Files.readAllLines(
 //					new File("/afs/ist.utl.pt/ciist/fenix/fenix015/ist/reenvio_documentos_lote2_15_11_2020_NAs.txt").toPath());
-        documentNumbers = Arrays.asList("NP1222584","ND1214162");
+        documentNumbers = Arrays.asList("ND1368045","NP1398558","ND1368051","NP1398557");
 
 //		} catch (IOException e) {
 //			throw new Error("Erro a ler o ficheiro.");

@@ -130,6 +130,7 @@ public class CreateRegistrationsForPhdProcesses extends CustomTask {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         spreadsheet.exportToXLSSheet(baos);
         output("matriculas_phd.xlsx", baos.toByteArray());
+//        throw new Error("Dry run");
     }
 
     private boolean hasCertificateOfRegistration(final PhdIndividualProgramProcess phdIndividualProgramProcess) {

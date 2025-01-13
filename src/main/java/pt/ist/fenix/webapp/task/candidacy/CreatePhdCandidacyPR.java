@@ -12,7 +12,7 @@ public class CreatePhdCandidacyPR extends CustomTask {
     @Override
     public void runTask() throws Exception {
 
-        final ServiceAgreementTemplate serviceAgreementTemplate = FenixFramework.getDomainObject("1691139077832714"); //DEAETPT2020
-        new PhdProgramCandidacyPR(serviceAgreementTemplate, new DateTime(2023,9,1,0,0), null, new Money(100));
+        final ServiceAgreementTemplate serviceAgreementTemplate = FenixFramework.getDomainObject("2256494212939777"); //DETPT
+        new PhdProgramCandidacyPR(serviceAgreementTemplate, new DateTime(2024,7,10,0,0), null, new Money(100));
     }
 }

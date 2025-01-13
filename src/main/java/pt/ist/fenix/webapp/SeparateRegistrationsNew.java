@@ -92,7 +92,7 @@ public class SeparateRegistrationsNew extends CustomTask {
 
             for (final StudentCurricularPlan scp : degreeCurricularPlan.getStudentCurricularPlansSet()) {
 
-//                if (scp.getRegistration().getNumber() == 96532 || scp.getRegistration().getNumber() == 96758) {
+                if (scp.getRegistration().getNumber() == 96310 || scp.getRegistration().getNumber() == 96758) {
 //                    taskLog("BUH!");
                 if (canSeparate(scp)) {
                     taskLog("Separating Student: %s %s%n", scp.getRegistration().getStudent().getNumber(), scp.getRegistration().getExternalId());
@@ -123,7 +123,7 @@ public class SeparateRegistrationsNew extends CustomTask {
                         taskLog(new String(errorOut.toByteArray()));
                     }
                 }
-//                }
+                }
             }
         }
     }

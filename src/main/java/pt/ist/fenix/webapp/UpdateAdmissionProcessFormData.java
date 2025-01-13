@@ -19,8 +19,9 @@ public class UpdateAdmissionProcessFormData extends CustomTask {
 
     @Override
     public void runTask() throws Exception {
-        AdmissionProcess admissionProcess = FenixFramework.getDomainObject("1978807397384213");
-        setFormData(admissionProcess);
+        AdmissionProcess admissionProcess = FenixFramework.getDomainObject("1134382467252244");
+        String urlFixed = admissionProcess.getOutcomeConfig().replaceAll("https://fenix.tecnico.ulisboa.pt", CoreConfiguration.getConfiguration().applicationUrl());
+        admissionProcess.setOutcomeConfig(urlFixed);
     }
 
     private void setFormData(AdmissionProcess process) {

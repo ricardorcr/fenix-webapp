@@ -30,7 +30,7 @@ public class DeleteInquiryResults extends CustomTask {
         StringBuffer deletedComments = new StringBuffer();
         ExecutionSemester previousExecutionPeriod = ExecutionSemester.readActualExecutionSemester().getPreviousExecutionPeriod();
         List<List<InquiryResult>> partition =
-                Lists.partition(new ArrayList(previousExecutionPeriod.getInquiryResultsSet()), 5000);
+                Lists.partition(new ArrayList(previousExecutionPeriod.getInquiryResultsSet()), 100000);
 
         for (List<InquiryResult> list : partition) {
 
