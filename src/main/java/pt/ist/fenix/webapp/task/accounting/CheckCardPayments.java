@@ -16,7 +16,7 @@ public class CheckCardPayments extends ReadCustomTask {
 
     @Override
     public void runTask() throws Exception {
-        final DateTime dateTime = new DateTime(2024, 11, 24, 0, 0);
+        final DateTime dateTime = new DateTime(2025, 01, 01, 0, 0);
         Bennu.getInstance().getAccountingTransactionDetailsSet().stream()
                 .filter(txDetails -> txDetails.getPaymentMethod() == PaymentMethod.getCardPaymentMethod())
                 .filter(txDetails -> txDetails.getWhenRegistered().isAfter(dateTime))

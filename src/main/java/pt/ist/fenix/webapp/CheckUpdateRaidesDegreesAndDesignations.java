@@ -27,7 +27,9 @@ public class CheckUpdateRaidesDegreesAndDesignations extends CustomTask {
 
     @Override
     public void runTask() throws Exception {
-        final File file = new File("/afs/ist.utl.pt/ciist/fenix/fenix015/ist/MatrizCesRamos_22_02_2022.xlsx");
+
+        final File file = new File("/afs/ist.utl.pt/ciist/fenix/fenix015/ist/MatrizCesRamos_2025_Connect.xlsx");
+//        final File file = new File("/home/rcro/Documents/fenix/gep/raides/MatrizCesRamos_2025_Connect.xlsx");
         final Workbook workbook = new XSSFWorkbook(file);
         final Sheet sheet = workbook.getSheet("Estabelecimento_Curso_Ramo");
         final Stream<Row> rowStream = StreamSupport.stream(Spliterators.spliteratorUnknownSize(sheet.rowIterator(), Spliterator.ORDERED), false);
@@ -42,7 +44,7 @@ public class CheckUpdateRaidesDegreesAndDesignations extends CustomTask {
                 if (unit != null) {
                     final String degreeCode = row.getCell(2).getStringCellValue();
                     final String degreeName = row.getCell(3).getStringCellValue();
-                    final String degreeLevel = row.getCell(8).getStringCellValue();
+                    final String degreeLevel = row.getCell(5).getStringCellValue();
                     DegreeDesignation degreeDesignation = findDegreeDesignation(degreeCode);
                     if (degreeDesignation == null) {
                         final DegreeClassification degreeClassification = DegreeClassification.readByCode(degreeLevel);
@@ -51,7 +53,7 @@ public class CheckUpdateRaidesDegreesAndDesignations extends CustomTask {
                         taskLog("Creating DD:\t%s\t%s%n", degreeCode, degreeName);
                     } else {
                         if (!unit.getDegreeDesignationSet().contains(degreeDesignation)) {
-                            taskLog("Adding:\t%s\t%s\t%s%n", degreeCode, degreeDesignation.getDescription(), univName);
+                            taskLog("Updating:\t%s\t%s\t%s%n", degreeCode, degreeDesignation.getDescription(), univName);
                             unit.addDegreeDesignation(degreeDesignation);
                         }
                     }

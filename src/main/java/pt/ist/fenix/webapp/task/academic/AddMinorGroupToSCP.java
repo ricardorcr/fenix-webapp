@@ -10,7 +10,7 @@ public class AddMinorGroupToSCP extends CustomTask {
 
     @Override
     public void runTask() throws Exception {
-        final Application application = FenixFramework.getDomainObject("1415840264098683");
+        final Application application = FenixFramework.getDomainObject("852890310678484");
         final CurriculumGroup curriculumGroup = MinorEnrolmentService.enrol(application);
     }
 }

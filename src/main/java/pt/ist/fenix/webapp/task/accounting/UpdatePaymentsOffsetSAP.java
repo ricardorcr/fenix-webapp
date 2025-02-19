@@ -7,6 +7,6 @@ public class UpdatePaymentsOffsetSAP extends CustomTask {
 
     @Override
     public void runTask() throws Exception {
-        SapRoot.getInstance().setOffsetDays(7);
+        SapRoot.getInstance().setOffsetDays(3);
     }
 }

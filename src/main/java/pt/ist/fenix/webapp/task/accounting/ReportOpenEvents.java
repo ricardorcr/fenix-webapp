@@ -36,7 +36,7 @@ import java.util.stream.Stream;
 
 public class ReportOpenEvents extends ReadCustomTask {
 
-    private final DateTime instant = new DateTime(2024, 01, 01, 0, 0, 0, 0);
+    private final DateTime instant = new DateTime(2025, 01, 01, 0, 0, 0, 0);
     private final LocalDate instantDate = instant.toLocalDate();
     private final DateTime now = new DateTime();
 
