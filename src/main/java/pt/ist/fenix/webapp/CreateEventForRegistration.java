@@ -32,7 +32,7 @@ public class CreateEventForRegistration extends CustomTask {
         final LocalDate enrolmentDate = dataByExecutionYear.getEnrolmentDate();
         final EventTemplate eventTemplate = EventTemplate.templateFor(dataByExecutionYear);
         EventTemplateConfig templateConfig = eventTemplate.getConfigFor(enrolmentDate.toDateTimeAtStartOfDay());
-        createEvent(dataByExecutionYear, EventTemplate.Type.ADMIN_FEES, templateConfig);
+        createEvent(dataByExecutionYear, EventTemplate.Type.TUITION, templateConfig);
     }
 
     private RegistrationDataByExecutionYear getRegistrationDataFor(final String istID) {

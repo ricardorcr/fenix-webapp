@@ -59,8 +59,8 @@ import java.util.stream.Stream;
 @Task(englishTitle = "SicabeIntegrationTask", readOnly = true)
 public class DebugSicabeIntegrationTask extends ReadCustomTask implements SpreadsheetOperator {
 
-    private static boolean DEBUG = true;
-    private static String NIF = "260136603";
+    private static boolean DEBUG = false;
+    private static String NIF = "245575600";
 
     @Override
     public void runTask() throws Exception {
@@ -73,12 +73,12 @@ public class DebugSicabeIntegrationTask extends ReadCustomTask implements Spread
             final byte[] input = inputSheet.exportToXLSX();
             output("sicabe" + inputSheet.year + ".xlsx", input);
 
-//            final SicabeSheet outputSheet = SicabeService.sendInfoToSicabe(inputSheet.year, input, username -> User.findByUsername(username)
-//                    .getIdentity().getPersonalInformation().getTaxInformation().getTin().substring(2));
-//            final byte[] output = outputSheet.exportToXLSX();
-//            output("sicabe" + inputSheet.year + "_sendResult.xlsx", output);
+            final SicabeSheet outputSheet = SicabeService.sendInfoToSicabe(inputSheet.year, input, username -> User.findByUsername(username)
+                    .getIdentity().getPersonalInformation().getTaxInformation().getTin().substring(2));
+            final byte[] output = outputSheet.exportToXLSX();
+            output("sicabe" + inputSheet.year + "_sendResult.xlsx", output);
 
-//            notifyNoIdentityMatch(inputSheet.year, output);
+            notifyNoIdentityMatch(inputSheet.year, output);
         }
     }
 
@@ -131,10 +131,10 @@ public class DebugSicabeIntegrationTask extends ReadCustomTask implements Spread
                     "No ficheiro em anexo estão listadas erros que impediram a comunicação de alguns dados para o SICABE.",
                     "ricardo.rodrigues@tecnico.ulisboa.pt", null);
         }
-        send("Sicabe_" + year + "_ALL.xlsx", output,
-                "Envio Dados SICABE - Comunicação",
-                "No ficheiro em anexo estão todas as interações com o SICABE.",
-                "ricardo.rodrigues@tecnico.ulisboa.pt", null);
+//        send("Sicabe_" + year + "_ALL.xlsx", output,
+//                "Envio Dados SICABE - Comunicação",
+//                "No ficheiro em anexo estão todas as interações com o SICABE.",
+//                "ricardo.rodrigues@tecnico.ulisboa.pt", null);
     }
 
     private SicabeSheet generateSheetFor(final int year) {
@@ -143,7 +143,7 @@ public class DebugSicabeIntegrationTask extends ReadCustomTask implements Spread
         final ObterCandidaturasSubmetidasResponse obterCandidaturasSubmetidasResponse = SicabeClient.obterCandidaturasSubmetidas(year);
         obterCandidaturasSubmetidasResponse.getCandidaturas().getCandidaturaSubmetida().forEach(candidaturaSubmetida -> {
             final String nif = candidaturaSubmetida.getNif();
-            if (DEBUG && nif.equals(NIF)) {
+//            if (DEBUG && nif.equals(NIF)) {
                 final String codigoCurso = candidaturaSubmetida.getCodigoCurso();
                 final int numeroCandidatura = candidaturaSubmetida.getNumeroCandidatura();
                 final String numeroDocumentoIdentificacao = candidaturaSubmetida.getNumeroDocumentoIdentificacao();
@@ -455,7 +455,7 @@ public class DebugSicabeIntegrationTask extends ReadCustomTask implements Spread
                         }
                     }
                 });
-            }
+//            }
         });
 
         return sicabeSheet;

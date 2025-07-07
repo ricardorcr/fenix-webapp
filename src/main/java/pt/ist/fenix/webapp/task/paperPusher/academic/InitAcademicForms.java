@@ -1,8 +1,8 @@
-package pt.ist.fenix.webapp.task.academic;
+package pt.ist.fenix.webapp.task.paperPusher.academic;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.fenixedu.admissions.util.RemoteReader;
-import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.core.util.CoreConfiguration;
 import org.fenixedu.bennu.scheduler.custom.WriteCustomTask;
 import org.fenixedu.commons.i18n.LocalizedString;
@@ -12,6 +12,8 @@ import org.fenixedu.smartForms.domain.RequestQueue;
 import org.fenixedu.smartForms.domain.RequestType;
 import org.fenixedu.smartForms.domain.SmartFormsSystem;
 
+import java.io.File;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Objects;
@@ -21,15 +23,11 @@ import java.util.stream.Stream;
 public class InitAcademicForms extends WriteCustomTask implements RemoteReader {
 
     private String[] testUsers = new String[]{
-
-            "ist24439", "ist24884", "ist12048", "ist177966", "ist31302", "ist14152", "ist23978", "ist23487",
-            "ist23674", "ist24588", "ist24506", "ist173882", "ist24616"
-
     };
 
     @Override
     public void runTask() throws Exception {
-        deleteAll();
+//        deleteAll();
 
         final SmartFormsSystem smartFormsSystem = SmartFormsSystem.getInstance();
 
@@ -41,34 +39,36 @@ public class InitAcademicForms extends WriteCustomTask implements RemoteReader {
                 .filter(queue -> queue.getName().getContent(PT).equals("Serviços Académicos"))
 //                .peek(queue -> Arrays.stream(testUsers).map(User::findByUsername).forEach(queue::addMember))
                 .forEach(queue -> Arrays.stream(FORMS).forEach(filename -> createRequestType(queue, filename)));
+
+//        Arrays.stream(NO_QUEUE_FORMS).forEach(filename -> createRequestType(null, filename));
     }
 
     private static String[] FORMS = new String[]{
-/*
-            "forms/academic/CertificateOfRegistrationRequestFormData.json",
-            "forms/academic/FormalDiplomaRequestFormData.json",
-            "forms/academic/DiplomaSupplementRequestFormData.json",
-            "forms/academic/DegreeCertificateRequestFormData.json",
-            "forms/academic/DuplicateDocumentFormData.json"
-            "forms/academic/CompleteCurricularInformationFormData.json"
-//            "forms/academic/RegisterComplementaryInformationRequestFormData.json",
- */
-
-//            "forms/academic/FreeRequestFormData.json",
-//            "forms/academic/ProgrammesAndWorkloadsCertificateFormData.json",
-//            "forms/academic/TranscriptOfRecordsRequestFormData.json"
-//            "forms/academic/CompleteCurricularInformationFormData.json"
             "forms/academic/PhdApplication.json"
     };
 
+    private static String[] NO_QUEUE_FORMS = new String[]{
+            "forms/ProtestRequestResult.json"
+    };
+
     private void deleteAll() {
-        for (final String formFilename : FORMS) {
-            final JsonObject data = object(formFilename);
+        deleteAll(NO_QUEUE_FORMS);
+        deleteAll(FORMS);
+    }
+
+    private void deleteAll(final String[] forms) {
+        for (final String formFilename : forms) {
+            final JsonObject data = localObject(formFilename);
             final LocalizedString requestName = LocalizedString.fromJson(data.get("name"));
             SmartFormsSystem.getInstance().getRequestTypeSet().stream()
                     .filter(requestType -> requestType.getName().equals(requestName))
-                    .flatMap(requestType -> requestType.getCurrentRequestTypeVersion().getRequestSet().stream())
-                    .peek(request -> request.setRegistryCode(null))
+                    .flatMap(requestType -> requestType.getRequestTypeVersionSet().stream())
+                    .flatMap(requestTypeVersion -> requestTypeVersion.getRequestSet().stream())
+                    .peek(request -> {
+                        request.getAttachmentSet().stream()
+                                .filter(file -> file.getRequestFile() != null)
+                                .forEach(file -> file.getRequestFile().setReferenceLetterAttachment(null));
+                    })
                     .map(request -> request.getRequestCost())
                     .filter(Objects::nonNull)
                     .forEach(requestCost -> requestCost.setEvent(null));
@@ -81,13 +81,14 @@ public class InitAcademicForms extends WriteCustomTask implements RemoteReader {
                 final String flowName = flowTemplate.get("name").getAsString();
                 SmartFlowSystem.getInstance().getFlowTemplateSet().stream()
                         .filter(ft -> ft.getName().equals(flowName))
+                        .peek(ft -> ft.getFlowQueueSet().clear())
                         .forEach(FlowTemplate::delete);
             }
         }
     }
 
     private JsonObject createRequestType(final RequestQueue requestQueue, final String formFilename) {
-        final JsonObject data = object(formFilename);
+        final JsonObject data = localObject(formFilename);
         final RequestType requestType = new RequestType(
                 LocalizedString.fromJson(data.get("name")),
                 LocalizedString.fromJson(data.get("description")),
@@ -121,6 +122,15 @@ public class InitAcademicForms extends WriteCustomTask implements RemoteReader {
 
     private static LocalizedString ls(final String pt, final String en) {
         return new LocalizedString(PT, pt).with(EN, en);
+    }
+
+    public JsonObject localObject(String filename) {
+        try {
+            return JsonParser.parseString(new String(Files.readAllBytes(new File("/home/rcro/workspace/data/paperPusher/" + filename).toPath())))
+                    .getAsJsonObject();
+        } catch (Exception e) {
+            throw new Error(e);
+        }
     }
 
 }

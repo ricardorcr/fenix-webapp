@@ -11,9 +11,9 @@ public class CreatePhdThesisRequestFeePR extends CustomTask {
 
     @Override
     public void runTask() throws Exception {
-        DateTime startDate = new DateTime(2023,9,1,0,0);
-        Money amount = new Money(500);
-        ServiceAgreementTemplate serviceAgreementTemplate = FenixFramework.getDomainObject("1975019236229123"); //Media Digitais
+        DateTime startDate = new DateTime(2025,1,18,0,0);
+        Money amount = new Money(250);
+        ServiceAgreementTemplate serviceAgreementTemplate = FenixFramework.getDomainObject("2256494212939777"); //Territorio
         new PhdThesisRequestFeePR(startDate, null, serviceAgreementTemplate, amount);
     }
 }

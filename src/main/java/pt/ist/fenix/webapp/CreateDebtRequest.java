@@ -21,15 +21,15 @@ public class CreateDebtRequest extends CustomTask {
     @Override
     public void runTask() throws Exception {
 
-        final Event event = FenixFramework.getDomainObject("565260645826671");
+        final Event event = FenixFramework.getDomainObject("853032044637076");
         SapEvent sapEvent = new SapEvent(event);
         Method method = null;
         try {
             method = SapEvent.class.getDeclaredMethod("registerDebt", new Class[] {Money.class, Event.class, boolean.class});
             method.setAccessible(true);
-            SapRequest sapRequest = (SapRequest) method.invoke(sapEvent, new Object[] {new Money(124.36), event, false});
-            sapRequest.setRequest(sapRequest.getRequest().replace("2022-05-27", "2023-09-17"));
-            sapRequest.setRequest(sapRequest.getRequest().replace("2022-09-14", "2023-12-31"));
+            SapRequest sapRequest = (SapRequest) method.invoke(sapEvent, new Object[] {new Money(300), event, false});
+//            sapRequest.setRequest(sapRequest.getRequest().replace("2022-05-27", "2023-09-17"));
+//            sapRequest.setRequest(sapRequest.getRequest().replace("2022-09-14", "2023-12-31"));
         } catch (NoSuchMethodException e1) {
             e1.printStackTrace();
         } catch (IllegalAccessException e1) {

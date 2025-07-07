@@ -20,7 +20,7 @@ public class MigrateMinorToNewSCP extends CustomTask {
 
     @Override
     public void runTask() throws Exception {
-        final Registration registration = FenixFramework.getDomainObject("1409634036442623");
+        final Registration registration = FenixFramework.getDomainObject("1409634036456237");
         final StudentCurricularPlan oldSCP = registration.getFirstStudentCurricularPlan();
         final StudentCurricularPlan newSCP = registration.getLastStudentCurricularPlan();
 

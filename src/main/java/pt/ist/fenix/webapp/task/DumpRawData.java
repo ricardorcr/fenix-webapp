@@ -65,12 +65,11 @@ import org.fenixedu.bennu.core.json.JsonUtils;
 import org.fenixedu.bennu.core.util.CoreConfiguration;
 import org.fenixedu.bennu.io.domain.DriveAPIStorage;
 import org.fenixedu.bennu.io.domain.FileSupport;
-import org.fenixedu.bennu.scheduler.CronTask;
 import org.fenixedu.bennu.scheduler.annotation.Task;
 import org.fenixedu.bennu.scheduler.custom.CustomTask;
 import org.fenixedu.commons.i18n.LocalizedString;
 import org.fenixedu.commons.spreadsheet.Spreadsheet;
-import org.fenixedu.connect.domain.Account_Base;
+import org.fenixedu.connect.domain.Account;
 import org.fenixedu.connect.domain.ConnectSystem;
 import org.fenixedu.connect.domain.Identity;
 import org.fenixedu.connect.domain.identification.IdentificationDocument;
@@ -113,7 +112,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-
 public class DumpRawData extends CustomTask {
 
     private static final String REPO_NODE_ID = "1414452990237579";
@@ -121,12 +119,12 @@ public class DumpRawData extends CustomTask {
     @Override
     public void runTask() throws Exception {
         try {
-            dumpIdentifiers();
-            dumpDegrees();
-            dumpRegistrations();
-            dumpEmails();
-            dumpContactInfo();
-            dumpAdmissionProcesses();
+//            dumpIdentifiers();
+//            dumpDegrees();
+//            dumpRegistrations();
+//            dumpEmails();
+//            dumpContactInfo();
+//            dumpAdmissionProcesses();
             dumpRaidsReports();
         } finally {
             new Thread(() -> FenixFramework.atomic(() -> {
@@ -179,7 +177,7 @@ public class DumpRawData extends CustomTask {
             }
 
             identity.getAccountSet().stream()
-                    .map(Account_Base::getUser)
+                    .map(Account::getUser)
                     .filter(Objects::nonNull)
                     .map(User::getUsername)
                     .filter(u -> !u.equals(username))
@@ -202,6 +200,8 @@ public class DumpRawData extends CustomTask {
             if (identificationDocument != null) {
                 final Spreadsheet.Row rowDocument = row(spreadsheetIdentificationDocuments);
                 rowDocument.setCell("identity", identity.getExternalId());
+                final LocalizedString nationality = personalInformation.getLocalizedNationalityCountry();
+                rowDocument.setCell("nationality", nationality != null ? nationality.getContent() : "");
                 rowDocument.setCell("country", identificationDocument.getCountryCode());
                 rowDocument.setCell("type", identificationDocument.getIdentificationDocumentName().getContent());
                 rowDocument.setCell("number", identificationDocument.getDocumentNumber());
@@ -269,7 +269,7 @@ public class DumpRawData extends CustomTask {
                 }
             }
 
-            final LocalDate dateOfBirth = personalInformation.getDateOfBirth();
+            final LocalDate dateOfBirth = personalInformation != null ? personalInformation.getDateOfBirth() : null;
             if (dateOfBirth != null) {
                 final Spreadsheet.Row row = row(spreadsheetDateOfBirth);
                 row.setCell("identity", identity.getExternalId());
@@ -515,7 +515,6 @@ public class DumpRawData extends CustomTask {
             AdmissionsSystem.getInstance().getAdmissionProcessSet().stream()
                     .filter(Utils::isDegreeSpecificRegimentType)
                     .filter(admissionProcess -> executionYearFor(admissionProcess) == executionYear)
-                    .filter(admissionProcess -> admissionProcess.getStartApplicationSubmissionPeriod() != null)
                     .forEach(admissionProcess -> specificRegime.calculate(admissionProcess, null));
             final byte[] xls = specificRegime.spreadsheet();
             upload(executionYear.getName().replace('/', '_'), "Special Regiments " + executionYear.getYear()
@@ -1854,6 +1853,7 @@ public class DumpRawData extends CustomTask {
                     .filter(e -> e.getExecutionYear() == executionYear)
                     .filter(e -> e.getExternalCurricularCourse().getUnit().getCountry() != Country.readDefault())
                     .map(e -> e.getExternalCurricularCourse().getUnit().getCountry())
+                    .filter(Objects::nonNull)
                     .findAny();
             Country country = null;
             if (anyCountry.isEmpty()) {

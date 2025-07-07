@@ -27,7 +27,7 @@ public class ResendSapDocuments extends SapCustomTask {
 //		try {
 //			documentNumbers = Files.readAllLines(
 //					new File("/afs/ist.utl.pt/ciist/fenix/fenix015/ist/reenvio_documentos_lote2_15_11_2020_NAs.txt").toPath());
-        documentNumbers = Arrays.asList("ND1368045","NP1398558","ND1368051","NP1398557","ND1401982","NP1415029","ND1390946","NA1401977");
+        documentNumbers = Arrays.asList("ND1478376");
 
 //		} catch (IOException e) {
 //			throw new Error("Erro a ler o ficheiro.");
@@ -90,6 +90,7 @@ public class ResendSapDocuments extends SapCustomTask {
 //		taskLog("Going to send: %s%n", documentNumber);
         final SapEvent sapEvent = new SapEvent(sapRequest.getEvent());
         sapRequest.setIntegrated(false);
+        sapRequest.setIntegrationMessage(null);
         if (sapRequest.getSapDocumentFile() != null) {
             sapRequest.getSapDocumentFile().delete();
         }
