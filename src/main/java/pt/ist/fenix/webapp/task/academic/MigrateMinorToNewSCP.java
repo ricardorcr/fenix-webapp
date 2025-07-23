@@ -3,6 +3,7 @@ package pt.ist.fenix.webapp.task.academic;
 import org.fenixedu.academic.domain.ExecutionSemester;
 import org.fenixedu.academic.domain.IEnrolment;
 import org.fenixedu.academic.domain.StudentCurricularPlan;
+import org.fenixedu.academic.domain.exceptions.DomainException;
 import org.fenixedu.academic.domain.student.Registration;
 import org.fenixedu.academic.domain.studentCurriculum.CurriculumGroup;
 import org.fenixedu.academic.domain.studentCurriculum.Dismissal;
@@ -44,9 +45,13 @@ public class MigrateMinorToNewSCP extends CustomTask {
                             DismissalBean.SelectedCurricularCourse course = new DismissalBean.
                                     SelectedCurricularCourse(cl.getCurricularCourse(), newSCP);
                             course.setCurriculumGroup(getGroup(newSCP, cl.getCurriculumGroup()));
-                            final Substitution substitution =
-                                    newSCP.createNewSubstitutionDismissal(null, null,
-                                            List.of(course), List.of((IEnrolment) cl), null, ExecutionSemester.readActualExecutionSemester());
+                            try {
+                                final Substitution substitution =
+                                        newSCP.createNewSubstitutionDismissal(null, null,
+                                                List.of(course), List.of((IEnrolment) cl), null, ExecutionSemester.readActualExecutionSemester());
+                            } catch (DomainException de) {
+                                taskLog("Erro na substituição de %s - %s%n", cl.getCurricularCourse().getName(), de.getMessage());
+                            }
                         } else {
                             final Dismissal dismissal = (Dismissal) cl;
                             dismissal.setCurriculumGroup(minorGroup);

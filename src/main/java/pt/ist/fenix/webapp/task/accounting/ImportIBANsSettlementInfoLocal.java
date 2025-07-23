@@ -22,8 +22,10 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -105,9 +107,8 @@ public class ImportIBANsSettlementInfoLocal extends ReadCustomTask {
         String accountLine = null;
         MutablePair<String, List<String>> errors = new MutablePair<>();
         List<String> notFoundReferences = new ArrayList<>();
-        int count = 0;
+        final Map<LocalDate, Integer[]> dateCount = new HashMap<>();
         while (iter.hasNext()) {
-            count++;
             final String line = iter.next();
             if (line.startsWith(":25:")) {
                 accountLine = line;
@@ -123,7 +124,6 @@ public class ImportIBANsSettlementInfoLocal extends ReadCustomTask {
                 continue;
             }
             if (line.startsWith(":61:")) {
-                count++;
                 final String secondLine = iter.next();
                 if (!secondLine.startsWith(":86:TRF REF:")) {
                     continue;
@@ -134,12 +134,14 @@ public class ImportIBANsSettlementInfoLocal extends ReadCustomTask {
                 final int indexOf = line.indexOf("NMSCNONREF");
                 final Money amount = new Money(line.substring(15, indexOf).replace(",", "."));
 
+                final Integer counter = dateCount.computeIfAbsent(settlementDate, v -> new Integer[]{0})[0]++;
+
                 final String[] parts = secondLine.split(":86:TRF REF:");
                 final String reference = parts[1].trim().split(" ")[0];
 
-                StringBuilder settlement = new StringBuilder(String.valueOf(count)).append(" - ").append(accountLine);
-                settlement = settlement.append("\n").append(line);
-                settlement = settlement.append("\n").append(secondLine);
+                StringBuilder settlement = new StringBuilder(String.valueOf(counter)).append(" - ").append(accountLine);
+                settlement.append("\n").append(line);
+                settlement.append("\n").append(secondLine);
 
                 final IBANPayment lookup = IBANPayment.lookup(settlement.toString());
                 if (lookup != null) {
